@@ -160,7 +160,7 @@ class Monarch_Miniprep:
         W2_source = reagents_labware.wells()[B1_aliquots_required+B2_aliquots_required+B3_aliquots_required+W1_aliquots_required:B1_aliquots_required+B2_aliquots_required+B3_aliquots_required+W1_aliquots_required+W2_aliquots_required]
 
         # Calculate number of Water aliquots required
-        Water_volume_required = len(self.cultures) * 200 # uL
+        Water_volume_required = len(self.cultures) * 50 # uL
         Water_aliquots_required = math.ceil(Water_volume_required/self.water_volume_per_source_well) + 1
         # Specify Water source location(s)
         Water_source = reagents_labware.wells()[B1_aliquots_required+B2_aliquots_required+B3_aliquots_required+W1_aliquots_required+W2_aliquots_required:B1_aliquots_required+B2_aliquots_required+B3_aliquots_required+W1_aliquots_required+W2_aliquots_required+Water_aliquots_required]
