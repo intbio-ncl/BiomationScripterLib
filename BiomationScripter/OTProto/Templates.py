@@ -648,7 +648,7 @@ class Spot_Plating:
 
 
 class Transformation:
-    def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, DNA_Volume_Per_Transformation = 2, DNA_Source_Type = "3dprinted_24_tuberack_1500ul", Starting_20uL_Tip = "A1", Starting_300uL_Tip = "A1", API = "2.10", Simulate = False):
+    def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Competent_Cells_Source_Type, Transformation_Destination_Type, DNA_Volume_Per_Transformation = 2, DNA_Source_Type = "3dprinted_24_tuberack_1500ul", Starting_20uL_Tip = "A1", Starting_300uL_Tip = "A1", API = "2.10", Simulate = False):
         """DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA."""
         self.name = Name
         self.metadata = Metadata
@@ -669,10 +669,10 @@ class Transformation:
         self._300uL_tip_type = "opentrons_96_tiprack_300ul"
         self._temperature_module = "temperature module gen2"
         self._transformation_volume = 200 #uL
-        self._competent_cells_source_type = "3dprinted_24_tuberack_1500ul"
+        self._competent_cells_source_type = Competent_Cells_Source_Type
         self._competent_cells_source_volume_per_well  = 45 # uL
         self._competent_cell_volume_per_transformation = 10 # uL
-        self._transformation_destination_type = "greiner650161ushape_96_wellplate_200ul"
+        self._transformation_destination_type = Transformation_Destination_Type
         self._LB_source_type = "3dprinted_15_tuberack_15000ul"
         self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
         self._heat_shock_time = 90 # Seconds
