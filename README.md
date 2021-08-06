@@ -8,7 +8,7 @@ To install the package, first, clone the repository on to your working area. Run
 `pip install git+https://github.com/intbio-ncl/BiomationScripter.git`
 
 ## BiomationScripter - Generic Tools
-Documentation coming soon.
+https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started
 
 ## EchoProto
 Documentation coming soon.
