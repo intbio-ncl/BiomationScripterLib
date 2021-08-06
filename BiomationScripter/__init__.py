@@ -32,11 +32,14 @@ class PlateLayout:
         self.columns = None
         self.content = {}
 
-    def define_format(self, rows, columns):
-        self.rows = rows
-        self.columns = columns
+    def define_format(self, Rows, Columns):
+        self.rows = Rows
+        self.columns = Columns
 
     def add_content(self, Well, Reagent, Volume, Liquid_Class = False):
+        # TODO: * Check is Well exists in the plate
+        #       * Allow well ranges to span multiple columns
+        #       * Don't overwrite current content if a well range is specified
         # Volume should always be uL
         if Liquid_Class == False:
             Liquid_Class = "Unknown"
@@ -51,17 +54,23 @@ class PlateLayout:
     def get_content(self):
         return(self.content)
 
+    def clear_content(self):
+        self.content = {}
+
+    def clear_content_from_well(self, Well):
+        del self.content[Well]
+
     def print(self):
         print("Information for " + self.name)
         print("Plate Type: " + self.type)
         content = self.get_content()
         print("Well\tVolume(uL)\tLiquid Class\tReagent")
+        content_return = ""
         for well in content:
             for c in content[well]:
+                content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
                 print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
-
-    def clear_content(self):
-        self.content = {}
+        return(content_return)
 
 def well_range_for_plate(Plate_Layout, Well_Range=None, UseOuterWells=True):
     n_rows = Plate_Layout.rows
@@ -100,7 +109,7 @@ def well_range(Well):
     firstN = int(first[1:len(first)])
     lastN = int(last[1:len(last)])
     rows = []
-    cols = [] 
+    cols = []
     wells = []
     for L in Lrange(firstL,lastL):
         for N in range(firstN,lastN+1):
