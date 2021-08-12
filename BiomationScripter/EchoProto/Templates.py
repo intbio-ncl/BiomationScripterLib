@@ -4,6 +4,42 @@ import math
 #### PROTOCOL TEMPLATES ####
 
 class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
+    """Protocol template for setting up Loop assembly reactions using the Echo 525.
+
+    Attributes:
+    name (str): A name for the protocol.\n
+    volume (float): The final volume for the Loop assembly reactions in micorlitres.
+        Default: 5\n
+    ratios (list[str]): A list of Backbone:Part ratios
+        Example: ["1:1", "1:2", "2:1"]
+        Default: ["1:1"]\n
+    splates (list[BiomationScripter.PlateLayout]): A list of source plates which contain the required reagents.\n
+    dplate_format (list[list[BiomationScripter.PlateLayout, list[str]]]): A list of two-element lists, where the first element is an empty PlateLayout object with a defined format to be used as the destination plate, and the second element is a list of available wells.
+        Example: [[BiomationScripter.PlateLayout, ["A1","A2","A3"]],...]\n
+    assemblies (list[str,list[str]]): A list of assemblies specified using two-element lists, where the first element is the backbone, and the second element is a list of parts
+        Example: [["Backbone", ["Part1","Part2"]],...]\n
+    repeats (int): The number of reactions to be prepared for each assembly specified.
+        Default: 1\n
+    _enzyme_amount (float): The amount of enzyme, in microliters, to add per 5 microlitres of reaction.
+        Default: 0.125\n
+    _ligase_buffer_amount (float): The amount of ligase buffer, in microliters, to add per 5 microlitres of reaction.
+        Default: 0.5\n
+    _ligase_amount (float): The amount of ligase, in microliters, to add per 5 microlitres of reaction.
+        Default: 0.125\n
+    _backbone_amount (float): Amount of DNA backbone, in microlitres, to add per 5 microlitre reaction, assuming 1:1 backbone:part ratio, and 10 fmol stock concentration.
+        Default: 0.25\n
+    _part_amount (float): Amount of each DNA part, in microlitres, to add per 5 microlitre reaction, assuming 1:1 backbone:part ratio, and 10 fmol stock concentration.
+        Default: 0.25\n
+    enzyme (str): Enzyme name. This should match the name given in the BiomationScripter.PlateLayout source plate(s).\n
+    ligase_buffer (str): Ligase Buffer name. This should match the name given in the BiomationScripter.PlateLayout source plate(s).
+        Default: "T4 Ligase Buffer")\n
+    ligase (str): Ligase name. This should match the name given in the BiomationScripter.PlateLayout source plate(s).
+        Default: "T4 Ligase"\n
+    water (str): Water name. This should match the name given in the BiomationScripter.PlateLayout source plate(s).
+        Default: "Water"\n
+
+    """
+
     def __init__(self, Name, Enzyme, Volume = 5, Backbone_to_Part = ["1:1"], repeats = 1):
         self.name = Name
         self.volume = Volume # uL
@@ -33,8 +69,8 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
     def add_source_plate(self,SPlate):
         self.splates.append(SPlate)
 
-    def define_destination_plate(self,Plate_Layout, Well_Range=None, UseOuterWells=True):
-        self.dplate_format = [Plate_Layout, _BMS.well_range_for_plate(Plate_Layout, Well_Range, UseOuterWells)]
+    def define_destination_plate(self, Plate_Layout, Well_Range=None, UseOuterWells=True):
+        self.dplate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, UseOuterWells)]
 
     def make_picklist(self,Directory):
         dplates = []
@@ -44,7 +80,8 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
         dplate_well_range = self.dplate_format[1]
 
         for d in range(0,n_dplates):
-            dplates.append(_BMS.copy_plate_format(self.dplate_format[0],self.dplate_format[0].name+"_"+str(d)))
+            Name = self.dplate_format[0].name+"_"+str(d)
+            dplates.append(self.dplate_format[0].clone_format(Name))
 
         volume_factor = self.volume/5
         enzyme_amount = self._enzyme_amount*volume_factor
@@ -94,13 +131,28 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
 
 
 class Q5PCR:
-    def __init__(self, Name, Volume):
+    def __init__(self, Name, Volume, Master_Mix = False):
         self.name = Name
         self.volume = Volume
         self.splates = []
         self.dplate = None
         self.dwellrange = []
         self.samples = []
+        self._Master_Mix = Master_Mix
+        # Default reagent amounts (in uL) for 5 uL reactions
+        self._dNTPs_amount = 0.1
+        self._Q5_buffer_amount = 1
+        self._Q5_polymerase_amount = 0.05
+        self._master_mix_amount = 2.5
+        # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
+        self._dna_amount = 1
+        # Default primer amounts in uL for 5 uL reactions, and 10 μM stock concentration
+        self._primer_amount = 0.25
+        # Default names
+        self.dNTPs = "dNTPs"
+        self.Q5_buffer = "Q5 Buffer"
+        self.Q5_polymerase = "Q5 Polymerase"
+        self.master_mix = "Q5 Master Mix"
 
     def add_sample(self,Template,Primer1,Primer2):
         self.samples.append([Template,Primer1,Primer2])
@@ -120,7 +172,7 @@ class Q5PCR:
         if DestinationWellRange:
             if isinstance(DestinationWellRange, list):
                 for w in DestinationWellRange:
-                    if not _BMS.WellInRange(self.dplate,w):
+                    if not self.dplate.check_well(w):
                         raise ValueError("Destination Well {} does not exist in plate {}".format(w,self.dplate.name))
                 g = 0
                 for w in DestinationWellRange:
@@ -146,7 +198,7 @@ class Q5PCR:
                         if not UseOuterWells and (r == "A" or r >= chr(64 + self.dplate.rows) or c == 1 or c >= self.dplate.columns):
                             continue
                         else:
-                            if not _BMS.WellInRange(self.dplate,"{}{}".format(r,c)):
+                            if not self.dplate.check_well("{}{}".format(r,c)):
                                 raise ValueError("Destination Well {} does not exist in plate {}".format("{}{}".format(r,c),self.dplate.name))
                             wells.append("{}{}".format(r,c))
                     c = 1
@@ -174,7 +226,7 @@ class Q5PCR:
                     if not UseOuterWells and (r == "A" or r >= chr(64 + self.dplate.rows) or c == 1 or c >= self.dplate.columns):
                         continue
                     else:
-                        if not _BMS.WellInRange(self.dplate,"{}{}".format(r,c)):
+                        if not self.dplate.check_well("{}{}".format(r,c)):
                             raise ValueError("Destination Well {} does not exist in plate {}".format("{}{}".format(r,c),self.dplate.name))
                         wells.append("{}{}".format(r,c))
                 c = 1
