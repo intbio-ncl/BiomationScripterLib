@@ -14,7 +14,7 @@ https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started
 Documentation coming soon.
 
 ## OTProto
-Documentation coming soon.
+https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto
 
 ## FelixProto
 Documentation coming soon.
