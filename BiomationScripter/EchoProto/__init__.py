@@ -197,15 +197,15 @@ class Protocol:
         self.transferlists.append([TL])
         return(TL)
 
-    def get_transfer_list(self,Title):
-        for p in self.transferlists:
-            if Title == p[0].title:
-                return(p[0])
+    def get_transfer_list(self,Source_Plate):
+        for tl in self.transferlists:
+            if Source_Plate == tl.source_plate:
+                return(tl)
                 break
 
-    def add_destination_plate(self,Plate,UseOuterWells = False):
+    def add_destination_plate(self,Plate,Use_Outer_Wells = True):
         D_Plate = Plate
-        self.destination_plates.append([D_Plate, UseOuterWells])
+        self.destination_plates.append([D_Plate, Use_Outer_Wells])
 
     def add_destination_plates(self, Plates, Use_Outer_Wells = True):
         for D_Plate in Plates:
@@ -213,6 +213,9 @@ class Protocol:
 
     def get_destination_plates(self):
         return(self.destination_plates)
+
+    def get_source_plates(self):
+        return(self.source_plates)
 
     # def add_sourcePlate(self,Source_Plate):
     #     proto_found = False
