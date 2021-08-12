@@ -1,10 +1,10 @@
 import BiomationScripter as _BMS
 
 def writePickLists(Protocol, SaveLocation): # Writes a Picklist to a csv pick list - argument is a Picklist Class
-    for tl in Protocol.TransferLists:
+    for tl in Protocol.transferlists:
         TL = tl[0]
         Title = TL.title
-        SPType = TL.sourcePlate.type
+        SPType = TL.source_plate.type
 
         PickList = open(SaveLocation+"/"+Protocol.title + "-" + Title + ".csv", "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
@@ -17,10 +17,10 @@ def writePickLists(Protocol, SaveLocation): # Writes a Picklist to a csv pick li
         print(SaveLocation+"/"+Protocol.title + "-" + Title + ".csv")
 
 def Generate_Actions(Protocol):
-    S_Plates = Protocol.plates # Get all source plates
+    S_Plates = Protocol.source_plates # Get all source plates
     # Get all destination plates
     D_Plates = []
-    for dp in Protocol.destinationPlates:
+    for dp in Protocol.destination_plates:
         D_Plates.append(dp[0])
 
     ## Check that all reagents in the destination plates are in a source plate
@@ -43,7 +43,7 @@ def Generate_Actions(Protocol):
 
     for sp in S_Plates: # For each TransferList/source plate
         # print(sp.name)
-        proto = Protocol.make_TransferList(sp)
+        proto = Protocol.make_transfer_list(sp)
         for dp in D_Plates: # loop through all destination plates
             # print(dp.name)
             for well in dp.get_content(): # Get each well and each required reagent
@@ -105,111 +105,119 @@ def Generate_Actions(Protocol):
                     # print(proto.get_actions())
 
 
-class TransferList:
-    ## Class for storing the TransferList
-    def __init__(self,Title):
-        ## Initialise TransferList with the TransferList's title and list of allowed source plate types
-        self.title = Title
-        self.__sourcePlateTypes = {"384PP", "384LDV", "6RES"}
-        ## Create properties to store actions and source plate type
-        self._actions = [] #When populated has form [ [Action Class], [Action Class], ..., [Action Class]]
-        self.__actionUIDs = []
-        self._sourcePlateType = None
-
-    ## Getter and Setter for source plate type
-    def get_sourcePlateType(self):
-        return(self._sourcePlateType)
-    def set_sourcePlateType(self, SourcePlateType):
-        if not SourcePlateType in self.__sourcePlateTypes:
-            raise ValueError("Supported source plate types are: 384PP, 384LDV, and 6RES")
-        self._sourcePlateType = SourcePlateType
-
-    ## Getter and Setter for actions
-    def get_actions(self):
-        return(self._actions)
-    def get_actionByUID(self, UID):
-        return(next((x for x in self._actions if x.get_uid() == UID),None))
-    def add_action(self, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell, Volume):
-        ## Generate UID for the action
-        if len(self._actions) == 0:
-            UID = 0
-        else:
-            UID = max(self.__actionUIDs) + 1
-        self.__actionUIDs.append(UID)
-        ## Create action class and append to self._actions
-        self._actions.append(Action(UID, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell))
-        ## Add transfer volume to newly created action
-        self.get_actionByUID(UID).set_volume(Volume, self.get_sourcePlateType())
-
-class Action:
-    ## Class for storing information about a liquid transfer action
-    def __init__(self, UID, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell):
-        self.__uid = UID
-        self.reagent = Reagent
-        self.sourcePlateName = SourcePlateName
-        self.calibration = Calibration
-        self.sourceWell = SourceWell
-        self.destinationPlateName = DestinationPlateName
-        self.destinationPlateType = DestinationPlateType
-        self.destinationWell = DestinationWell
-        self._volume = None
-
-    ## Getter for uid
-    def get_uid(self):
-        return(self.__uid)
-
-    ## Setter and Getter for volume
-    def get_volume(self):
-        return(self._volume)
-    def set_volume(self, Volume, SourcePlateType): #Volume in nL
-        if isinstance(Volume, float):
-            raise TypeError("Transfer Volume must be an integer")
-        elif int(Volume) < 25:
-            raise ValueError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
-        elif SourcePlateType == "384PP" and int(Volume) > 2000:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
-        elif SourcePlateType == "384LDV" and int(Volume) > 500:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
-        self._volume = int(Volume)
-
-    ## Getter for all values as a list
-    def get_all(self):
-        return([self.__uid, self.reagent, self.sourcePlateName, self.calibration, self.sourceWell, self.destinationPlateName, self.destinationPlateType, self.destinationWell, self._volume])
+# class TransferList:
+#     ## Class for storing the TransferList
+#     def __init__(self,Title):
+#         ## Initialise TransferList with the TransferList's title and list of allowed source plate types
+#         self.title = Title
+#         self.__source_plate_types = {"384PP", "384LDV", "6RES"}
+#         ## Create properties to store actions and source plate type
+#         self._actions = [] #When populated has form [ [Action Class], [Action Class], ..., [Action Class]]
+#         self.__actionUIDs = []
+#         self._source_plate_type = None
+#
+#     ## Getter and Setter for source plate type
+#     def get_source_plate_type(self):
+#         return(self._source_plate_type)
+#     def set_source_plate_type(self, source_plate_type):
+#         if not source_plate_type in self.__source_plate_types:
+#             raise ValueError("Supported source plate types are: 384PP, 384LDV, and 6RES")
+#         self._source_plate_type = source_plate_type
+#
+#     ## Getter and Setter for actions
+#     def get_actions(self):
+#         return(self._actions)
+#     def get_actionByUID(self, UID):
+#         return(next((x for x in self._actions if x.get_uid() == UID),None))
+#     def add_action(self, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell, Volume):
+#         ## Generate UID for the action
+#         if len(self._actions) == 0:
+#             UID = 0
+#         else:
+#             UID = max(self.__actionUIDs) + 1
+#         self.__actionUIDs.append(UID)
+#         ## Create action class and append to self._actions
+#         self._actions.append(Action(UID, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell))
+#         ## Add transfer volume to newly created action
+#         self.get_actionByUID(UID).set_volume(Volume, self.get_source_plate_type())
+#
+# class Action:
+#     ## Class for storing information about a liquid transfer action
+#     def __init__(self, UID, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell):
+#         self.__uid = UID
+#         self.reagent = Reagent
+#         self.sourcePlateName = SourcePlateName
+#         self.calibration = Calibration
+#         self.sourceWell = SourceWell
+#         self.destinationPlateName = DestinationPlateName
+#         self.destinationPlateType = DestinationPlateType
+#         self.destinationWell = DestinationWell
+#         self._volume = None
+#
+#     ## Getter for uid
+#     def get_uid(self):
+#         return(self.__uid)
+#
+#     ## Setter and Getter for volume
+#     def get_volume(self):
+#         return(self._volume)
+#     def set_volume(self, Volume, source_plate_type): #Volume in nL
+#         if isinstance(Volume, float):
+#             raise TypeError("Transfer Volume must be an integer")
+#         elif int(Volume) < 25:
+#             raise ValueError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
+#         elif source_plate_type == "384PP" and int(Volume) > 2000:
+#             raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
+#         elif source_plate_type == "384LDV" and int(Volume) > 500:
+#             raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
+#         self._volume = int(Volume)
+#
+#     ## Getter for all values as a list
+#     def get_all(self):
+#         return([self.__uid, self.reagent, self.sourcePlateName, self.calibration, self.sourceWell, self.destinationPlateName, self.destinationPlateType, self.destinationWell, self._volume])
 
 
 
 class Protocol:
     def __init__(self,Title):
         self.title = Title
-        self.plates = []
-        self.destinationPlates = []
-        self.TransferLists = [] # [[TransferList, SourcePlate]]
+        self.source_plates = []
+        self.destination_plates = []
+        self.transferlists = []
 
     def add_source_plate(self,Plate):
-        self.plates.append(Plate)
+        self.source_plates.append(Plate)
 
-    def make_TransferList(self,Title):
-        proto = TransferList(Title)
-        self.TransferLists.append([proto])
-        return(proto)
+    def add_source_plates(self, Plates):
+        for p in Plates:
+            self.add_source_plate(p)
 
-    def get_TransferListByTitle(self,Title):
-        for p in self.TransferLists:
+    def make_transfer_list(self,Source_Plate):
+        TL = TransferList(Source_Plate)
+        self.transferlists.append([TL])
+        return(TL)
+
+    def get_transfer_list(self,Title):
+        for p in self.transferlists:
             if Title == p[0].title:
                 return(p[0])
                 break
 
-    def add_destinationPlate(self,Plate,UseOuterWells = False):
+    def add_destination_plate(self,Plate,UseOuterWells = False):
         D_Plate = Plate
-        self.destinationPlates.append([D_Plate, UseOuterWells])
+        self.destination_plates.append([D_Plate, UseOuterWells])
 
-    def destinationPlates(self):
-        return(self.destinationPlates)
+    def add_destination_plates(self, Plates, Use_Outer_Wells = True):
+        for D_Plate in Plates:
+            self.add_destination_plate(D_Plate, Use_Outer_Wells)
+
+    def get_destination_plates(self):
+        return(self.destination_plates)
 
     # def add_sourcePlate(self,Source_Plate):
     #     proto_found = False
-    #     for p in range(0,len(self.TransferLists)):
-    #         if TransferList_Title == self.TransferLists[p][0].title: # Find TransferList with specified title
+    #     for p in range(0,len(self.transferlists)):
+    #         if TransferList_Title == self.transferlists[p][0].title: # Find TransferList with specified title
     #             proto_found = True
     #             plate_found = False
     #             for plate in self.plates:
@@ -220,18 +228,18 @@ class Protocol:
     #                     break
     #             if not plate_found:
     #                 raise FileNotFoundError("No Such Plate '{}' Exists".format(Source_Plate_Title))
-    #             if len(self.TransferLists[p]) == 1: # Check if a sourceplate is already associated (True if no plate associated)
-    #                 self.TransferLists[p].append(Plate)
-    #                 self.TransferLists[p][0].set_sourcePlateType(Plate.get_sourcePlateType()) # Add source plate type to TransferList object
+    #             if len(self.transferlists[p]) == 1: # Check if a sourceplate is already associated (True if no plate associated)
+    #                 self.transferlists[p].append(Plate)
+    #                 self.transferlists[p][0].set_source_plate_type(Plate.get_source_plate_type()) # Add source plate type to TransferList object
     #             else:
     #                 replace = ""
     #                 while replace != "N":
-    #                     replace = input("Replace current source plate (" + self.TransferLists[p][1].name + ")? (Y or N): ")
+    #                     replace = input("Replace current source plate (" + self.transferlists[p][1].name + ")? (Y or N): ")
     #                     if replace == "Y":
     #                         break
     #                 if replace == "Y":
-    #                     self.TransferLists[p][1] = Plate
-    #                     self.TransferLists[p][0].set_sourcePlateType(Plate.get_sourcePlateType()) # Add source plate type to TransferList object
+    #                     self.transferlists[p][1] = Plate
+    #                     self.transferlists[p][0].set_source_plate_type(Plate.get_source_plate_type()) # Add source plate type to TransferList object
     #                 elif replace == "N":
     #                     print("Plate not replaced")
     #     if not proto_found:
@@ -239,19 +247,19 @@ class Protocol:
 
 class TransferList:
     ## Class for storing the TransferList
-    def __init__(self,SourcePlate):
+    def __init__(self,Source_Plate):
         ## Initialise TransferList with the TransferList's title and list of allowed source plate types
-        self.title = SourcePlate.name
-        self.sourcePlate = SourcePlate
-        self.__sourcePlateTypes = {"384PP", "384LDV", "6RES"}
+        self.title = Source_Plate.name
+        self.source_plate = Source_Plate
+        self.__source_plate_types = {"384PP", "384LDV", "6RES"}
         ## Create properties to store actions and source plate type
-        self._actions = [] #When populated has form [ [Action Class], [Action Class], ..., [Action Class]]
+        self._actions = [] # When populated has form [ [Action Class], [Action Class], ..., [Action Class]]
         self.__actionUIDs = []
-        self._sourcePlateType = SourcePlate.type
+        self._source_plate_type = Source_Plate.type
 
     ## Getter and Setter for source plate type
-    def get_sourcePlateType(self):
-        return(self._sourcePlateType)
+    def get_source_plate_type(self):
+        return(self._source_plate_type)
 
     ## Getter and Setter for actions
     def get_actions(self):
@@ -269,7 +277,7 @@ class TransferList:
         ## Create action class and append to self._actions
         self._actions.append(Action(UID, Reagent, SourcePlateName, Calibration, SourceWell, DestinationPlateName, DestinationPlateType, DestinationWell))
         ## Add transfer volume to newly created action
-        self.get_actionByUID(UID).set_volume(Volume, self.get_sourcePlateType())
+        self.get_actionByUID(UID).set_volume(Volume, self.get_source_plate_type())
 
 class Action:
     ## Class for storing information about a liquid transfer action
@@ -291,14 +299,14 @@ class Action:
     ## Setter and Getter for volume
     def get_volume(self):
         return(self._volume)
-    def set_volume(self, Volume, SourcePlateType): #Volume in nL
+    def set_volume(self, Volume, source_plate_type): #Volume in nL
         if isinstance(Volume, float):
             raise TypeError("Transfer Volume must be an integer")
         elif int(Volume) < 25:
             raise ValueError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
-        elif SourcePlateType == "384PP" and int(Volume) > 2000:
+        elif source_plate_type == "384PP" and int(Volume) > 2000:
             raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
-        elif SourcePlateType == "384LDV" and int(Volume) > 500:
+        elif source_plate_type == "384LDV" and int(Volume) > 500:
             raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
         self._volume = int(Volume)
 

@@ -115,16 +115,15 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
                     dplate_current_well = 0
 
         Protocol = _BMS.EchoProto.Protocol(self.name)
-        for splate in self.splates:
-            Protocol.add_source_plate(splate)
+        Protocol.add_source_plates(self.splates)
         for dplate in dplates:
-            Protocol.add_destinationPlate(dplate)
+            Protocol.add_destination_plate(dplate)
         _BMS.EchoProto.Generate_Actions(Protocol)
         _BMS.EchoProto.writePickLists(Protocol,Directory)
-        for tl in Protocol.TransferLists:
+        for tl in Protocol.transferlists:
             for action in tl[0].get_actions():
                 UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
-                SPType = tl[0].sourcePlate.type
+                SPType = tl[0].source_plate.type
                 SPT = SPType + "_" + Cali
                 line = str(UID) + "," + SPN + "," + SPT + "," + SW + "," + DPN + "," + DPT + "," + DW + "," + str(Vol) + "," + Rea + "\n" # Make less stupid (#DougKnows)
                 print(line)
