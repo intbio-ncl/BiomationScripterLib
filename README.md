@@ -11,10 +11,10 @@ To install the package, first, clone the repository on to your working area. Run
 https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started
 
 ## EchoProto
-Documentation coming soon.
+https://github.com/intbio-ncl/BiomationScripter/wiki/EchoProto
 
 ## OTProto
 https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto
 
 ## FelixProto
-Documentation coming soon.
+Coming soon.
