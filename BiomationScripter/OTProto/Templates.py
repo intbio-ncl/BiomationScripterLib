@@ -234,7 +234,8 @@ class Monarch_Miniprep:
         B3_tube_n = 0
         for destination in miniprep_tube_locations:
             source = B3_source[B3_tube_n]
-            p300.transfer(400, source, destination, blow_out = True, blowout_location = "destination well")
+            p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+            p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
             B3_used += 400
             if B3_used + 400 >= self.B3_volume_per_source_well:
                 B3_tube_n += 1
@@ -289,7 +290,8 @@ class Monarch_Miniprep:
         W2_tube_n = 0
         for destination in miniprep_spin_column_locations:
             source = W2_source[W2_tube_n]
-            p300.transfer(400, source, destination, blow_out = True, blowout_location = "destination well")
+            p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+            p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
             W2_used += 400
             if W2_used + 400 >= self.W2_volume_per_source_well:
                 W2_tube_n += 1
@@ -649,7 +651,7 @@ class Spot_Plating:
 
 class Transformation:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Competent_Cells_Source_Type, Transformation_Destination_Type, DNA_Volume_Per_Transformation = 2, DNA_Source_Type = "3dprinted_24_tuberack_1500ul", Starting_20uL_Tip = "A1", Starting_300uL_Tip = "A1", API = "2.10", Simulate = False):
-        """DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA."""
+        # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
