@@ -1,6 +1,7 @@
 from BiomationScripter import EchoProto
 from BiomationScripter import OTProto
 # from BiomationScripter import FelixProto
+import math
 
 # def WellInRange(Plate, Well):
 #     Row = Well[0]
@@ -61,7 +62,7 @@ class PlateLayout:
         # TODO: * Check is Well exists in the plate
         #       * Allow well ranges to span multiple columns
         #       * Don't overwrite current content if a well range is specified
-        
+
         # Volume should always be uL
         if Liquid_Class == False:
             Liquid_Class = "Unknown"
@@ -171,6 +172,14 @@ class Liquids:
 #         wells = temp_wells
 #
 #     return(wells)
+
+def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available):
+    N_Plates_Needed = math.ceil(N_Wells_Needed/N_Wells_Available)
+    Plates = []
+    for plate_n in range(0, N_Plates_Needed):
+        Plate_Name = Plate_Format.name + str(plate_n)
+        Plates.append(Plate_Format.clone_format(Plate_Name))
+    return(Plates)
 
 def Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
