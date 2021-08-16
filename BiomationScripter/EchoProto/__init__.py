@@ -1,12 +1,12 @@
 import BiomationScripter as _BMS
 
-def writePickLists(Protocol, SaveLocation): # Writes a Picklist to a csv pick list - argument is a Picklist Class
+def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     for tl in Protocol.transferlists:
         TL = tl[0]
         Title = TL.title
         SPType = TL.source_plate.type
 
-        PickList = open(SaveLocation+"/"+Protocol.title + "-" + Title + ".csv", "w")
+        PickList = open(Save_Location+"/"+Protocol.title + "-" + Title + ".csv", "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
         for action in TL.get_actions():
             UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
@@ -14,7 +14,7 @@ def writePickLists(Protocol, SaveLocation): # Writes a Picklist to a csv pick li
             line = str(UID) + "," + SPN + "," + SPT + "," + SW + "," + DPN + "," + DPT + "," + DW + "," + str(Vol) + "," + Rea + "\n" # Make less stupid (#DougKnows)
             PickList.write(line)
         PickList.close()
-        print(SaveLocation+"/"+Protocol.title + "-" + Title + ".csv")
+        print(Save_Location+"/"+Protocol.title + "-" + Title + ".csv")
 
 def Generate_Actions(Protocol):
     S_Plates = Protocol.source_plates # Get all source plates

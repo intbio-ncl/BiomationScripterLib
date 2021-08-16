@@ -114,19 +114,12 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
                     dplate_id += 1
                     dplate_current_well = 0
 
+        # Create protocol and generate picklists
         Protocol = _BMS.EchoProto.Protocol(self.name)
         Protocol.add_source_plates(self.splates)
-        for dplate in dplates:
-            Protocol.add_destination_plate(dplate)
+        Protocol.add_destination_plates(dplates)
         _BMS.EchoProto.Generate_Actions(Protocol)
-        _BMS.EchoProto.writePickLists(Protocol,Directory)
-        for tl in Protocol.transferlists:
-            for action in tl[0].get_actions():
-                UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
-                SPType = tl[0].source_plate.type
-                SPT = SPType + "_" + Cali
-                line = str(UID) + "," + SPN + "," + SPT + "," + SW + "," + DPN + "," + DPT + "," + DW + "," + str(Vol) + "," + Rea + "\n" # Make less stupid (#DougKnows)
-                print(line)
+        _BMS.EchoProto.Write_Picklists(Protocol,Directory)
 
 
 class Q5PCR:
