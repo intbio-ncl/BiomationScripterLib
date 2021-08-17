@@ -69,8 +69,8 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
     def add_source_plate(self,SPlate):
         self.splates.append(SPlate)
 
-    def define_destination_plate(self, Plate_Layout, Well_Range=None, UseOuterWells=True):
-        self.dplate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, UseOuterWells)]
+    def define_destination_plate(self, Plate_Layout, Well_Range=None, Use_Outer_Wells=True):
+        self.dplate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, Use_Outer_Wells)]
 
     def make_picklist(self,Directory):
         dplates = []
