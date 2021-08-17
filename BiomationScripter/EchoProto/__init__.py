@@ -1,5 +1,12 @@
 import BiomationScripter as _BMS
 
+Source_Plate_Types = {
+#   "type": [dead volume, max transfer volume, max storage volume], (volumes in uL)
+    "384PP": [15, 2, 65],
+    "384LDV": [3, 0.5, 12],
+    "6RES": [250, 2800, 2800]
+}
+
 def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     for tl in Protocol.transferlists:
         TL = tl[0]
@@ -17,7 +24,11 @@ def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick 
         print(Save_Location+"/"+Protocol.title + "-" + Title + ".csv")
 
 def Generate_Actions(Protocol):
+    Exceptions = []
+
+
     S_Plates = Protocol.source_plates # Get all source plates
+
     # Get all destination plates
     D_Plates = []
     for dp in Protocol.destination_plates:
@@ -41,67 +52,123 @@ def Generate_Actions(Protocol):
         raise ValueError("Cannot find the following reagents in a source plate: {}".format(Required_Reagents.difference(Available_Reagents)))
         # Add in ability to input different name without exiting the script???
 
+
     for sp in S_Plates: # For each TransferList/source plate
+        # Define dead volume, max transfer volume, and max storage volume for this source plate
+        if sp.type in Source_Plate_Types.keys():
+            dead_volume = Source_Plate_Types[sp.type][0]
+            max_transfer_volume = Source_Plate_Types[sp.type][1]
+            max_storage_volume = Source_Plate_Types[sp.type][2]
+        else:
+            dead_volume = 0
+            max_transfer_volume = None
+            max_storage_volume = None
+            print("Can't find source plate type, dead volume set to 0, and no max transfer volume or max storage volume specified.")
+        # Check if any source plate wells contain too much volume
+        if max_storage_volume:
+            for source_well in sp.get_content():
+                source_reagent_name = sp.get_content()[source_well][0][0]
+                source_well_volume = sp.get_content()[source_well][0][1]
+                if source_well_volume > max_storage_volume:
+                    raise ValueError("Too much volume of {} in well {}, plate {} (current: {}, max: {}).".format(source_reagent_name,source_well,sp.name, source_well_volume, max_storage_volume))
+
         # print(sp.name)
         proto = Protocol.make_transfer_list(sp)
         for dp in D_Plates: # loop through all destination plates
             # print(dp.name)
-            for well in dp.get_content(): # Get each well and each required reagent
-                for reagent in dp.get_content()[well]:
-                    source_wells = [ [w,sp.get_content()[w]] for w in sp.get_content() if reagent[0] in sp.get_content()[w][0] ] # Get source well(s) with required reagent
-                    swn = 0 # counter for reagents in multiple source wells
-                    # print(source_wells)
-                    for sw in source_wells:
-                        swn += 1
-                        # Check enough volume in source well
-                        # print(sw)
-                        deadVolume = 0
-                        if sp.type == "384PP":
-                            deadVolume = 15
-                        elif sp.type == "384LDV":
-                            deadvolume = 3
-                        elif sp.type == "6RES":
-                            deadvolume = 250
-                        else:
-                            print("Can't find source plate type, dead volume set to 0.")
-                        sw_volume = sw[1][0][1] - deadVolume
-                        required_volume = reagent[1]
-                        if sw_volume < required_volume:
-                            if swn == len(source_wells): # Check if there are more source wells with the same reagent (true if there aren't any more)
-                                raise ValueError("Not enough volume in source plate for {} (well {}, plate {}); requires {} uL more (total volume required = {} uL).".format(reagent[0],sw[0],sp.name,(required_volume + deadVolume)-sw_volume, required_volume))
-                            else:
-                                continue
-                        else:
-                            if sp.type == "384PP" and int(float(required_volume)*1000) > 2000:
-                                transfer_volume = int(float(required_volume)*1000)
-                                while transfer_volume >= 2000:
-                                    proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 2000) # Add action (volume in nL)
-                                    sp.get_content()[sw[0]][0][1] -= 2000/1000 # Remove volume from source plate
-                                    transfer_volume -= 2000
-                                if transfer_volume != 0:
-                                    # print(reagent[0], sp.name, sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume)
-                                    proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
+            for destination_well in dp.get_content(): # Get each well and each required reagent
+                for d_reagent_info in dp.get_content()[destination_well]:
+                    d_reagent_name = d_reagent_info[0]
+                    d_reagent_volume = d_reagent_info[1]
+                    # Get a list of source wells which contain the required reagent
+                    source_wells = []
+                    for source_well in sp.get_content(): # Iterate through all specified wells in the current source plate
+                        if d_reagent_name in sp.get_content()[source_well][0][0]: # If the reagent is in the source well
+                            source_wells.append([source_well, sp.get_content()[source_well][0]]) # Add that source well and its contents to the source_wells list
 
-                                    sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                                    break
-                                else:
-                                    break
-                            elif sp.type == "384LDV" and int(float(required_volume)*1000) > 500:
-                                transfer_volume = int(float(required_volume)*1000)
-                                while transfer_volume >= 500:
-                                    proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 500) # Add action (volume in nL)
-                                    sp.get_content()[sw[0]][0][1] -= 500/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                                    transfer_volume -= 500
-                                if transfer_volume != 0:
-                                    proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
-                                    sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                                    break
-                                else:
-                                    break
+                    n_source_well = 0 # counter for reagents in multiple source wells, formerly swn
+                    for source_well in source_wells: # formerly sw
+                        n_source_well += 1
+                        # Check enough volume in source well
+                        sw_volume = source_well[1][1]
+                        available_sw_volume = sw_volume - dead_volume
+                        sw_liquid_class = source_well[1][2]
+                        # required_volume = reagent[1] Now d_reagent_volume
+
+                        if available_sw_volume < d_reagent_volume: # If the current source well doesn't have enough volume
+                            if n_source_well == len(source_wells): # Check if there are more source wells with the same reagent (true if there aren't any more)
+                                Exceptions.append([d_reagent_name,source_well[0],sp.name,d_reagent_volume,available_sw_volume])
+                                # raise ValueError("Not enough volume in source plate for {} (well {}, plate {})).".format(reagent[0],source_well[0],sp.name))
+                            else: # If there are more, continue on to the next source well and try again
+                                continue
+                        else: # If the current source well does have enough volume
+                            if max_transfer_volume and (d_reagent_volume > max_transfer_volume):
+                                while d_reagent_volume >= max_transfer_volume:
+                                    # Add liquid transfer action for the max transfer volume
+                                    proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(max_transfer_volume*1000))
+                                    # Record that liquid has transfered
+                                    source_well[1][1] = source_well[1][1] - max_transfer_volume
+                                    d_reagent_volume -= max_transfer_volume
+
+                                if d_reagent_volume != 0:
+                                    # Add liquid transfer action for remaining liquid to transfer
+                                    proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(d_reagent_volume*1000))
+                                    # Record that liquid has transfered
+                                    source_well[1][1] = source_well[1][1] - d_reagent_volume
+                                    d_reagent_volume -= d_reagent_volume
                             else:
-                                proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, int(float(required_volume)*1000)) # Add action (volume in nL)
-                                sp.get_content()[sw[0]][0][1] -= required_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                                break
+                                # Add liquid transfer action for remaining liquid to transfer
+                                proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(d_reagent_volume*1000))
+                                # Record that liquid has transfered
+                                source_well[1][1] = source_well[1][1] - d_reagent_volume
+                                d_reagent_volume -= d_reagent_volume
+                            break
+    if len(Exceptions) > 0:
+        Exception_Text = "\n"
+        reagent_exceptions = set()
+        for e in Exceptions:
+            reagent_exceptions.add(e[0])
+
+        for reagent in reagent_exceptions:
+            volume_lacking = 0
+            for e in Exceptions:
+                if reagent == e[0]:
+                    volume_lacking += e[3]
+                    available = e[4]
+            Exception_Text += "Lacking at least {} uL of {}\n".format(volume_lacking - available, reagent)
+        raise ValueError(Exception_Text)
+
+
+                            # if sp.type == "384PP" and int(float(required_volume)*1000) > 2000:
+                            #     transfer_volume = int(float(required_volume)*1000)
+                            #     while transfer_volume >= 2000:
+                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 2000) # Add action (volume in nL)
+                            #         sp.get_content()[sw[0]][0][1] -= 2000/1000 # Remove volume from source plate
+                            #         transfer_volume -= 2000
+                            #     if transfer_volume != 0:
+                            #         # print(reagent[0], sp.name, sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume)
+                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
+                            #
+                            #         sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
+                            #         break
+                            #     else:
+                            #         break
+                            # elif sp.type == "384LDV" and int(float(required_volume)*1000) > 500:
+                            #     transfer_volume = int(float(required_volume)*1000)
+                            #     while transfer_volume >= 500:
+                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 500) # Add action (volume in nL)
+                            #         sp.get_content()[sw[0]][0][1] -= 500/1000 # Remove volume from source plate (but DON'T save changes to plate file)
+                            #         transfer_volume -= 500
+                            #     if transfer_volume != 0:
+                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
+                            #         sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
+                            #         break
+                            #     else:
+                            #         break
+                            # else:
+                            #     proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, int(float(required_volume)*1000)) # Add action (volume in nL)
+                            #     sp.get_content()[sw[0]][0][1] -= required_volume # Remove volume from source plate (but DON'T save changes to plate file)
+                            #     break
 
 
 class Protocol:
