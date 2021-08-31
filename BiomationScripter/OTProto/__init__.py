@@ -18,6 +18,16 @@ def load_custom_labware(protocol, file, deck_position = None):
     else:
         return(protocol.load_labware_from_definition(labware, deck_position))
 
+def load_labware(parent, labware_api_name, deck_pos, custom_labware_dir = None):
+    labware = None
+
+    try:
+        labware = parent.load_labware(labware_api_name, deck_pos)
+    except:
+        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_pos)
+
+    return(labware)
+
 def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
     tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position)))
     if tips_needed > tips_in_first_rack:

@@ -40,19 +40,13 @@ class Monarch_Miniprep:
         self._300uL_tip_type = "opentrons_96_tiprack_300ul"
 
     def load_labware(self, parent, labware_api_name, deck_pos = None):
-        labware = None
         if deck_pos == None:
             Deck_Pos = _OTProto.next_empty_slot(self._protocol)
         else:
             Deck_Pos = deck_pos
-        if self._simulate:
-            try:
-                labware = parent.load_labware(labware_api_name, Deck_Pos)
-            except:
-                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", Deck_Pos)
-        else:
-            labware = parent.load_labware(labware_api_name, Deck_Pos)
+        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
         return(labware)
+
 
     def run(self):
         # Determine how many tips will be needed
@@ -386,15 +380,12 @@ class Spot_Plating:
         self.__before_plating_message = Before_Plating_Message
         self.__when_complete_message = When_Complete_Message
 
-    def load_labware(self, parent, labware_api_name):
-        labware = None
-        if self._simulate:
-            try:
-                labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
-            except:
-                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", _OTProto.next_empty_slot(self._protocol))
+    def load_labware(self, parent, labware_api_name, deck_pos = None):
+        if deck_pos == None:
+            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
         else:
-            labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
+            Deck_Pos = deck_pos
+        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
         return(labware)
 
     def run(self):
@@ -664,15 +655,12 @@ class Transformation:
     # def modify_robot_setup(self, p20_type, p20_position, p300_type, p300_position):
     #
 
-    def load_labware(self, parent, labware_api_name):
-        labware = None
-        if self._simulate:
-            try:
-                labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
-            except:
-                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", _OTProto.next_empty_slot(self._protocol))
+    def load_labware(self, parent, labware_api_name, deck_pos = None):
+        if deck_pos == None:
+            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
         else:
-            labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
+            Deck_Pos = deck_pos
+        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
         return(labware)
 
     def run(self):
