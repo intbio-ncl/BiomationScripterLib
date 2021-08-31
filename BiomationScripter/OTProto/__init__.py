@@ -2,6 +2,13 @@ import json
 import BiomationScripter as _BMS
 import math
 
+def next_empty_slot(protocol):
+    for slot in protocol.deck:
+        labware = protocol.deck[slot]
+        if not labware: # if no labware loaded into slot
+            return(slot)
+    raise IndexError('No Deck Slots Remaining')
+
 def load_custom_labware(protocol, file, deck_position = None):
     with open(file) as labware_file:
         labware = json.load(labware_file)

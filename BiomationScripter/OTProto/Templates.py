@@ -38,18 +38,11 @@ class Monarch_Miniprep:
         self._p300_position = "right"
         self._custom_labware_dir = "../Custom_Labware/"
         self._300uL_tip_type = "opentrons_96_tiprack_300ul"
-        self.__available_deck_positions = [1,2,3,4,5,6,7,8,9,10,11]
-        self.__next_deck_index = 0
-
-    def use_next_deck_position(self):
-        deck_pos = self.__available_deck_positions[self.__next_deck_index]
-        self.__next_deck_index += 1 # record that this deck position has been used
-        return(deck_pos)
 
     def load_labware(self, parent, labware_api_name, deck_pos = None):
         labware = None
         if deck_pos == None:
-            Deck_Pos = self.use_next_deck_position()
+            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
         else:
             Deck_Pos = deck_pos
         if self._simulate:
@@ -59,11 +52,6 @@ class Monarch_Miniprep:
                 labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", Deck_Pos)
         else:
             labware = parent.load_labware(labware_api_name, Deck_Pos)
-        if deck_pos:
-            try:
-                self.__available_deck_positions.remove(Deck_Pos)
-            except:
-                pass
         return(labware)
 
     def run(self):
@@ -78,7 +66,7 @@ class Monarch_Miniprep:
         racks_needed_300uL = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
         tip_racks_300uL = []
         for rack300 in range(0, racks_needed_300uL):
-            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, self.use_next_deck_position()))
+            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
 
         p300 = self._protocol.load_instrument(self._p300_type, self._p300_position, tip_racks = tip_racks_300uL)
         p300.starting_tip = tip_racks_300uL[0].well(self.starting_300uL_tip)
@@ -379,7 +367,6 @@ class Spot_Plating:
         self._300uL_tip_type = "opentrons_96_tiprack_300ul"
         self._LB_source_type = "3dprinted_15_tuberack_15000ul"
         self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
-        self.__available_deck_positions = [1,2,3,4,5,6,7,8,9,10,11]
         self.__email_before_plating = False
         self.__email_when_complete = False
         self.__sender_email = None
@@ -399,20 +386,15 @@ class Spot_Plating:
         self.__before_plating_message = Before_Plating_Message
         self.__when_complete_message = When_Complete_Message
 
-    def use_next_deck_position(self):
-        deck_pos = self.__available_deck_positions[0]
-        self.__available_deck_positions.remove(self.__available_deck_positions[0]) # record that this deck position has been used
-        return(deck_pos)
-
     def load_labware(self, parent, labware_api_name):
         labware = None
         if self._simulate:
             try:
-                labware = parent.load_labware(labware_api_name, self.use_next_deck_position())
+                labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
             except:
-                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", self.use_next_deck_position())
+                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", _OTProto.next_empty_slot(self._protocol))
         else:
-            labware = parent.load_labware(labware_api_name, self.use_next_deck_position())
+            labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
         return(labware)
 
     def run(self):
@@ -486,10 +468,10 @@ class Spot_Plating:
         # Load tip racks
         tip_racks_20uL = []
         for rack20 in range(0, racks_needed_20uL):
-            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, self.use_next_deck_position()))
+            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
 
         for rack300 in range(0, racks_needed_300uL):
-            tip_racks_300uL = [self._protocol.load_labware(self._300uL_tip_type, self.use_next_deck_position())]
+            tip_racks_300uL = [self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol))]
 
         # Set up pipettes
         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
@@ -679,25 +661,18 @@ class Transformation:
         self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
         self._heat_shock_time = 90 # Seconds
         self._heat_shock_temp = 42 # celsius
-        self.__available_deck_positions = [1,2,3,5,6,7,8,9,10,11] # deck position 4 will always be taken by the temperature module
-
     # def modify_robot_setup(self, p20_type, p20_position, p300_type, p300_position):
     #
-
-    def use_next_deck_position(self):
-        deck_pos = self.__available_deck_positions[0]
-        self.__available_deck_positions.remove(self.__available_deck_positions[0]) # record that this deck position has been used
-        return(deck_pos)
 
     def load_labware(self, parent, labware_api_name):
         labware = None
         if self._simulate:
             try:
-                labware = parent.load_labware(labware_api_name, self.use_next_deck_position())
+                labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
             except:
-                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", self.use_next_deck_position())
+                labware = _OTProto.load_custom_labware(parent, self._custom_labware_dir + "/" + labware_api_name + ".json", _OTProto.next_empty_slot(self._protocol))
         else:
-            labware = parent.load_labware(labware_api_name, self.use_next_deck_position())
+            labware = parent.load_labware(labware_api_name, _OTProto.next_empty_slot(self._protocol))
         return(labware)
 
     def run(self):
@@ -715,10 +690,10 @@ class Transformation:
         # Load tip racks
         tip_racks_20uL = []
         for rack20 in range(0, racks_needed_20uL):
-            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, self.use_next_deck_position()))
+            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
         tip_racks_300uL = []
         for rack300 in range(0, racks_needed_300uL):
-            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, self.use_next_deck_position()))
+            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
         # Set up pipettes
         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
