@@ -2,6 +2,26 @@ import json
 import BiomationScripter as _BMS
 import math
 
+def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
+    # Determine amount of labware required #
+    labware = []
+    ## Load first labware to get format - assume always at least one required
+    labware_slot = next_empty_slot(protocol)
+    loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
+    labware.append(loaded_labware)
+    ## Determine space in labware
+    wells_in_labware = len(labware[0].wells())
+    ## Determine total amount of dilution labware required
+    n_labware = math.ceil(wells_required/wells_in_labware)
+    ## Load more labware if required
+    for lw in range(0, n_labware - 1):
+        labware_slot = next_empty_slot(protocol)
+        loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
+        labware.append(loaded_labware)
+    # Return the list of loaded labware
+    return(labware)
+
+
 def next_empty_slot(protocol):
     for slot in protocol.deck:
         labware = protocol.deck[slot]
@@ -13,7 +33,7 @@ def load_custom_labware(protocol, file, deck_position = None):
     with open(file) as labware_file:
         labware = json.load(labware_file)
 
-    if deck_position == None: # This is for where Protocol is actual a hardware module
+    if deck_position == None: # This is for where Protocol is actually a hardware module, i.e. when loading labware onto hardware with a pre-defined slot position
         return(protocol.load_labware_from_definition(labware))
     else:
         return(protocol.load_labware_from_definition(labware, deck_position))
