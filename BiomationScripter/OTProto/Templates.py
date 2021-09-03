@@ -1,10 +1,11 @@
 import BiomationScripter as _BMS
 import BiomationScripter.OTProto as _OTProto
+from opentrons import simulate as OT2
 import math
 import smtplib, ssl
 
 class Monarch_Miniprep:
-    def __init__(self, Protocol, Name, Metadata, Cultures, Culture_Source_Wells, Culture_Source_Type, Destination_Rack_Type_Tubes, Destination_Rack_Type_Spin_Columns, Destination_Rack_Type_Tube_Insert, Elution_Volume = 50, Starting_300uL_Tip = "A1", API = "2.10", Simulate = False):
+    def __init__(self, Protocol, Name, Metadata, Cultures, Culture_Source_Wells, Culture_Source_Type, Destination_Rack_Type_Tubes, Destination_Rack_Type_Spin_Columns, Destination_Rack_Type_Tube_Insert, Elution_Volume = 50, Starting_300uL_Tip = "A1", API = "2.10", Simulate = "deprecated"):
         """
         Cultures should be a list of names, and Culture_Source_Wells should be a list of wells in the same order as DNA.
         Cultures should be presented to the OT2 as cell pellets.
@@ -38,6 +39,9 @@ class Monarch_Miniprep:
         self._p300_position = "right"
         self._custom_labware_dir = "../Custom_Labware/"
         self._300uL_tip_type = "opentrons_96_tiprack_300ul"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
 
     def load_labware(self, parent, labware_api_name, deck_pos = None):
         if deck_pos == None:
@@ -345,15 +349,15 @@ class Spot_Plating:
         Cells,
         Cell_Source_Wells,
         Cell_Source_Type,
+        Dilution_Plate_Type,
         Petri_Dish_Type ="nuncomnitray40mlagar_96_wellplate_15ul",
-        Dilution_Plate_Type = "nunclondeltasurface163320_96_wellplate_250ul",
         Plating_Volume = 10,
         Dilution_Factors = [1, 10, 100, 1000, 2000],
         Dilution_Volume = 200,
         Starting_20uL_Tip = "A1",
         Starting_300uL_Tip = "A1",
         API = "2.10",
-        Simulate = False
+        Simulate = "deprecated"
     ):
 
         #####################
@@ -364,6 +368,9 @@ class Spot_Plating:
         self.metadata = Metadata
         self._simulate = Simulate
         self._custom_labware_dir = "../Custom_Labware/"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
 
         ########################################
         # User defined aspects of the protocol #
@@ -740,7 +747,7 @@ class Transformation:
         Starting_20uL_Tip = "A1",
         Starting_300uL_Tip = "A1",
         API = "2.10",
-        Simulate = False
+        Simulate = "deprecated"
     ):
         # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
         self.name = Name
@@ -770,8 +777,9 @@ class Transformation:
         self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
         self._heat_shock_time = 90 # Seconds
         self._heat_shock_temp = 42 # celsius
-    # def modify_robot_setup(self, p20_type, p20_position, p300_type, p300_position):
-    #
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
 
     def load_labware(self, parent, labware_api_name, deck_pos = None):
         if deck_pos == None:
