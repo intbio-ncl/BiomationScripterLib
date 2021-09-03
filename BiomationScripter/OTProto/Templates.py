@@ -511,7 +511,7 @@ class Spot_Plating:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = self._protocol.load_labware(self._20uL_tip_type, rack_deck_slot)
+            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self._custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_20uL.append(rack)
 
@@ -520,7 +520,7 @@ class Spot_Plating:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = self._protocol.load_labware(self._300uL_tip_type, rack_deck_slot)
+            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self._custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_300uL.append(rack)
 
@@ -791,73 +791,96 @@ class Transformation:
         self._p300_position = "right"
         self._temperature_module = "temperature module gen2"
 
-    def load_labware(self, parent, labware_api_name, deck_pos = None):
-        if deck_pos == None:
-            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
-        else:
-            Deck_Pos = deck_pos
-        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
-        return(labware)
-
     def run(self):
-        # Determine how many tips will be needed
+        ###########################
+        # Load temperature_module #
+        ###########################
+        temperature_module = self._protocol.load_module(self._temperature_module, 4)
+
+        #########################################################################
+        # Calculate the number of 20 and 300 uL tips required for this protocol #
+        #########################################################################
         tips_needed_20uL = 0
-        # Add 1 tip for adding competent cells
-        tips_needed_20uL += 1
-        # Add tips for adding DNA - one per sample
+        tips_needed_300uL = 0
+
+        # Adding competent cells #
+        if self._competent_cell_volume_per_transformation > 20:
+            tips_needed_300uL += 1
+        else:
+            tips_needed_20uL += 1
+
+        # Add tips for adding DNA - one per sample #
         tips_needed_20uL += len(self.dna)
-        # Add tips for adding LB - one per sample
-        tips_needed_300uL = len(self.dna)
+
+        # Add tips for adding LB - one per sample #
+        media_per_transformation = self._transformation_volume - (self._competent_cell_volume_per_transformation + self.dna_volume_per_transformation)
+        if media_per_transformation > 20:
+            tips_needed_300uL += len(self.dna)
+        else:
+            tips_needed_20uL += len(self.dna)
+
+        ##############################################################################
+        # Calculate the number of 20 and 300 uL tip racks required for this protocol #
+        ##############################################################################
         # Calculate number of racks needed - account for the first rack missing some tips
         racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
         racks_needed_300uL  = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
         # Load tip racks
         tip_racks_20uL = []
         for rack20 in range(0, racks_needed_20uL):
-            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
+            # Find the next empty deck slot for the tip rack
+            rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
+            # Load the tip rack
+            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            # Store the tip rack for future usage
+            tip_racks_20uL.append(rack)
+
         tip_racks_300uL = []
         for rack300 in range(0, racks_needed_300uL):
-            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
-        # Set up pipettes
+            # Find the next empty deck slot for the tip rack
+            rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
+            # Load the tip rack
+            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            # Store the tip rack for future usage
+            tip_racks_300uL.append(rack)
+
+        ###################
+        # Set up pipettes #
+        ###################
         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
         p300 = self._protocol.load_instrument(self._p300_type, self._p300_position, tip_racks = tip_racks_300uL)
         p300.starting_tip = tip_racks_300uL[0].well(self.starting_300uL_tip)
 
-        # Load temperature_module
-        temperature_module = self._protocol.load_module(self._temperature_module, 4)
-        #Load transfomration plate onto temp module
-        transformation_plate = self.load_labware(temperature_module, self._transformation_destination_type)
+        ################
+        # Load labware #
+        ################
+        # Load transfomration plate onto temp module #
+        transformation_plate = _OTProto.load_labware(temperature_module, self._transformation_destination_type, custom_labware_dir = self._custom_labware_dir)
 
-        # Load all other labware
-        LB_labware = self.load_labware(self._protocol, self._LB_source_type)
-        dna_labware = self.load_labware(self._protocol, self.dna_source_type)
-        competent_cells_labware = self.load_labware(self._protocol, self._competent_cells_source_type)
+        # Load all other labware #
+        LB_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_slot, self._custom_labware_dir)
 
-        # Store DNA locations
-        DNA = _BMS.Liquids()
-        for d,w in zip(self.dna, self.dna_source_wells):
-            DNA.add_liquid(d, dna_labware, w)
+        dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir)
 
-        # Calculate number of cell aliquots required
+        competent_cells_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        competent_cells_labware = _OTProto.load_labware(self._protocol, self._competent_cells_source_type, competent_cells_labware_slot, self._custom_labware_dir)
+
+
+        # Calculate number of cell aliquots required #
         cc_volume_required = len(self.dna) * self._competent_cell_volume_per_transformation # uL
         cc_aliquots_required = math.ceil(cc_volume_required/self._competent_cells_source_volume_per_well)
         # Specify competent cells location
         competent_cells_source = competent_cells_labware.wells()[0:cc_aliquots_required]
 
-        # Calculate number of LB aliquots required
+        # Calculate number of LB aliquots required #
         LB_volume_per_transformation = self._transformation_volume - (self.dna_volume_per_transformation + self._competent_cell_volume_per_transformation)
         LB_Volume_required = len(self.dna) * LB_volume_per_transformation
         LB_aliquots_required = math.ceil(LB_Volume_required/self._LB_source_volume_per_well)
         # Specify LB location
         LB_source = LB_labware.wells()[0:LB_aliquots_required]
-
-        # specify wells to be used for transformations
-        transformation_plate_wells_by_row = []
-        for r in transformation_plate.rows():
-            for w in r:
-                transformation_plate_wells_by_row.append(w)
-        transformation_destination_range = transformation_plate_wells_by_row[0:len(self.dna)]
 
         # Prompt user to check all liquids are correctly placed
         self._protocol.pause("{} aliquot(s) of LB required".format(len(LB_source)))
@@ -867,54 +890,104 @@ class Transformation:
         self._protocol.pause("This protocol needs {} 20 uL tip racks".format(len(tip_racks_20uL)))
         self._protocol.pause("This protocol needs {} 300 uL tip racks".format(len(tip_racks_300uL)))
 
-        for l in DNA.get_all_liquids():
-            liquid_name = l
-            liquid_labware = DNA.get_liquid_labware(liquid_name)
-            liquid_well = DNA.get_liquid_well(liquid_name)
-            self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+        for dna, source_well in zip(self.dna, self.dna_source_wells):
+            self._protocol.pause('Place {} in well {} at deck position {}'.format(dna, source_well, dna_labware_slot))
 
+        ##########################
+        # Liquid handling begins #
+        ##########################
 
-
-        ##################################
-        # Start of protocol instructions #
-        ##################################
-
-        # Set temperature to 4C and wait until temp is reached
+        ########################################################
+        # Set temperature to 4C and wait until temp is reached #
+        ########################################################
         temperature_module.set_temperature(4)
 
-        # Add competent cells to plate
-        cells_used = 0
-        tube_n = 0
-        p20.pick_up_tip()
-        for destination in transformation_destination_range:
-            p20.transfer(self._competent_cell_volume_per_transformation, competent_cells_source[tube_n], destination, new_tip = "never", mix_before = (5, 10))
-            cells_used += self._competent_cell_volume_per_transformation
-            if cells_used >= self._competent_cells_source_volume_per_well:
-                tube_n += 1
-                cells_used = 0
-        p20.drop_tip()
+        ################################
+        # Add competent cells to plate #
+        ################################
+        # This is to switch which competent cells aliquot is being used as the source
+        cc_tube_index = 0
 
-        # Add DNA to competent cells and mix
-        for dna, destination in zip(DNA.get_all_liquids(), transformation_destination_range):
-            source_labware = DNA.get_liquid_labware(dna)
-            source_well = DNA.get_liquid_well(dna)
-            source = source_labware.wells_by_name()[source_well]
-            p20.transfer(self.dna_volume_per_transformation, source, destination, mix_after = (10, 10))
+        # Determine which tip is required and get it
+        if self._competent_cell_volume_per_transformation <= 20:
+            pipette = p20
+            pipette.pick_up_tip()
+        else:
+            pipette = p300
+            pipette.pick_up_tip()
 
-        # Heat shock at 42C
+        for transformation_index in range(0, len(self.dna)):
+            # Determine which competent cell aliquot to take from
+            source = competent_cells_source[cc_tube_index]
+            # Set the next empty well in the transformation labware as the destination
+            destination = transformation_plate.wells()[transformation_index]
+            # Perform the transfer
+            pipette.transfer(self._competent_cell_volume_per_transformation, source, destination, new_tip = "never", mix_before = (5, self._competent_cell_volume_per_transformation))
+            # Iterate to the next competent cell aliquot, and check if need to go back to first aliquot
+            if cc_tube_index == len(competent_cells_source) - 1:
+                cc_tube_index = 0
+            else:
+                cc_tube_index += 1
+
+        # Drop tips which have been in use
+        if self._competent_cell_volume_per_transformation <= 20:
+            pipette = p20
+            pipette.drop_tip()
+        else:
+            pipette = p300
+            pipette.drop_tip()
+
+        ######################################
+        # Add DNA to competent cells and mix #
+        ######################################
+        # Determine which pipette should be used
+        if self.dna_volume_per_transformation <= 20:
+            pipette = p20
+        else:
+            pipette = p300
+
+        for transformation_index in range(0, len(self.dna)):
+            # Get the location of the dna to be added
+            source = dna_labware.wells()[transformation_index]
+            # Get the 'well' to which the DNA should be added
+            destination = transformation_plate.wells()[transformation_index]
+            # Perform the transfer
+            pipette.transfer(self.dna_volume_per_transformation, source, destination, mix_after = (10, 10))
+
+        #####################
+        # Heat shock at 42C #
+        #####################
+        # Set the temp to heat shock
         temperature_module.set_temperature(self._heat_shock_temp)
+        # Wait for a bit
         self._protocol.delay(seconds = self._heat_shock_time)
+        # Cool back to 4 - protocol won't continue until this is back at 4...
         temperature_module.set_temperature(4)
 
+        #############################
+        # Add LB to transfomrations #
+        #############################
         # Prompt user to open LB tubes
         self._protocol.pause("Open up LB tubes")
 
-        # Add LB to transfomrations
-        LB_used = 0
-        tube_n = 0
-        for destination in transformation_destination_range:
-            p300.transfer(LB_volume_per_transformation, LB_source[tube_n], destination)
-            LB_used += LB_volume_per_transformation
-            if LB_used + LB_volume_per_transformation > self._LB_source_volume_per_well:
-                tube_n += 1
-                LB_used = 0
+        # This is to switch which LB aliquot is being used as the source
+        LB_tube_index = 0
+
+        # Determine which pipette will be used
+        if media_per_transformation <= 20:
+            pipette = p20
+        else:
+            pipette = p300
+
+        for transformation_index in range(0, len(self.dna)):
+            # Determine which media aliquot to take from
+            source = LB_source[LB_tube_index]
+            # Set the next empty well in the transformation labware as the destination
+            destionation = transformation_plate.wells()[transformation_index]
+            # Perform the transfer
+            pipette.transfer(media_per_transformation, source, destination)
+            # Iterate to the next media aliquot, and check if need to go back to first aliquot
+            if LB_tube_index == len(LB_source) - 1:
+                LB_tube_index = 0
+            else:
+                LB_tube_index += 1
