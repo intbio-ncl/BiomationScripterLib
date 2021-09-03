@@ -337,10 +337,6 @@ class Monarch_Miniprep:
             del self._protocol.deck[str(tube_rack_deck_pos)]
             self.load_labware(self._protocol, self.destination_rack_type_tubes, deck_pos = tube_rack_deck_pos)
 
-
-
-        # Protocol ends
-
 class Spot_Plating:
     def __init__(self,
         Protocol,
@@ -408,18 +404,6 @@ class Spot_Plating:
         self._p20_position = "left"
         self._p300_type = "p300_single_gen2"
         self._p300_position = "right"
-
-    ##########################
-    # Handle loading labware #
-    ##########################
-    def load_labware(self, parent, labware_api_name, deck_pos = None):
-        # REMOVE THIS METHOD AND SPLIT BETWEEN OTPROTO.LOAD_LABWARE AND RUN()
-        if deck_pos == None:
-            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
-        else:
-            Deck_Pos = deck_pos
-        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
-        return(labware)
 
     def serial_dilution_volumes(self, dilution_factors, total_volume):
         # Note that total volume is the amount the dilution will be made up to
@@ -489,7 +473,6 @@ class Spot_Plating:
         ### Determine the min and max LB volumes which need to be transferred, and determine if a 20uL or 300uL tip, or both, are required
         max_LB_volume = max(LB_dilution_volumes_no_0)
         min_LB_volume = min(LB_dilution_volumes_no_0)
-
         if max_LB_volume > 20:
             # If there are any LB transfer events larger than 20 uL, a 300 uL tip will be required
             tips_required_300uL += 1
@@ -564,8 +547,10 @@ class Spot_Plating:
         petri_dishes = _OTProto.calculate_and_load_labware(self._protocol, self.petri_dish_type, wells_needed, custom_labware_dir = self._custom_labware_dir)
 
         # Load source labware #
-        cells_labware = self.load_labware(self._protocol, self.cell_source_type)
-        LB_labware = self.load_labware(self._protocol, self._LB_source_type)
+        cell_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
+        cells_labware = _OTProto.load_labware(self._protocol, self.cell_source_type, cell_labware_deck_slot, self._custom_labware_dir)
+        LB_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
+        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_deck_slot, self._custom_labware_dir)
 
         ## Calculate number of LB aliquots required
         total_LB_required = len(self.cells) * sum(LB_dilution_volumes) # Calculate total amount of LB required
@@ -742,44 +727,69 @@ class Transformation:
         DNA_Source_Wells,
         Competent_Cells_Source_Type,
         Transformation_Destination_Type,
-        DNA_Volume_Per_Transformation = 2,
-        DNA_Source_Type = "3dprinted_24_tuberack_1500ul",
+        DNA_Source_Type,
+        DNA_Volume_Per_Transformation,
         Starting_20uL_Tip = "A1",
         Starting_300uL_Tip = "A1",
         API = "2.10",
         Simulate = "deprecated"
     ):
         # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
+
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
-        self.dna = DNA
-        self.dna_source_wells = DNA_Source_Wells
-        self.dna_volume_per_transformation = DNA_Volume_Per_Transformation
-        self.dna_source_type = DNA_Source_Type
+        self._custom_labware_dir = "../Custom_Labware/"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        # Running parameters
+        self.dna_volume_per_transformation = DNA_Volume_Per_Transformation # uL
+        self._competent_cell_volume_per_transformation = 10 # uL
+        self._transformation_volume = 200 #uL
+        self._heat_shock_time = 90 # Seconds
+        self._heat_shock_temp = 42 # celsius
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
+        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
         self.starting_20uL_tip = Starting_20uL_Tip
         self.starting_300uL_tip = Starting_300uL_Tip
-        self._protocol = Protocol
+        ## DNA to be transformed ##
+        self.dna = DNA
+        self.dna_source_wells = DNA_Source_Wells
+        self.dna_source_type = DNA_Source_Type
+        ## Competent cells ##
+        self._competent_cells_source_type = Competent_Cells_Source_Type
+        self._competent_cells_source_volume_per_well  = 45 # uL
+        ## Media ##
+        self._LB_source_type = "3dprinted_15_tuberack_15000ul"
+        self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
+
+        #######################
+        # Destination Labware #
+        #######################
+        self._transformation_destination_type = Transformation_Destination_Type
+
+        ###############
+        # Robot Setup #
+        ###############
         self._p20_type = "p20_single_gen2"
         self._p20_position = "left"
         self._p300_type = "p300_single_gen2"
         self._p300_position = "right"
-        self._custom_labware_dir = "../Custom_Labware/"
-        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
         self._temperature_module = "temperature module gen2"
-        self._transformation_volume = 200 #uL
-        self._competent_cells_source_type = Competent_Cells_Source_Type
-        self._competent_cells_source_volume_per_well  = 45 # uL
-        self._competent_cell_volume_per_transformation = 10 # uL
-        self._transformation_destination_type = Transformation_Destination_Type
-        self._LB_source_type = "3dprinted_15_tuberack_15000ul"
-        self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
-        self._heat_shock_time = 90 # Seconds
-        self._heat_shock_temp = 42 # celsius
-
-        if not Simulate == "deprecated":
-            print("Simulate no longer needs to be specified and will soon be removed.")
 
     def load_labware(self, parent, labware_api_name, deck_pos = None):
         if deck_pos == None:

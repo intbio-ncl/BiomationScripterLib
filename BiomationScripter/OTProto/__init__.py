@@ -30,21 +30,28 @@ def next_empty_slot(protocol):
     raise IndexError('No Deck Slots Remaining')
 
 def load_custom_labware(protocol, file, deck_position = None):
+    # Open the labware json file
     with open(file) as labware_file:
         labware = json.load(labware_file)
 
-    if deck_position == None: # This is for where Protocol is actually a hardware module, i.e. when loading labware onto hardware with a pre-defined slot position
+    # If deck position is none, assume that labware is being loaded onto a hardware module
+    if deck_position == None:
         return(protocol.load_labware_from_definition(labware))
     else:
         return(protocol.load_labware_from_definition(labware, deck_position))
 
-def load_labware(parent, labware_api_name, deck_pos, custom_labware_dir = None):
+def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None):
     labware = None
-
+    # Try and load the labware from the default labware
     try:
-        labware = parent.load_labware(labware_api_name, deck_pos)
+        # If deck position is none, assume that labware is being loaded onto a hardware module
+        if deck_position == None:
+            labware = parent.load_labware(labware_api_name)
+        else:
+            labware = parent.load_labware(labware_api_name, deck_position)
+    # If loading the labware fails, try and load as custom labware instead
     except:
-        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_pos)
+        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position)
 
     return(labware)
 
