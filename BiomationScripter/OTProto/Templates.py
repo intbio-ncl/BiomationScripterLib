@@ -659,12 +659,12 @@ class Spot_Plating:
             # Perform the remianing serial dilutions for this cell type
             for transfer_volume in cell_dilution_volumes[1:]:
                 # if volume is 0, skip the transfer
-                if volume == 0:
+                if transfer_volume == 0:
                     continue
                 # Determine which pipette is needed
-                if volume > 20:
+                if transfer_volume > 20:
                     pipette = p300
-                elif volume <= 20:
+                elif transfer_volume <= 20:
                     pipette = p20
                 # set the source as the previous dilution
                 if transfer_index == 0: # If the next dilution is in a new destination labware...
