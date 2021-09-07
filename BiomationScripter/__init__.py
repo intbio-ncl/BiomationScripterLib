@@ -3,27 +3,6 @@ from BiomationScripter import OTProto
 # from BiomationScripter import FelixProto
 import math
 
-# def WellInRange(Plate, Well):
-#     Row = Well[0]
-#     Column = int(Well[1:])
-#     InRange = None
-#     if Row > chr(64 + Plate.rows):
-#         InRange = False
-#     elif Column > Plate.columns:
-#         InRange = False
-#     else:
-#         InRange = True
-#     return(InRange)
-
-# def copy_plate_format(Plate_Layout, New_Name):
-#     name = New_Name
-#     type = Plate_Layout.type
-#     rows = Plate_Layout.rows
-#     columns = Plate_Layout.columns
-#     plate_copy = PlateLayout(name, type)
-#     plate_copy.define_format(rows, columns)
-#     return(plate_copy)
-
 class PlateLayout:
     def __init__(self, Name, Type):
         self.name = Name

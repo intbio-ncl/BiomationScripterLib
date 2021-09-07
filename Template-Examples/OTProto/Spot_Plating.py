@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
 
 ####################################################
 # Import BiomationScripter to help write protocols #
@@ -7,6 +11,10 @@ import sys
 sys.path.insert(0, "/var/lib/jupyter/notebooks/Packages/")
 import BiomationScripter as BMS
 import BiomationScripter.OTProto.Templates as Templates
+
+
+# In[ ]:
+
 
 ##################################
 # Record the protocol's metadata #
@@ -22,16 +30,20 @@ metadata = {
     'robotName': 'Robo' # This is the name of the OT2 you plan to run the protocol on
 }
 
+
+# In[ ]:
+
+
 ##############################################################
-# Use this code to call the Spot Plating protocol template #
+# Use this cell to call the Spot Plating protocol template #
 ##############################################################
 
 def run(protocol):
-
+    
     #################################################
     # Add information needed for the protocol here: #
     #################################################
-
+    
     Cells = [
     "DNA1",
     "DNA2",
@@ -42,31 +54,31 @@ def run(protocol):
     "DNA7",
     "DNA8"
     ]
-
+    
     Cell_Source_Plate_Type = "nunclondeltasurface163320_96_wellplate_250ul"
-
+    
     Dilution_Plate_Type = "nunclondeltasurface163320_96_wellplate_250ul"
-
+    
     Cell_Wells = BMS.well_range("A1:A8")
-
+    
     Plating_Volume = 10 #uL
 
     Dilution_Factors = [1, 10, 100, 1000, 2000, 5000, 8000, 10000]
-
+    
     Starting_tip_position_20uL = "A1"
-
+    
     Starting_tip_position_300uL = "A1"
-
+    
     Simulate = False
-
+    
     #################################################
     #################################################
     #################################################
-
+    
     ##############################################################
     # The code below creates the protocol to be ran or simulated #
     ##############################################################
-
+    
     Spot_Plating  = BMS.OTProto.Templates.Spot_Plating (
         Protocol=protocol,
         Name=metadata["protocolName"],
@@ -81,16 +93,20 @@ def run(protocol):
         Starting_300uL_Tip=Starting_tip_position_300uL,
         Simulate = Simulate
     )
+    Spot_Plating._custom_labware_dir = "C:/Users/bradl/Nextcloud/Private/Automation/Opentrons_Labware_Definitions"
     Spot_Plating.run()
 
 
-######################################################################
-# Use this code if simulating the protocol, otherwise comment it out #
-######################################################################
+# In[ ]:
 
-##########################################################################################################
-# IMPORTANT - the protocol will not upload to the opentrons if this cell is not commented out or removed #
-##########################################################################################################
+
+# # #####################################################################
+# # Use this cell if simulating the protocol, otherwise comment it out #
+# # #####################################################################
+
+# # #########################################################################################################
+# # IMPORTANT - the protocol will not upload to the opentrons if this cell is not commented out or removed #
+# # #########################################################################################################
 
 # from opentrons import simulate as OT2 # This line simulates the protocol
 # # Get the correct api version
@@ -101,3 +117,10 @@ def run(protocol):
 # run(protocol)
 # for line in protocol.commands():
 #     print(line)
+
+
+# In[ ]:
+
+
+
+

@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
 
 ####################################################
 # Import BiomationScripter to help write protocols #
@@ -7,6 +11,10 @@ import sys
 sys.path.insert(0, "/var/lib/jupyter/notebooks/Packages/")
 import BiomationScripter as BMS
 import BiomationScripter.OTProto.Templates as Templates
+
+
+# In[ ]:
+
 
 ##################################
 # Record the protocol's metadata #
@@ -22,16 +30,20 @@ metadata = {
     'robotName': 'Robo' # This is the name of the OT2 you plan to run the protocol on
 }
 
+
+# In[ ]:
+
+
 ##############################################################
-# Use this code to call the Transformation protocol template #
+# Use this cell to call the Transformation protocol template #
 ##############################################################
 
 def run(protocol):
-
+    
     #################################################
     # Add information needed for the protocol here: #
     #################################################
-
+    
     DNA = [
     "DNA1",
     "DNA2",
@@ -42,38 +54,45 @@ def run(protocol):
     "DNA7",
     "DNA8",
     ]
-
-    DNA_Source_Plate_Type = "3dprinted_24_tuberack_1500ul"
-
+    
+    DNA_Source_Plate_Type = "opentrons_24_aluminumblock_nest_1.5ml_snapcap"
+    
+    Competent_Cells_Source_Type = "opentrons_24_aluminumblock_nest_1.5ml_snapcap"
+    
+    Transformation_Destination_Type = "opentrons_24_aluminumblock_nest_1.5ml_snapcap"
+    
     DNA_Wells = BMS.well_range("A1:A4") + BMS.well_range("B1:B4")
-
+    
     DNA_Per_Transformation = 2 #uL
-
-    Simulate = False
-
+    
     #################################################
     #################################################
     #################################################
-
+    
     ##############################################################
     # The code below creates the protocol to be ran or simulated #
     ##############################################################
-
+    
     Transformation = BMS.OTProto.Templates.Transformation(
         Protocol=protocol,
         Name=metadata["protocolName"],
         Metadata=metadata,
         DNA=DNA,
         DNA_Source_Wells=DNA_Wells,
+        Competent_Cells_Source_Type = Competent_Cells_Source_Type,
+        Transformation_Destination_Type = Transformation_Destination_Type,
         DNA_Source_Type=DNA_Source_Plate_Type,
         DNA_Volume_Per_Transformation=DNA_Per_Transformation,
-        Simulate = Simulate
     )
+    Transformation._custom_labware_dir = "C:/Users/bradl/Nextcloud/Private/Automation/Opentrons_Labware_Definitions"
     Transformation.run()
 
 
+# In[ ]:
+
+
 # ######################################################################
-# # Use this code if simulating the protocol, otherwise comment it out #
+# # Use this cell if simulating the protocol, otherwise comment it out #
 # ######################################################################
 
 # ##########################################################################################################
@@ -89,3 +108,10 @@ def run(protocol):
 # run(protocol)
 # for line in protocol.commands():
 #     print(line)
+
+
+# In[ ]:
+
+
+
+
