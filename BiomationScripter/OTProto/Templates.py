@@ -3,7 +3,6 @@ import BiomationScripter.OTProto as _OTProto
 import math
 import smtplib, ssl
 
-### Code to add to Biomation Scripter ###
 class Primer_Mixing_LightRun:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
     Destination_Contents, primer_plate_is_DNA_plate = False,
