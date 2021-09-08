@@ -27,7 +27,7 @@ metadata = {
     'user-email': '',
     'source': 'Custom Protocol inspired by 10.1093/synbio/ysaa010',
     'apiLevel': '2.10',
-    'robotName': 'Robo' # This is the name of the OT2 you plan to run the protocol on
+    'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
 }
 
 
@@ -84,7 +84,7 @@ def run(protocol):
         DNA_Source_Type=DNA_Source_Plate_Type,
         DNA_Volume_Per_Transformation=DNA_Per_Transformation,
     )
-    Transformation._custom_labware_dir = "C:/Users/bradl/Nextcloud/Private/Automation/Opentrons_Labware_Definitions"
+    Transformation._custom_labware_dir = "PATH"
     Transformation.run()
 
 
