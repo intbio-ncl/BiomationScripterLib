@@ -823,7 +823,7 @@ class Spot_Plating:
                 p300.drop_tip()
 
 
-        self._protocol.pause("Uncover agar plate")
+        self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[0].parent))
 
         # Determine which pipette is needed
         if self.plating_volume > 20:
@@ -843,6 +843,7 @@ class Spot_Plating:
             if len(destination_labware.wells()) == plating_index:
                 destination_labware_index += 1
                 plating_index = 0
+                self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[destination_labware_index].parent))
 
 
 class Transformation:
