@@ -30,12 +30,12 @@ class Primer_Mixing_LightRun:
         self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
         self._custom_labware_dir = "../Custom_Labware/"
 
-    def load_labware(self, parent, labware_api_name, deck_pos = None):
+    def load_labware(self, parent, labware_api_name, deck_pos = None, label = None):
             if deck_pos == None:
                 Deck_Pos = _OTProto.next_empty_slot(self._protocol)
             else:
                 Deck_Pos = deck_pos
-            labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
+            labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir, label)
             return(labware)
 
     def run(self):
@@ -56,10 +56,10 @@ class Primer_Mixing_LightRun:
         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
 
         # Load all other labware
-        dna_labware = self.load_labware(self._protocol, self.dna_source_type)
+        dna_labware = self.load_labware(self._protocol, self.dna_source_type, label = "DNA Plate")
         if not self.primer_plate_is_dna_plate:
-            primer_labware = self.load_labware(self._protocol, self.primer_source_type)
-        destination_labware = self.load_labware(self._protocol, self.destination_type)
+            primer_labware = self.load_labware(self._protocol, self.primer_source_type, label = "Primer Plate")
+        destination_labware = self.load_labware(self._protocol, self.destination_type, label = "Tube Rack")
 
         # Store DNA locations
         DNA = _BMS.Liquids()
