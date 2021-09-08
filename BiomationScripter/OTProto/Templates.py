@@ -1103,7 +1103,7 @@ class Transformation:
             # Determine which media aliquot to take from
             source = LB_source[LB_tube_index]
             # Set the next empty well in the transformation labware as the destination
-            destionation = transformation_plate.wells()[transformation_index]
+            destination = transformation_plate.wells()[transformation_index]
             # Perform the transfer
             pipette.transfer(media_per_transformation, source, destination)
             # Iterate to the next media aliquot, and check if need to go back to first aliquot
