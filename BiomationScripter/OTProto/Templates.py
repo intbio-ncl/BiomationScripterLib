@@ -75,7 +75,7 @@ class Primer_Mixing_LightRun:
         for r in destination_labware.rows():
             for w in r:
                 destination_plate_wells_by_row.append(w)
-        destination_range = destination_plate_wells_by_row[0:len(self.dna)]
+        destination_range = destination_plate_wells_by_row[0:len(self.destination_contents)]
 
         # Prompt user to check all liquids are correctly placed
         self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
@@ -106,30 +106,22 @@ class Primer_Mixing_LightRun:
             # extract liquid contents from list
             contents = self.destination_contents[i]
             contents_dna = contents[0] # DNA
-            contents_fp  = contents[1] # forward primer
-            contents_rp  = contents[2] # reverse primer
+            contents_primer = contents[1] # primer
             # get dna source well
             dna_labware = DNA.get_liquid_labware(contents_dna)
             dna_well = DNA.get_liquid_well(contents_dna)
             dna_source = dna_labware.wells_by_name()[dna_well]
             # get forward primer well
-            fp_labware = Primers.get_liquid_labware(contents_fp)
-            fp_well = Primers.get_liquid_well(contents_fp)
-            fp_source = fp_labware.wells_by_name()[fp_well]
-            # get reverse primer well
-            rp_labware = Primers.get_liquid_labware(contents_rp)
-            rp_well = Primers.get_liquid_well(contents_rp)
-            rp_source = rp_labware.wells_by_name()[rp_well]
+            primer_labware = Primers.get_liquid_labware(contents_primer)
+            primer_well = Primers.get_liquid_well(contents_primer)
+            primer_source = primer_labware.wells_by_name()[primer_well]
             # get destination well
             destination = destination_range[i]
 
             # transfer 5uL of DNA to each tube
             p20.transfer(5, dna_source, destination)
-            # transfer 2.5uL of forward primer to each tube
-            p20.transfer(2.5, fp_source, destination)
-            # transfer 2.5uL of reverse primer to each tube
-            p20.transfer(2.5, rp_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
-
+            # transfer 5uL of primer to each tube
+            p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
 
 class Monarch_Miniprep:
     def __init__(self, Protocol, Name, Metadata, Cultures, Culture_Source_Wells, Culture_Source_Type, Destination_Rack_Type_Tubes, Destination_Rack_Type_Spin_Columns, Destination_Rack_Type_Tube_Insert, Elution_Volume = 50, Starting_300uL_Tip = "A1", API = "2.10", Simulate = "deprecated"):
