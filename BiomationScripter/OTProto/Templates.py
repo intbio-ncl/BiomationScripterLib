@@ -5,10 +5,21 @@ import math
 import smtplib, ssl
 
 class Primer_Mixing_LightRun:
-    def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
-    Destination_Contents, primer_plate_is_DNA_plate = False,
-    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
-    Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
+    def __init__(self,
+        Protocol,
+        Name,
+        Metadata,
+        DNA,
+        DNA_Source_Wells,
+        Primers,
+        Primer_Source_Wells,
+        Destination_Contents,
+        primer_plate_is_DNA_plate = False,
+        DNA_Source_Type = "labcyte384pp_384_wellplate_65ul",
+        Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
+        Starting_20uL_Tip = "A1",
+        API = "2.10",
+        Simulate = False):
         # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
         self.Name = Name
         self.Metadata = Metadata
@@ -59,6 +70,8 @@ class Primer_Mixing_LightRun:
         dna_labware = self.load_labware(self._protocol, self.dna_source_type, label = "DNA Plate")
         if not self.primer_plate_is_dna_plate:
             primer_labware = self.load_labware(self._protocol, self.primer_source_type, label = "Primer Plate")
+        else:
+            primer_labware = dna_labware
         destination_labware = self.load_labware(self._protocol, self.destination_type, label = "Tube Rack")
 
         # Store DNA locations
