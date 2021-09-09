@@ -171,30 +171,50 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
                 for rep in range(0, self.repeats):
                     backbone_amount = (self._backbone_amount*volume_factor)*float(ratio.split(":")[0])
                     part_amount = (self._part_amount*volume_factor)*float(ratio.split(":")[1])
+                    # Calculate amount of water to be added
                     water_amount = self.volume - (backbone_amount + (part_amount*len(assembly[1])) + reagent_amount)
+                    # If the amount of water required is less than 0, that means that the reaction is above the reaction volume
+                    ## In this case, raise an error
+                    if water_amount < 0:
+                        raise ValueError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
+                    # If water amount is below the minimum amount which can be transfered by the Echo, set the water amount to 0
+                    ## This is to avoid errors
                     if water_amount < 0.025:
                         water_amount = 0
-                        print("This assembly is above the reaction volume") # Add in identifier for assembly
+
+                    # Get the current destination plate
                     dplate = dplates[dplate_id]
+                    # Get the current destination well
+                    d_well = dplate_well_range[dplate_current_well]
 
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.enzyme, enzyme_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.ligase_buffer, ligase_buffer_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.ligase, ligase_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.water, water_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], assembly[0], backbone_amount)
+                    # Add the reagents, water, and DNA to the destinaton plate
+                    dplate.add_content(d_well, self.enzyme, enzyme_amount)
+                    dplate.add_content(d_well, self.ligase_buffer, ligase_buffer_amount)
+                    dplate.add_content(d_well, self.ligase, ligase_amount)
+                    dplate.add_content(d_well, self.water, water_amount)
+                    dplate.add_content(d_well, assembly[0], backbone_amount)
                     for part in assembly[1]:
-                        dplate.add_content(dplate_well_range[dplate_current_well], part, part_amount)
+                        dplate.add_content(d_well, part, part_amount)
 
+                    # Iterate to the next destination well
                     dplate_current_well += 1
+                    # Check if the current destinaton plate is full
                     if dplate_current_well - 1 == len(dplate_well_range):
+                        # If so, iterate to the first well of the next destination plate
                         dplate_id += 1
                         dplate_current_well = 0
 
-        # Create protocol and generate picklists
+        ##########################################
+        # Create protocol and generate picklists #
+        ##########################################
+        # Create an empty Echo protocol
         Protocol = _BMS.EchoProto.Protocol(self.name)
+        # Add the source and destination plates to the protocol
         Protocol.add_source_plates(self.splates)
         Protocol.add_destination_plates(dplates)
+        # Generate the liquid transfer actions
         _BMS.EchoProto.Generate_Actions(Protocol)
+        # Create and write the picklists
         _BMS.EchoProto.Write_Picklists(Protocol,Directory)
 
 
