@@ -47,12 +47,10 @@ class Primer_Mixing_LightRun:
         tips_needed_20uL = len(self.dna)
         # Calculate number of racks needed - account for the first rack missing some tips
         racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
-        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
         # Load tip racks
         tip_racks_20uL = []
         for rack20 in range(0, racks_needed_20uL):
             tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
-            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((rack20+1), _OTProto.next_empty_slot(self._protocol)))
         # Set up pipettes
         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
@@ -80,6 +78,11 @@ class Primer_Mixing_LightRun:
             for w in r:
                 destination_plate_wells_by_row.append(w)
         destination_range = destination_plate_wells_by_row[0:len(self.destination_contents)]
+
+        # User prompts for number of tip boxes required, and locations of the tip boxes
+        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+        for tip_box_index in range(0, len(tip_racks_20uL)):
+            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
 
         # Prompt user to check all liquids are correctly placed
         self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
