@@ -59,6 +59,8 @@ class Primer_Mixing_LightRun:
         dna_labware = self.load_labware(self._protocol, self.dna_source_type, label = "DNA Plate")
         if not self.primer_plate_is_dna_plate:
             primer_labware = self.load_labware(self._protocol, self.primer_source_type, label = "Primer Plate")
+        else:
+            primer_labware = dna_labware
         destination_labware = self.load_labware(self._protocol, self.destination_type, label = "Tube Rack")
 
         # Store DNA locations
