@@ -27,7 +27,7 @@ metadata = {
     'user-email': '',
     'source': 'Custom Protocol inspired by 10.1093/synbio/ysaa010',
     'apiLevel': '2.10',
-    'robotName': 'Robo' # This is the name of the OT2 you plan to run the protocol on
+    'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
 }
 
 
@@ -93,7 +93,7 @@ def run(protocol):
         Starting_300uL_Tip=Starting_tip_position_300uL,
         Simulate = Simulate
     )
-    Spot_Plating._custom_labware_dir = "C:/Users/bradl/Nextcloud/Private/Automation/Opentrons_Labware_Definitions"
+    Spot_Plating._custom_labware_dir = "PATH"
     Spot_Plating.run()
 
 
