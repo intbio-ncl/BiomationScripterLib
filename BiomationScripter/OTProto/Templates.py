@@ -82,6 +82,11 @@ class Primer_Mixing_LightRun:
                 destination_plate_wells_by_row.append(w)
         destination_range = destination_plate_wells_by_row[0:len(self.destination_contents)]
 
+        # User prompts for number of tip boxes required, and locations of the tip boxes
+        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+        for tip_box_index in range(0, len(tip_racks_20uL)):
+            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+
         # Prompt user to check all liquids are correctly placed
         self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
         # one tube rack has been loaded for the destination plate, maximum number of samples is 24
