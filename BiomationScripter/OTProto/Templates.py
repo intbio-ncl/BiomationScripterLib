@@ -5,21 +5,10 @@ import math
 import smtplib, ssl
 
 class Primer_Mixing_LightRun:
-    def __init__(self,
-        Protocol,
-        Name,
-        Metadata,
-        DNA,
-        DNA_Source_Wells,
-        Primers,
-        Primer_Source_Wells,
-        Destination_Contents,
-        primer_plate_is_DNA_plate = False,
-        DNA_Source_Type = "labcyte384pp_384_wellplate_65ul",
-        Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
-        Starting_20uL_Tip = "A1",
-        API = "2.10",
-        Simulate = False):
+    def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
+    Destination_Contents, primer_plate_is_DNA_plate = False,
+    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
+    Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
         # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
         self.Name = Name
         self.Metadata = Metadata
@@ -58,10 +47,12 @@ class Primer_Mixing_LightRun:
         tips_needed_20uL = len(self.dna)
         # Calculate number of racks needed - account for the first rack missing some tips
         racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
+        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
         # Load tip racks
         tip_racks_20uL = []
         for rack20 in range(0, racks_needed_20uL):
             tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
+            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((rack20+1), _OTProto.next_empty_slot(self._protocol)))
         # Set up pipettes
         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
@@ -95,7 +86,6 @@ class Primer_Mixing_LightRun:
         # one tube rack has been loaded for the destination plate, maximum number of samples is 24
         if len(destination_range) > 24:
             self._protocol.pause("This protocol requires more than 24 tubes. Please limit the protocol to 24 tubes only.")
-        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(len(tip_racks_20uL)))
 
         # Prompt user to load DNA
         for l in DNA.get_all_liquids():

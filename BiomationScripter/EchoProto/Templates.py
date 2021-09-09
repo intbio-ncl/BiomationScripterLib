@@ -168,7 +168,7 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
         # For every reaction
         for assembly in self.assemblies:
             for ratio in self.ratios:
-                for rep in range(0, self.repeats)
+                for rep in range(0, self.repeats):
                     backbone_amount = (self._backbone_amount*volume_factor)*float(ratio.split(":")[0])
                     part_amount = (self._part_amount*volume_factor)*float(ratio.split(":")[1])
                     water_amount = self.volume - (backbone_amount + (part_amount*len(assembly[1])) + reagent_amount)
