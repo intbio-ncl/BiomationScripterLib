@@ -1,0 +1,14 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,DNA_Plate,384PP_AQ_BP,B1,PCR Plate,384 OptiAmp,B2,1000,pEBLind100
+1,DNA_Plate,384PP_AQ_BP,B2,PCR Plate,384 OptiAmp,B4,1000,Brepin-RFP
+2,DNA_Plate,384PP_AQ_BP,B2,PCR Plate,384 OptiAmp,B6,1000,Brepin-RFP
+3,DNA_Plate,384PP_AQ_BP,B1,PCR Plate,384 OptiAmp,B8,1000,pEBLind100
+4,DNA_Plate,384PP_AQ_BP,B1,PCR Plate,384 OptiAmp,B10,1000,pEBLind100
+5,DNA_Plate,384PP_AQ_BP,B3,PCR Plate,384 OptiAmp,B12,1000,B0034+spisPink
+6,DNA_Plate,384PP_AQ_BP,B4,PCR Plate,384 OptiAmp,B14,1000,Default Processor + mCherry
+7,DNA_Plate,384PP_AQ_BP,B5,PCR Plate,384 OptiAmp,B16,1000,sfGFP Reporter
+8,DNA_Plate,384PP_AQ_BP,A4,PCR Plate,384 OptiAmp,B18,1000,Ara-Lux-Addgene-Q5-BsaI-LuxC
+9,DNA_Plate,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp,B20,1000,Ara-Lux-Addgene
+10,DNA_Plate,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp,B22,1000,Ara-Lux-Addgene
+11,DNA_Plate,384PP_AQ_BP,A5,PCR Plate,384 OptiAmp,C2,1000,Ara-Lux-Addgene-Q5-SapI-LuxE
+12,DNA_Plate,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp,C4,1000,Ara-Lux-Addgene

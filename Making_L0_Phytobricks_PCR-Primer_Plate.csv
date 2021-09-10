@@ -1,0 +1,27 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Primer_Plate,384PP_AQ_BP,A2,PCR Plate,384 OptiAmp,B2,250,EL222_C_Fw
+1,Primer_Plate,384PP_AQ_BP,A4,PCR Plate,384 OptiAmp,B2,250,EL222_C_Rev
+2,Primer_Plate,384PP_AQ_BP,A6,PCR Plate,384 OptiAmp,B4,250,B0015_E_Fw
+3,Primer_Plate,384PP_AQ_BP,A8,PCR Plate,384 OptiAmp,B4,250,B0015_E_Rev
+4,Primer_Plate,384PP_AQ_BP,A10,PCR Plate,384 OptiAmp,B6,250,pBLRep_A_Fw
+5,Primer_Plate,384PP_AQ_BP,A12,PCR Plate,384 OptiAmp,B6,250,pBLRep_B0034_C_Rev
+6,Primer_Plate,384PP_AQ_BP,A14,PCR Plate,384 OptiAmp,B8,250,J23100_A_Fw
+7,Primer_Plate,384PP_AQ_BP,A16,PCR Plate,384 OptiAmp,B8,250,J23100_B0034_C_Rev
+8,Primer_Plate,384PP_AQ_BP,A18,PCR Plate,384 OptiAmp,B10,250,pBlind100_A_Fw
+9,Primer_Plate,384PP_AQ_BP,A20,PCR Plate,384 OptiAmp,B10,250,pBlind100_B0034_C_Rev
+10,Primer_Plate,384PP_AQ_BP,A22,PCR Plate,384 OptiAmp,B12,250,spisPink_C_Fw
+11,Primer_Plate,384PP_AQ_BP,A24,PCR Plate,384 OptiAmp,B12,250,spisPink_E_Rev
+12,Primer_Plate,384PP_AQ_BP,B2,PCR Plate,384 OptiAmp,B14,250,mCherry_C_Fw
+13,Primer_Plate,384PP_AQ_BP,B4,PCR Plate,384 OptiAmp,B14,250,mCherry_E_Rev
+14,Primer_Plate,384PP_AQ_BP,B6,PCR Plate,384 OptiAmp,B16,250,sfGFP_C_Fw
+15,Primer_Plate,384PP_AQ_BP,B8,PCR Plate,384 OptiAmp,B16,250,sfGFP_E_Rev
+16,Primer_Plate,384PP_AQ_BP,B10,PCR Plate,384 OptiAmp,B18,250,RBS_LuxC_B_Fw
+17,Primer_Plate,384PP_AQ_BP,B12,PCR Plate,384 OptiAmp,B18,250,LuxC_E_Rev
+18,Primer_Plate,384PP_AQ_BP,B16,PCR Plate,384 OptiAmp,B20,250,RBS_LuxD_B_Fw
+19,Primer_Plate,384PP_AQ_BP,B18,PCR Plate,384 OptiAmp,B20,250,LuxD_E_Rev
+20,Primer_Plate,384PP_AQ_BP,B20,PCR Plate,384 OptiAmp,B22,250,RBS_LuxA_B_Fw
+21,Primer_Plate,384PP_AQ_BP,B22,PCR Plate,384 OptiAmp,B22,250,LuxA_E_Rev
+22,Primer_Plate,384PP_AQ_BP,C2,PCR Plate,384 OptiAmp,C2,250,RBS_LuxE_B_Fw
+23,Primer_Plate,384PP_AQ_BP,C4,PCR Plate,384 OptiAmp,C2,250,LuxE_E_Rev
+24,Primer_Plate,384PP_AQ_BP,C6,PCR Plate,384 OptiAmp,C4,250,RBS_LuxG_B_Fw
+25,Primer_Plate,384PP_AQ_BP,C8,PCR Plate,384 OptiAmp,C4,250,LuxG_E_Rev

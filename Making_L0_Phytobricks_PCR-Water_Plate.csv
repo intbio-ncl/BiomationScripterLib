@@ -1,0 +1,14 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B2,1500,Water
+1,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B4,1500,Water
+2,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B6,1500,Water
+3,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B8,1500,Water
+4,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B10,1500,Water
+5,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B12,1500,Water
+6,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B14,1500,Water
+7,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B16,1500,Water
+8,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B18,1500,Water
+9,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B20,1500,Water
+10,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,B22,1500,Water
+11,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,C2,1500,Water
+12,Water_Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp,C4,1500,Water

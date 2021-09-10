@@ -54,14 +54,6 @@ class Primer_Mixing_LightRun:
         self._p20_type = "p20_single_gen2"
         self._p20_position = "left"
 
-    def load_labware(self, parent, labware_api_name, deck_pos = None, label = None):
-            if deck_pos == None:
-                Deck_Pos = _OTProto.next_empty_slot(self._protocol)
-            else:
-                Deck_Pos = deck_pos
-            labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir, label)
-            return(labware)
-
     def run(self):
         # Determine how many tips will be needed
         # this will be twice the length of destination contents
@@ -83,12 +75,25 @@ class Primer_Mixing_LightRun:
             self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
 
         # Load all other labware
-        dna_labware = self.load_labware(self._protocol, self.dna_source_type, label = "DNA Plate")
         if not self.primer_plate_is_dna_plate:
-            primer_labware = self.load_labware(self._protocol, self.primer_source_type, label = "Primer Plate")
+            ## Find the next empty deck slot
+            dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
+            ## Load the DNA labware
+            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir, label = "DNA Plate")
+
+            ## Find the next empty deck slot
+            primer_labware_slot = _OTProto.next_empty_slot(self._protocol)
+            ## Load the primer labware
+            primer_labware = _OTProto.load_labware(self._protocol, self.primer_source_type, primer_labware_slot, self._custom_labware_dir, label = "Primer Plate")
         else:
+            ## Find the next empty deck slot
+            dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
+            ## Load the DNA labware
+            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir, label = "DNA and Primer Plate")
             primer_labware = dna_labware
-        destination_labware = self.load_labware(self._protocol, self.destination_type, label = "Tube Rack")
+
+        destination_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        destination_labware = _OTProto.load_labware(self._protocol, self.destination_type, destination_labware_slot, self._custom_labware_dir, label = "Tube Rack")
 
         # Store DNA locations
         DNA = _BMS.Liquids()
@@ -173,7 +178,7 @@ class Monarch_Miniprep:
         self.destination_rack_type_tubes = Destination_Rack_Type_Tubes
         self.destination_rack_type_spin_columns = Destination_Rack_Type_Spin_Columns
         self.destination_rack_tube_insert = Destination_Rack_Type_Tube_Insert
-        self._reagents_sorce_type = "opentrons_24_aluminumblock_nest_2ml_snapcap"
+        self.reagents_source_type = "opentrons_24_aluminumblock_nest_2ml_snapcap"
         self._B1_source_wells = None # Resuspension Buffer
         self.B1_volume_per_source_well = 1500 # uL
         self._B2_source_wells = None # Lysis Buffer
@@ -195,15 +200,6 @@ class Monarch_Miniprep:
         if not Simulate == "deprecated":
             print("Simulate no longer needs to be specified and will soon be removed.")
 
-    def load_labware(self, parent, labware_api_name, deck_pos = None):
-        if deck_pos == None:
-            Deck_Pos = _OTProto.next_empty_slot(self._protocol)
-        else:
-            Deck_Pos = deck_pos
-        labware = _OTProto.load_labware(parent, labware_api_name, Deck_Pos, self._custom_labware_dir)
-        return(labware)
-
-
     def run(self):
         # Determine how many tips will be needed
         # 1 tip per sample for B1 resuspension
@@ -224,19 +220,30 @@ class Monarch_Miniprep:
         # Determine how many destination racks are required (should always be an even number)
         # Load first two racks and then calculate how many extra are required
         destination_racks_tubes = []
-        destination_racks_tubes.append(self.load_labware(self._protocol, self.destination_rack_type_tubes))
-        destination_racks_tubes.append(self.load_labware(self._protocol, self.destination_rack_type_tubes))
+
+        destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
+        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
+
+        destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
+        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
 
         n_samples = len(self.cultures)
         n_wells_per_destination_rack = len(destination_racks_tubes[0].wells())
         n_destination_racks_required = math.ceil((n_samples/2)/n_wells_per_destination_rack)*2
         for extra_rack in range(0,n_destination_racks_required - 2):
-            destination_racks_tubes.append(self.load_labware(self._protocol, self.destination_rack_type_tubes))
+            destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
+            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
+
 
         # Load Culture Plate
-        culture_labware = self.load_labware(self._protocol, self.culture_source_type)
+        culture_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        culture_labware = _OTProto.load_labware(self._protocol, self.culture_source_type, culture_labware_slot, self._custom_labware_dir)
+
         # Load Reagents Source Labware
-        reagents_labware = self.load_labware(self._protocol, self._reagents_sorce_type)
+        reagents_labware_slot = _OTProto.next_empty_slot(self._protocol)
+        reagents_labware = _OTProto.load_labware(self._protocol, self.reagents_source_type, reagents_labware_slot, self._custom_labware_dir)
+
+
 
         # Store culture locations
         Cultures = _BMS.Liquids()
@@ -387,7 +394,8 @@ class Monarch_Miniprep:
         for tube_rack in destination_racks_tubes:
             tube_rack_deck_pos = tube_rack.parent
             del self._protocol.deck[str(tube_rack_deck_pos)]
-            destination_racks_spin_columns.append(self.load_labware(self._protocol, self.destination_rack_type_spin_columns, deck_pos = tube_rack_deck_pos))
+            destination_racks_spin_columns.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_spin_columns, tube_rack_deck_pos, self._custom_labware_dir))
+
 
         # Store miniprep locations for spin columns rack
         n_miniprep_wells_per_rack = math.ceil(n_samples/n_destination_racks_required)
@@ -446,7 +454,7 @@ class Monarch_Miniprep:
         for spin_column_rack in destination_racks_spin_columns:
             spin_column_rack_deck_pos = spin_column_rack.parent
             del self._protocol.deck[str(spin_column_rack_deck_pos)]
-            destination_racks_insert_tubes.append(self.load_labware(self._protocol, self.destination_rack_tube_insert, deck_pos = spin_column_rack_deck_pos))
+            destination_racks_insert_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_tube_insert, spin_column_rack_deck_pos, self._custom_labware_dir))
 
         # Store miniprep locations for tube_insert racks
         n_miniprep_wells_per_rack = math.ceil(n_samples/n_destination_racks_required)
@@ -487,7 +495,7 @@ class Monarch_Miniprep:
         for tube_rack in destination_racks_insert_tubes:
             tube_rack_deck_pos = tube_rack.parent
             del self._protocol.deck[str(tube_rack_deck_pos)]
-            self.load_labware(self._protocol, self.destination_rack_type_tubes, deck_pos = tube_rack_deck_pos)
+            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, tube_rack_deck_pos, self._custom_labware_dir))
 
 class Spot_Plating:
     def __init__(self,
