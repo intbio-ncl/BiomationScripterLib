@@ -7,7 +7,7 @@ import smtplib, ssl
 class Primer_Mixing_LightRun:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
     Destination_Contents, primer_plate_is_DNA_plate = False,
-    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
+    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul", Destination_Type = "3dprinted_24_tuberack_1500ul",
     Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
         # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
         self.Name = Name
@@ -25,7 +25,7 @@ class Primer_Mixing_LightRun:
         self._p20_position = "left"
         self._custom_labware_dir = "../Custom_Labware/"
         self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        self.destination_type = "3dprinted_24_tuberack_1500ul"
+        self.destination_type = Destination_Type
         self.destination_contents = Destination_Contents
         self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
         self._custom_labware_dir = "../Custom_Labware/"
