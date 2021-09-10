@@ -7,28 +7,52 @@ import smtplib, ssl
 class Primer_Mixing_LightRun:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
     Destination_Contents, primer_plate_is_DNA_plate = False,
-    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul",
+    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul", Destination_Type = "3dprinted_24_tuberack_1500ul",
     Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
-        # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
+
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
         self.Name = Name
         self.Metadata = Metadata
         self._simulate = Simulate
+        self._custom_labware_dir = "../Custom_Labware/"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
+        self.starting_20uL_tip = Starting_20uL_Tip
+        ## DNA samples ##
         self.dna = DNA
         self.dna_source_wells = DNA_Source_Wells
         self.dna_source_type = DNA_Source_Type
+        ## Primer samples ##
         self.primers = Primers
         self.primer_source_wells = Primer_Source_Wells
         self.primer_source_type = Primer_Source_Type
-        self.starting_20uL_tip = Starting_20uL_Tip
-        self._protocol = Protocol
+
+        #######################
+        # Destination Labware #
+        #######################
+        self.destination_type = Destination_Type
+        self.destination_contents = Destination_Contents
+
+        ###############
+        # Robot Setup #
+        ###############
         self._p20_type = "p20_single_gen2"
         self._p20_position = "left"
-        self._custom_labware_dir = "../Custom_Labware/"
-        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        self.destination_type = "3dprinted_24_tuberack_1500ul"
-        self.destination_contents = Destination_Contents
-        self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
-        self._custom_labware_dir = "../Custom_Labware/"
 
     def load_labware(self, parent, labware_api_name, deck_pos = None, label = None):
             if deck_pos == None:
