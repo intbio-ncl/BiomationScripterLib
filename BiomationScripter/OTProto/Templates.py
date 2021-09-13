@@ -162,22 +162,56 @@ class Primer_Mixing_LightRun:
             p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
 
 class Monarch_Miniprep:
-    def __init__(self, Protocol, Name, Metadata, Cultures, Culture_Source_Wells, Culture_Source_Type, Destination_Rack_Type_Tubes, Destination_Rack_Type_Spin_Columns, Destination_Rack_Type_Tube_Insert, Elution_Volume = 50, Starting_300uL_Tip = "A1", API = "2.10", Simulate = "deprecated"):
-        """
-        Cultures should be a list of names, and Culture_Source_Wells should be a list of wells in the same order as DNA.
-        Cultures should be presented to the OT2 as cell pellets.
-        """
+    def __init__(self,
+        Protocol,
+        Name,
+        Metadata,
+        Cultures,
+        Culture_Source_Wells,
+        Culture_Source_Type,
+        Destination_Rack_Type_Tubes,
+        Destination_Rack_Type_Spin_Columns,
+        Destination_Rack_Type_Tube_Insert,
+        Elution_Volume = 50,
+        Starting_300uL_Tip = "A1",
+        API = "2.10",
+        Simulate = "deprecated"
+    ):
+
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
-        self.cultures = Cultures
-        self.culture_source_wells = Culture_Source_Wells
-        self.culture_source_type = Culture_Source_Type
+        self._custom_labware_dir = "../Custom_Labware/"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
         self.elution_volume = Elution_Volume
+        # Reagent volume per sample (uL)
+        self.B1_volume_per_sample = 200
+        self.B2_volume_per_sample = 200
+        self.B3_volume_per_sample = 400
+        self.W1_volume_per_sample = 200
+        self.W2_volume_per_sample = 400
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
         self.starting_300uL_tip = Starting_300uL_Tip
-        self.destination_rack_type_tubes = Destination_Rack_Type_Tubes
-        self.destination_rack_type_spin_columns = Destination_Rack_Type_Spin_Columns
-        self.destination_rack_tube_insert = Destination_Rack_Type_Tube_Insert
+        ## Cultures ##
+        self.cultures = Cultures
+        self.culture_source_type = Culture_Source_Type
+        self.culture_source_wells = Culture_Source_Wells
+        ## Reagents ##
         self.reagents_source_type = "opentrons_24_aluminumblock_nest_2ml_snapcap"
         self._B1_source_wells = None # Resuspension Buffer
         self.B1_volume_per_source_well = 1500 # uL
@@ -191,25 +225,47 @@ class Monarch_Miniprep:
         self.W2_volume_per_source_well = 1500 # uL
         self._water_source_wells = None # water / Elution Buffer
         self.water_volume_per_source_well = 1500 # uL
-        self._protocol = Protocol
+
+        #######################
+        # Destination Labware #
+        #######################
+        self.destination_rack_type_tubes = Destination_Rack_Type_Tubes
+        self.destination_rack_type_spin_columns = Destination_Rack_Type_Spin_Columns
+        self.destination_rack_tube_insert = Destination_Rack_Type_Tube_Insert
+
+        ###############
+        # Robot Setup #
+        ###############
         self._p300_type = "p300_single_gen2"
         self._p300_position = "right"
-        self._custom_labware_dir = "../Custom_Labware/"
-        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
-
-        if not Simulate == "deprecated":
-            print("Simulate no longer needs to be specified and will soon be removed.")
 
     def run(self):
-        # Determine how many tips will be needed
-        # 1 tip per sample for B1 resuspension
-        # 1 tip for all for adding B2
-        # 1 tip for all for adding B3
-        # 1 tip for all for adding wash buffer 1
-        # 1 tip for all for adding wash buffer 2
-        # 1 tip for all for adding water
-        tips_needed_300uL = len(self.cultures) + 5
-        racks_needed_300uL = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
+
+        ##################################################################
+        # Calculate the number of 300 uL tips required for this protocol #
+        ##################################################################
+        tips_required_300uL = 0
+
+        # Use a new tip for each culture and step
+        ## Some transfer steps may exceed the max transfer size of the pipette and require two or more tips per transfer
+        for culture in self.cultures:
+            # B1 Resuspension
+            tips_required_300uL += math.ceil(self.B1_volume_per_sample/300)
+            # Transfer resuspended cultures
+            tips_required_300uL += math.ceil(self.B1_volume_per_sample/300)
+            # Adding B2
+            tips_required_300uL += math.ceil(self.B2_volume_per_sample/300)
+            # Adding B3
+            tips_required_300uL += math.ceil(self.B3_volume_per_sample/300)
+            # Adding W1
+            tips_required_300uL += math.ceil(self.W1_volume_per_sample/300)
+            # Adding W2
+            tips_required_300uL += math.ceil(self.W2_volume_per_sample/300)
+            # Elution
+            tips_required_300uL += math.ceil(self.elution_volume/300)
+
+
+        racks_needed_300uL = _OTProto.tip_racks_needed(tips_required_300uL, starting_tip_position = self.starting_300uL_tip)
         tip_racks_300uL = []
         for rack300 in range(0, racks_needed_300uL):
             tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
@@ -349,6 +405,7 @@ class Monarch_Miniprep:
             destination_well = Cultures.get_liquid_well(culture)
             destination = destination_labware.wells_by_name()[destination_well]
             p300.transfer(200, source, destination, mix_after = (40, 150), blow_out = True, blowout_location = "destination well")
+
             B1_used += 200
             if B1_used + 200 >= self.B1_volume_per_source_well:
                 B1_tube_n += 1
@@ -362,12 +419,14 @@ class Monarch_Miniprep:
             p300.transfer(200, source, destination, mix_before = (5, 150))
 
 
+
         # Add 200 uL B2 to each sample
         B2_used = 0
         B2_tube_n = 0
         for destination in miniprep_tube_locations:
             source = B2_source[B2_tube_n]
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             B2_used += 200
             if B2_used + 200 >= self.B2_volume_per_source_well:
                 B2_tube_n += 1
@@ -380,7 +439,9 @@ class Monarch_Miniprep:
         for destination in miniprep_tube_locations:
             source = B3_source[B3_tube_n]
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             B3_used += 400
             if B3_used + 400 >= self.B3_volume_per_source_well:
                 B3_tube_n += 1
@@ -423,6 +484,7 @@ class Monarch_Miniprep:
         for destination in miniprep_spin_column_locations:
             source = W1_source[W1_tube_n]
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             W1_used += 200
             if W1_used + 200 >= self.W1_volume_per_source_well:
                 W1_tube_n += 1
@@ -437,7 +499,9 @@ class Monarch_Miniprep:
         for destination in miniprep_spin_column_locations:
             source = W2_source[W2_tube_n]
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             p300.transfer(200, source, destination, blow_out = True, blowout_location = "destination well")
+
             W2_used += 400
             if W2_used + 400 >= self.W2_volume_per_source_well:
                 W2_tube_n += 1
@@ -482,6 +546,7 @@ class Monarch_Miniprep:
         for destination in miniprep_insert_tube_locations:
             source = Water_source[Water_tube_n]
             p300.transfer(self.elution_volume, source, destination, blow_out = True, blowout_location = "destination well")
+
             Water_used += self.elution_volume
             if Water_used + self.elution_volume >= self.water_volume_per_source_well:
                 Water_tube_n += 1
@@ -1029,17 +1094,18 @@ class Transformation:
         competent_cells_labware_slot = _OTProto.next_empty_slot(self._protocol)
         competent_cells_labware = _OTProto.load_labware(self._protocol, self._competent_cells_source_type, competent_cells_labware_slot, self._custom_labware_dir)
 
-
         # Calculate number of cell aliquots required #
         cc_volume_required = len(self.dna) * self._competent_cell_volume_per_transformation # uL
-        cc_aliquots_required = math.ceil(cc_volume_required/self._competent_cells_source_volume_per_well)
+        cc_aliquots_required = _BMS.aliquot_calculator(cc_volume_required, self._competent_cells_source_volume_per_well)
+
         # Specify competent cells location
         competent_cells_source = competent_cells_labware.wells()[0:cc_aliquots_required]
 
         # Calculate number of LB aliquots required #
         LB_volume_per_transformation = self._transformation_volume - (self.dna_volume_per_transformation + self._competent_cell_volume_per_transformation)
         LB_Volume_required = len(self.dna) * LB_volume_per_transformation
-        LB_aliquots_required = math.ceil(LB_Volume_required/self._LB_source_volume_per_well)
+        LB_aliquots_required = _BMS.aliquot_calculator(LB_Volume_required, self._LB_source_volume_per_well)
+
         # Specify LB location
         LB_source = LB_labware.wells()[0:LB_aliquots_required]
 

@@ -169,7 +169,7 @@ def Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
 def Labware_Row_To_Index(row):
     return(ord(row.upper()) - ord("A"))
 
-def well_range(Wells, Labware_Format = None):
+def well_range(Wells, Labware_Format = None, Direction = "Horizontal"):
 
     if not Labware_Format:
         Well = Wells
@@ -201,22 +201,39 @@ def well_range(Wells, Labware_Format = None):
         if (Labware_Row_To_Index(first_row) > end_row - 1) or (Labware_Row_To_Index(last_row) > end_row - 1) or (first_col > end_col) or (last_col > end_col):
             raise ValueError("Wells are not in range of specified format")
 
-        rows = []
-        for r in Lrange(first_row, last_row):
-            rows.append(r)
-
         wells = []
-        row_index = 0
-        first_col_of_row = first_col
 
-        for row in rows:
-            for col in range(first_col_of_row, end_col + 1):
-                well = "{}{}".format(row, col)
-                wells.append(well)
-                if col == end_col:
-                    first_col_of_row = 1
-                if well == last_well:
-                    return(wells)
+        if Direction == "Horizontal":
+            rows = []
+            for r in Lrange(first_row, last_row):
+                rows.append(r)
+
+            first_col_of_row = first_col
+
+            for row in rows:
+                for col in range(first_col_of_row, end_col + 1):
+                    well = "{}{}".format(row, col)
+                    wells.append(well)
+                    if col == end_col:
+                        first_col_of_row = 1
+                    if well == last_well:
+                        return(wells)
+
+        elif Direction == "Vertical":
+            rows = []
+            for r in Lrange("A", chr(64 + end_row)):
+                rows.append(r)
+
+            first_row_of_col_index = Labware_Row_To_Index(first_row)
+
+            for col in range(first_col, last_col + 1):
+                for row in rows[first_row_of_col_index:]:
+                    well = "{}{}".format(row,col)
+                    wells.append(well)
+                    if row == rows[-1]:
+                        first_row_of_col_index = 0
+                    if well == last_well:
+                        return(wells)
 
 def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume = 0):
     return(math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))

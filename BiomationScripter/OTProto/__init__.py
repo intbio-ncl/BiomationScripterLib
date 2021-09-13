@@ -56,7 +56,7 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
     return(labware)
 
 def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
-    tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position)))
+    tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position), [8,12], "Vertical"))
     if tips_needed > tips_in_first_rack:
         extra_racks_required = math.ceil((tips_needed - tips_in_first_rack)/96)
     else:
