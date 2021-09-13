@@ -200,3 +200,6 @@ def well_range(Wells, Labware_Format):
                 first_col_of_row = 1
             if well == last_well:
                 return(wells)
+
+def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume = 0):
+    return(math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))
