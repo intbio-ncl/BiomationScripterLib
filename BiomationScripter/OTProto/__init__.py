@@ -1,6 +1,7 @@
 import json
 import BiomationScripter as _BMS
 import math
+from opentrons import simulate as OT2
 
 def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
     # Determine amount of labware required #
@@ -32,25 +33,34 @@ def next_empty_slot(protocol):
 def load_custom_labware(parent, file, deck_position = None, label = None):
     # Open the labware json file
     with open(file) as labware_file:
-        labware = json.load(labware_file)
+        labware_file = json.load(labware_file)
 
-    # If deck position is none, assume that labware is being loaded onto a hardware module
-    if deck_position == None:
-        return(parent.load_labware_from_definition(labware, label))
+    # Check if `parent` is the deck or a hardware module, and treat it acordingly
+    if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+        # If no deck position, get the next empty slot
+        if not deck_position:
+            deck_position = next_empty_slot(parent)
+        labware = parent.load_labware_from_definition(labware_file, deck_position, label)
     else:
-        return(parent.load_labware_from_definition(labware, deck_position, label))
+        labware = parent.load_labware_from_definition(labware_file, label)
+
+    return(labware)
 
 def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
-    labware = None
-    # Try and load the labware from the default labware
-    try:
-        # If deck position is none, assume that labware is being loaded onto a hardware module
-        if deck_position == None:
-            labware = parent.load_labware(labware_api_name, label)
-        else:
+    # labware = None
+
+    # Check if labware is in the default list
+    if labware_api_name in OT2.protocol_api.labware.get_all_labware_definitions():
+        # Check if `parent` is the deck or a hardware module, and treat it acordingly
+        if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+            # If no deck position, get the next empty slot
+            if not deck_position:
+                deck_position = next_empty_slot(parent)
             labware = parent.load_labware(labware_api_name, deck_position, label)
-    # If loading the labware fails, try and load as custom labware instead
-    except:
+        else:
+            labware = parent.load_labware(labware_api_name, label)
+    # If not in default list, treat as custom labware
+    else:
         labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
 
     return(labware)
