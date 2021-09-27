@@ -55,6 +55,25 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
 
     return(labware)
 
+def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = False, Starting_Tip = "A1"):
+    ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
+    tip_racks = []
+
+    if Number_Tips_Required:
+        n_tip_racks = tip_racks_needed(Number_Tips_Required, Starting_Tip)
+    else:
+        n_tip_racks = 1
+
+    for tip_rack in range(0, n_tip_racks):
+        tip_rack_deck_slot = next_empty_slot(Protocol)
+        tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
+        tip_racks.append(tip_rack)
+
+    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
+    pipette.starting_tip = tip_racks[0].well(Starting_Tip)
+
+    return(pipette, tip_racks)
+
 def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
     tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position), [8,12], "Vertical"))
     if tips_needed > tips_in_first_rack:
