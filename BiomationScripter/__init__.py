@@ -38,7 +38,7 @@ class PlateLayout:
         self.columns = Columns
 
     def add_content(self, Well, Reagent, Volume, Liquid_Class = False):
-        # TODO: * Check is Well exists in the plate
+        # TODO: * Check if Well exists in the plate
         #       * Allow well ranges to span multiple columns
         #       * Don't overwrite current content if a well range is specified
 
@@ -104,6 +104,28 @@ class Liquids:
 
     def add_liquid(self, liquid, labware, source_well):
         self.liquids[liquid] = [labware, source_well]
+
+    def get_liquids_in_labware(self, labware):
+        liquids_to_return = []
+        for liquid in self.liquids:
+            if labware == self.get_liquid_labware(liquid):
+                liquids_to_return.append(liquid)
+
+        return(liquids_to_return)
+
+    def get_liquid_by_location(self, labware, well):
+        liquid_to_return = None
+        for liquid in self.liquids:
+            if labware == self.get_liquid_labware(liquid) and well == self.get_liquid_well(liquid):
+                liquid_to_return = liquid
+                break
+        if liquid_to_return == None:
+            raise ValueError("No liquid found in labware {} at well {}".format(labware, well))
+        else:
+            return(liquid_to_return)
+
+    def get_liquid(self, liquid):
+        return(self.liquids[liquid])
 
     def get_liquid_labware(self, liquid):
         return(self.liquids[liquid][0])
