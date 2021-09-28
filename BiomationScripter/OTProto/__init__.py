@@ -47,7 +47,7 @@ def load_custom_labware(parent, file, deck_position = None, label = None):
     return(labware)
 
 def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
-    # labware = None
+    labware = None
 
     # Check if labware is in the default list
     if labware_api_name in OT2.protocol_api.labware.get_all_labware_definitions():
@@ -62,6 +62,9 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
     # If not in default list, treat as custom labware
     else:
         labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
+
+    if labware == None:
+        raise ValueError("Labware not loaded for unknown reasons.")
 
     return(labware)
 
