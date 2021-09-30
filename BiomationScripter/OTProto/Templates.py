@@ -17,7 +17,7 @@ class Primer_Mixing_LightRun:
         self.Name = Name
         self.Metadata = Metadata
         self._simulate = Simulate
-        self._custom_labware_dir = "../Custom_Labware/"
+        self.custom_labware_dir = "../Custom_Labware/"
 
         if not Simulate == "deprecated":
             print("Simulate no longer needs to be specified and will soon be removed.")
@@ -79,21 +79,21 @@ class Primer_Mixing_LightRun:
             ## Find the next empty deck slot
             dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
             ## Load the DNA labware
-            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir, label = "DNA Plate")
+            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA Plate")
 
             ## Find the next empty deck slot
             primer_labware_slot = _OTProto.next_empty_slot(self._protocol)
             ## Load the primer labware
-            primer_labware = _OTProto.load_labware(self._protocol, self.primer_source_type, primer_labware_slot, self._custom_labware_dir, label = "Primer Plate")
+            primer_labware = _OTProto.load_labware(self._protocol, self.primer_source_type, primer_labware_slot, self.custom_labware_dir, label = "Primer Plate")
         else:
             ## Find the next empty deck slot
             dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
             ## Load the DNA labware
-            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir, label = "DNA and Primer Plate")
+            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA and Primer Plate")
             primer_labware = dna_labware
 
         destination_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        destination_labware = _OTProto.load_labware(self._protocol, self.destination_type, destination_labware_slot, self._custom_labware_dir, label = "Tube Rack")
+        destination_labware = _OTProto.load_labware(self._protocol, self.destination_type, destination_labware_slot, self.custom_labware_dir, label = "Tube Rack")
 
         # Store DNA locations
         DNA = _BMS.Liquids()
@@ -161,6 +161,32 @@ class Primer_Mixing_LightRun:
             # transfer 5uL of primer to each tube
             p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
 
+class DNA_fmol_Dilution:
+    def __init__(self,
+        Protocol,
+        Name,
+        Metadata,
+        DNA,
+        DNA_Concentration,
+        DNA_Length,
+        DNA_Source_Wells,
+        Keep_In_Current_Wells,
+        Final_Volume = None,
+        Current_Volume = None,
+        Source_Labware = None,
+        Destination_Labware = None,
+        Starting_20uL_Tip = "A1",
+        Starting_300uL_Tip = "A1"
+    ):
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
+        self.name = Name
+        self.metadata = Metadata
+        self.custom_labware_dir = "../Custom_Labware/"
+
+
 class Monarch_Miniprep:
     def __init__(self,
         Protocol,
@@ -185,7 +211,7 @@ class Monarch_Miniprep:
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
-        self._custom_labware_dir = "../Custom_Labware/"
+        self.custom_labware_dir = "../Custom_Labware/"
 
         if not Simulate == "deprecated":
             print("Simulate no longer needs to be specified and will soon be removed.")
@@ -278,26 +304,26 @@ class Monarch_Miniprep:
         destination_racks_tubes = []
 
         destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
-        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
+        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self.custom_labware_dir))
 
         destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
-        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
+        destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self.custom_labware_dir))
 
         n_samples = len(self.cultures)
         n_wells_per_destination_rack = len(destination_racks_tubes[0].wells())
         n_destination_racks_required = math.ceil((n_samples/2)/n_wells_per_destination_rack)*2
         for extra_rack in range(0,n_destination_racks_required - 2):
             destination_racks_tubes_slot = _OTProto.next_empty_slot(self._protocol)
-            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self._custom_labware_dir))
+            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, destination_racks_tubes_slot, self.custom_labware_dir))
 
 
         # Load Culture Plate
         culture_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        culture_labware = _OTProto.load_labware(self._protocol, self.culture_source_type, culture_labware_slot, self._custom_labware_dir)
+        culture_labware = _OTProto.load_labware(self._protocol, self.culture_source_type, culture_labware_slot, self.custom_labware_dir)
 
         # Load Reagents Source Labware
         reagents_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        reagents_labware = _OTProto.load_labware(self._protocol, self.reagents_source_type, reagents_labware_slot, self._custom_labware_dir)
+        reagents_labware = _OTProto.load_labware(self._protocol, self.reagents_source_type, reagents_labware_slot, self.custom_labware_dir)
 
 
 
@@ -455,7 +481,7 @@ class Monarch_Miniprep:
         for tube_rack in destination_racks_tubes:
             tube_rack_deck_pos = tube_rack.parent
             del self._protocol.deck[str(tube_rack_deck_pos)]
-            destination_racks_spin_columns.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_spin_columns, tube_rack_deck_pos, self._custom_labware_dir))
+            destination_racks_spin_columns.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_spin_columns, tube_rack_deck_pos, self.custom_labware_dir))
 
 
         # Store miniprep locations for spin columns rack
@@ -518,7 +544,7 @@ class Monarch_Miniprep:
         for spin_column_rack in destination_racks_spin_columns:
             spin_column_rack_deck_pos = spin_column_rack.parent
             del self._protocol.deck[str(spin_column_rack_deck_pos)]
-            destination_racks_insert_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_tube_insert, spin_column_rack_deck_pos, self._custom_labware_dir))
+            destination_racks_insert_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_tube_insert, spin_column_rack_deck_pos, self.custom_labware_dir))
 
         # Store miniprep locations for tube_insert racks
         n_miniprep_wells_per_rack = math.ceil(n_samples/n_destination_racks_required)
@@ -560,7 +586,7 @@ class Monarch_Miniprep:
         for tube_rack in destination_racks_insert_tubes:
             tube_rack_deck_pos = tube_rack.parent
             del self._protocol.deck[str(tube_rack_deck_pos)]
-            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, tube_rack_deck_pos, self._custom_labware_dir))
+            destination_racks_tubes.append(_OTProto.load_labware(self._protocol, self.destination_rack_type_tubes, tube_rack_deck_pos, self.custom_labware_dir))
 
 class Spot_Plating:
     def __init__(self,
@@ -588,7 +614,7 @@ class Spot_Plating:
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
-        self._custom_labware_dir = "../Custom_Labware/"
+        self.custom_labware_dir = "../Custom_Labware/"
 
         if not Simulate == "deprecated":
             print("Simulate no longer needs to be specified and will soon be removed.")
@@ -736,7 +762,7 @@ class Spot_Plating:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self.custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_20uL.append(rack)
 
@@ -745,7 +771,7 @@ class Spot_Plating:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self.custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_300uL.append(rack)
 
@@ -765,17 +791,17 @@ class Spot_Plating:
         ## Determine number of wells required
         wells_needed = len(self.cells) * len(self.dilution_factors)
         ## Load and store all required dilution labware
-        dilution_labware = _OTProto.calculate_and_load_labware(self._protocol, self.dilution_plate_type, wells_needed, custom_labware_dir = self._custom_labware_dir)
+        dilution_labware = _OTProto.calculate_and_load_labware(self._protocol, self.dilution_plate_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
 
         # Determine amount of agar plates required #
         wells_needed = len(self.cells) * len(self.dilution_factors)
-        petri_dishes = _OTProto.calculate_and_load_labware(self._protocol, self.petri_dish_type, wells_needed, custom_labware_dir = self._custom_labware_dir)
+        petri_dishes = _OTProto.calculate_and_load_labware(self._protocol, self.petri_dish_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
 
         # Load source labware #
         cell_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
-        cells_labware = _OTProto.load_labware(self._protocol, self.cell_source_type, cell_labware_deck_slot, self._custom_labware_dir)
+        cells_labware = _OTProto.load_labware(self._protocol, self.cell_source_type, cell_labware_deck_slot, self.custom_labware_dir)
         LB_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
-        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_deck_slot, self._custom_labware_dir)
+        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_deck_slot, self.custom_labware_dir)
 
         ## Calculate number of LB aliquots required
         total_LB_required = len(self.cells) * sum(LB_dilution_volumes) # Calculate total amount of LB required
@@ -969,7 +995,7 @@ class Transformation:
         self.name = Name
         self.metadata = Metadata
         self._simulate = Simulate
-        self._custom_labware_dir = "../Custom_Labware/"
+        self.custom_labware_dir = "../Custom_Labware/"
 
         if not Simulate == "deprecated":
             print("Simulate no longer needs to be specified and will soon be removed.")
@@ -1057,7 +1083,7 @@ class Transformation:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self.custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_20uL.append(rack)
 
@@ -1066,7 +1092,7 @@ class Transformation:
             # Find the next empty deck slot for the tip rack
             rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
             # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self._custom_labware_dir)
+            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self.custom_labware_dir)
             # Store the tip rack for future usage
             tip_racks_300uL.append(rack)
 
@@ -1082,17 +1108,17 @@ class Transformation:
         # Load labware #
         ################
         # Load transfomration plate onto temp module #
-        transformation_plate = _OTProto.load_labware(temperature_module, self._transformation_destination_type, custom_labware_dir = self._custom_labware_dir)
+        transformation_plate = _OTProto.load_labware(temperature_module, self._transformation_destination_type, custom_labware_dir = self.custom_labware_dir)
 
         # Load all other labware #
         LB_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_slot, self._custom_labware_dir)
+        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_slot, self.custom_labware_dir)
 
         dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self._custom_labware_dir)
+        dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir)
 
         competent_cells_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        competent_cells_labware = _OTProto.load_labware(self._protocol, self._competent_cells_source_type, competent_cells_labware_slot, self._custom_labware_dir)
+        competent_cells_labware = _OTProto.load_labware(self._protocol, self._competent_cells_source_type, competent_cells_labware_slot, self.custom_labware_dir)
 
         # Calculate number of cell aliquots required #
         cc_volume_required = len(self.dna) * self._competent_cell_volume_per_transformation # uL
