@@ -3,6 +3,157 @@ import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
 
+########################
+
+def get_p20(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 1) and (max_volume == 20) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+def get_p300(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 20) and (max_volume == 300) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+def get_p1000(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 100) and (max_volume == 1000) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, new_tip = True):
+    min_transfer = min(Transfer_Volumes)
+    max_transfer = max(Transfer_Volumes)
+
+    # Check that the correct pipettes are available #
+    p20 = get_p20(Protocol)
+    p300 = get_p300(Protocol)
+    p1000 = get_p1000(Protocol)
+
+    if not p20 and not p300 and not p1000:
+        raise ValueError("No pipettes have been loaded")
+
+    for volume in Transfer_Volumes:
+        if volume == 0:
+            continue
+        if volume < 20 and not p20:
+            raise ValueError("p20 pipette is required, but has not been loaded")
+        if volume == 20 and (not p20 and not p300):
+            raise ValueError("p20 or p300 pipette is required, but neither have been loaded")
+        if (volume <= 100 and volume > 20) and not p300:
+            raise ValueError("p300 pipette is required, but has not been loaded")
+        if volume <=300 and (not p300 and not p1000):
+            raise ValueError("p300 or p1000 pipette is required, but neither have been loaded")
+
+    if not new_tip:
+        # Select tip for smallest transfers
+        if min_transfer == 0:
+            pass
+        elif min_transfer <= 20 and p20:
+            p20.pick_up_tip()
+        elif min_transfer == 20 and p300 and not p20:
+            p300.pick_up_tip()
+        elif min_transfer <= 300 and p300:
+            p300.pick_up_tip()
+        else:
+            p1000.pick_up_tip()
+
+        # Select tip for largest transfers (if not already selected)
+        if (max_transfer > 20 and max_transfer <= 300) and p300:
+            if not p300.has_tip:
+                p300.pick_up_tip()
+        elif max_transfer >= 100 and not p300 and p1000:
+            if not p1000.has_tip:
+                p1000.pick_up_tip()
+
+        Aliquot_Index = 0
+        for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
+            if transfer_volume == 0:
+                continue
+            source = Aliquot_Source_Locations[Aliquot_Index]
+            # Choose best pipette to use
+            if transfer_volume < 20 and p20:
+                p20.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume == 20 and p20:
+                p20.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume == 20 and not p20:
+                p300.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
+                p300.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume > 300 and p1000:
+                p1000.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume >= 100 and not p300 and p1000:
+                p1000.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif transfer_volume > 300 and not p1000 and p300:
+                p300.transfer(transfer_volume, source, destination, new_tip = "never")
+            elif not p300 and not p1000:
+                p20.transfer(transfer_volume, source, destination, new_tip = "never")
+            Aliquot_Index += 1
+            if Aliquot_Index == len(Aliquot_Source_Locations):
+                Aliquot_Index = 0
+
+        if p20:
+            if p20.has_tip:
+                p20.drop_tip()
+        if p300:
+            if p300.has_tip:
+                p300.drop_tip()
+        if p1000:
+            if p1000.has_tip:
+                p1000.drop_tip()
+
+    else:
+        Aliquot_Index = 0
+        for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
+            if transfer_volume == 0:
+                continue
+            source = Aliquot_Source_Locations[Aliquot_Index]
+            # Choose best pipette to use
+            if transfer_volume < 20 and p20:
+                p20.transfer(transfer_volume, source, destination)
+            elif transfer_volume == 20 and p20:
+                p20.transfer(transfer_volume, source, destination)
+            elif transfer_volume == 20 and not p20:
+                p300.transfer(transfer_volume, source, destination)
+            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
+                p300.transfer(transfer_volume, source, destination)
+            elif transfer_volume > 300 and p1000:
+                p1000.transfer(transfer_volume, source, destination)
+            elif transfer_volume >= 100 and not p300 and p1000:
+                p1000.transfer(transfer_volume, source, destination)
+            elif transfer_volume > 300 and not p1000 and p300:
+                p300.transfer(transfer_volume, source, destination)
+            elif not p300 and not p1000:
+                p20.transfer(transfer_volume, source, destination)
+            Aliquot_Index += 1
+            if Aliquot_Index == len(Aliquot_Source_Locations):
+                Aliquot_Index = 0
+
+
+# def calculate_aliquots_required(Transfers, Aliquot_Volume):
+#     aliquots_required = 1
+#     volume_left_in_aliquot = Aliquot_Volume
+#     for transfer in Transfers:
+#         if transfer <= volume_left_in_aliquot:
+#             volume_left_in_aliquot -= transfer
+#         else:
+
+
 def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
     # Determine amount of labware required #
     labware = []
