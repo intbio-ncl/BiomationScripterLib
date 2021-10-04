@@ -335,8 +335,8 @@ def load_custom_labware(parent, file, deck_position = None, label = None):
 def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
     labware = None
 
-    # Check if labware is in the default list
-    if labware_api_name in OT2.protocol_api.labware.get_all_labware_definitions():
+    # Try and load not as custom
+    try:
         # Check if `parent` is the deck or a hardware module, and treat it acordingly
         if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
             # If no deck position, get the next empty slot
@@ -345,12 +345,8 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
             labware = parent.load_labware(labware_api_name, deck_position, label)
         else:
             labware = parent.load_labware(labware_api_name, label)
-    # If not in default list, treat as custom labware
-    else:
-        try:
-            labware = parent.load_labware(labware_api_name, deck_position, label)
-        except:
-            labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
+    except:
+        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
 
     if labware == None:
         raise ValueError("Labware not loaded for unknown reasons.")
