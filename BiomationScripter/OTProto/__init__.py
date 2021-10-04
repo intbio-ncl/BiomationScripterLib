@@ -347,7 +347,10 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
             labware = parent.load_labware(labware_api_name, label)
     # If not in default list, treat as custom labware
     else:
-        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
+        try:
+            labware = parent.load_labware(labware_api_name, deck_position, label)
+        except:
+            labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
 
     if labware == None:
         raise ValueError("Labware not loaded for unknown reasons.")
