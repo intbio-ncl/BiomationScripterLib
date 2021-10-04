@@ -166,17 +166,23 @@ class DNA_fmol_Dilution:
         Protocol,
         Name,
         Metadata,
+        Final_fmol,
         DNA,
         DNA_Concentration,
         DNA_Length,
+        DNA_Source_Type,
         DNA_Source_Wells,
         Keep_In_Current_Wells,
+        Water_Source_Labware_Type,
+        Water_Per_Well,
         Final_Volume = None,
         Current_Volume = None,
-        Source_Labware = None,
-        Destination_Labware = None,
+        Destination_Labware_Type = None,
+        Destination_Labware_Range = None,
         Starting_20uL_Tip = "A1",
-        Starting_300uL_Tip = "A1"
+        Starting_300uL_Tip = "A1",
+        Tip_Type_20uL = "opentrons_96_tiprack_20ul",
+        Tip_Type_300uL = "opentrons_96_tiprack_300ul"
     ):
         #####################
         # Protocol Metadata #
@@ -185,6 +191,175 @@ class DNA_fmol_Dilution:
         self.name = Name
         self.metadata = Metadata
         self.custom_labware_dir = "../Custom_Labware/"
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.final_fmol = Final_fmol
+        self._keep_in_current_wells = Keep_In_Current_Wells
+        self._final_volume = Final_Volume
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self._20uL_tip_type = Tip_Type_20uL
+        self._300uL_tip_type = Tip_Type_300uL
+        self.starting_20uL_tip = Starting_20uL_Tip
+        self.starting_300uL_tip = Starting_300uL_Tip
+        ## DNA to be diluted ##
+        self.dna = DNA
+        self.dna_source_wells = DNA_Source_Wells
+        self.dna_source_type = DNA_Source_Type
+        self.dna_starting_volume = Current_Volume
+        self.dna_starting_concentration = DNA_Concentration
+        self.dna_length = DNA_Length
+        ## Water ##
+        self.water_source_labware_type = Water_Source_Labware_Type
+        self.water_per_well = Water_Per_Well
+
+        #######################
+        # Destination Labware #
+        #######################
+        self._destination_labware_type = Destination_Labware_Type
+        self._destination_labware_range = Destination_Labware_Range
+
+        ###############
+        # Robot Setup #
+        ###############
+        self._pipettes = {
+            "p20": ["p20_single_gen2", "left"],
+            "p300": ["p300_single_gen2", "right"]
+        }
+        # Below may be redundant
+        self._p20_type = "p20_single_gen2"
+        self._p20_position = "left"
+        self._p300_type = "p300_single_gen2"
+        self._p300_position = "right"
+
+    def run(self):
+
+        #################################################
+        # Calculate dilution factor for each DNA sample #
+        #################################################
+        dna_current_fmol = []
+        dna_dilution_factor = []
+        for dna_starting_concentration, dna_length in zip(self.dna_starting_concentration, self.dna_length):
+            mass_g = dna_starting_concentration * 1e-9
+            length = dna_length
+            fmol = (mass_g/((length * 617.96) + 36.04)) * 1e15
+            dna_current_fmol.append(fmol)
+            dilution_factor = self.final_fmol/fmol
+            dna_dilution_factor.append(dilution_factor)
+
+
+        ####################################################################
+        # Determine if DNA will be diluted in current wells or transferred #
+        ####################################################################
+        if self._keep_in_current_wells == True:
+            # Calculate amount of water to add to each DNA sample #
+            water_to_add = []
+            for starting_volume, dilution_factor in zip(self.dna_starting_volume, dna_dilution_factor):
+                water_to_add.append((starting_volume / dilution_factor) - starting_volume)
+
+            # Load pipettes etc. #
+            tips_required_20uL = 0
+            tips_required_300uL = 0
+            for transfer in water_to_add:
+                if transfer <= 20:
+                    tips_required_20uL += 1
+                elif transfer > 20 and transfer <= 300:
+                    tips_required_300uL += 1
+                elif transfer > 300:
+                    tips_required_300uL += math.ceil(transfer/300)
+
+            p20, p20_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p20_type, self._p20_position, self._20uL_tip_type, tips_required_20uL, Starting_Tip = self.starting_20uL_tip)
+            p300, p300_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p300_type, self._p300_position, self._300uL_tip_type, tips_required_300uL, Starting_Tip = self.starting_300uL_tip)
+
+            # Load source labware #
+            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
+            ## Calculate number of water aliquots required
+            total_water_required = sum(water_to_add)
+            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            ## Load required water source labware
+            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
+
+            ## DNA source labware is also the destination labware in this case
+            ## But get DNA locations
+            DNA_Locations = []
+            for dna_well in self.dna_source_wells:
+                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
+
+            # Liquid handling begins #
+            ## Dispense water into DNA source wells and mix
+            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, DNA_Locations, new_tip = True, mix_after = (5,"transfer_volume"))
+
+        else:
+            # Calculate amount of water to add to each DNA sample #
+            water_to_add = []
+            dna_to_add = []
+            for dilution_factor in dna_dilution_factor:
+                final_volume = self._final_volume
+                dna_volume = final_volume * dilution_factor
+                water_volume = final_volume - dna_volume
+                water_to_add.append(water_volume)
+                dna_to_add.append(dna_volume)
+
+            # Load pipettes etc. #
+            tips_required_20uL = 0
+            tips_required_300uL = 0
+            for transfer in water_to_add:
+                if transfer <= 20:
+                    tips_required_20uL += 1
+                elif transfer > 20 and transfer <= 300:
+                    tips_required_300uL += 1
+                elif transfer > 300:
+                    tips_required_300uL += math.ceil(transfer/300)
+            for transfer in dna_to_add:
+                if transfer <= 20:
+                    tips_required_20uL += 1
+                elif transfer > 20 and transfer <= 300:
+                    tips_required_300uL += 1
+                elif transfer > 300:
+                    tips_required_300uL += math.ceil(transfer/300)
+
+            p20, p20_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p20_type, self._p20_position, self._20uL_tip_type, tips_required_20uL, Starting_Tip = self.starting_20uL_tip)
+            p300, p300_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p300_type, self._p300_position, self._300uL_tip_type, tips_required_300uL, Starting_Tip = self.starting_300uL_tip)
+
+            # Load source labware #
+            ## Calculate number of water aliquots required
+            total_water_required = sum(water_to_add)
+            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            ## Load required water source labware
+            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
+
+            ## Load DNA Source Labware and get locations
+            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
+            DNA_Locations = []
+            for dna_well in self.dna_source_wells:
+                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
+
+            # Load destination labware #
+            destination_labware = _OTProto.load_labware(self._protocol, self._destination_labware_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
+            destination_locations = []
+            for destination_well in self._destination_labware_range:
+                destination_locations.append(destination_labware.wells_by_name()[destination_well])
+
+            self._protocol.pause("This protocol uses {} 20 uL tip boxes".format(len(p20_tip_racks)))
+            self._protocol.pause("This protocol uses {} 300 uL tip boxes".format(len(p300_tip_racks)))
+
+            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(water_source_locations), self.water_per_well, water_source_locations))
+
+            for dna, location, volume in zip(self.dna, DNA_Locations, dna_to_add):
+                self._protocol.pause("Place DNA sample {} at {}. {} uL will be used".format(dna, location, volume))
+            # Liquid handling begins #
+            ## Dispense water into DNA source wells and mix
+            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, destination_locations, new_tip = True)
+
+            ## Add DNA to water
+            _OTProto.transfer_liquids(self._protocol, dna_to_add, DNA_Locations, destination_locations, new_tip = True, mix_after = (5,"transfer_volume"))
+
+
 
 
 class Monarch_Miniprep:
@@ -202,7 +377,7 @@ class Monarch_Miniprep:
         Starting_300uL_Tip = "A1",
         API = "2.10",
         Simulate = "deprecated"
-    ):
+        ):
 
         #####################
         # Protocol Metadata #
@@ -639,8 +814,8 @@ class Spot_Plating:
         self.cell_source_type = Cell_Source_Type
         self.cell_source_wells = Cell_Source_Wells
         ## LB media ##
-        self._LB_source_type = "3dprinted_15_tuberack_15000ul"
-        self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
+        self.LB_source_type = "3dprinted_15_tuberack_15000ul"
+        self.LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
 
         #######################
         # Destination Labware #
@@ -791,21 +966,21 @@ class Spot_Plating:
         ## Determine number of wells required
         wells_needed = len(self.cells) * len(self.dilution_factors)
         ## Load and store all required dilution labware
-        dilution_labware = _OTProto.calculate_and_load_labware(self._protocol, self.dilution_plate_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
+        dilution_labware, dilution_locations = _OTProto.calculate_and_load_labware(self._protocol, self.dilution_plate_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
 
         # Determine amount of agar plates required #
         wells_needed = len(self.cells) * len(self.dilution_factors)
-        petri_dishes = _OTProto.calculate_and_load_labware(self._protocol, self.petri_dish_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
+        petri_dishes, colony_locations = _OTProto.calculate_and_load_labware(self._protocol, self.petri_dish_type, wells_needed, custom_labware_dir = self.custom_labware_dir)
 
         # Load source labware #
         cell_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
         cells_labware = _OTProto.load_labware(self._protocol, self.cell_source_type, cell_labware_deck_slot, self.custom_labware_dir)
         LB_labware_deck_slot = _OTProto.next_empty_slot(self._protocol)
-        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_deck_slot, self.custom_labware_dir)
+        LB_labware = _OTProto.load_labware(self._protocol, self.LB_source_type, LB_labware_deck_slot, self.custom_labware_dir)
 
         ## Calculate number of LB aliquots required
         total_LB_required = len(self.cells) * sum(LB_dilution_volumes) # Calculate total amount of LB required
-        LB_aliquots_required = math.ceil(total_LB_required/self._LB_source_volume_per_well)
+        LB_aliquots_required = math.ceil(total_LB_required/self.LB_source_volume_per_well)
         ## Specify LB location
         LB_source = LB_labware.wells()[0:LB_aliquots_required]
 
@@ -824,14 +999,6 @@ class Spot_Plating:
         ##############################
         # Add LB to dilution labware #
         ##############################
-        # This is to switch which LB aliquot is being used as the source
-        LB_tube_index = 0
-
-        # Determine which tip(s) are required and get it/them
-        if min_LB_volume <= 20:
-            p20.pick_up_tip()
-        if max_LB_volume > 20:
-            p300.pick_up_tip()
 
         # Create a list of LB volumes which need to be transfered to the destination labware
         LB_transfers = LB_dilution_volumes * len(self.cells)
@@ -843,30 +1010,52 @@ class Spot_Plating:
             # Get the subset of LB volumes which will be transferred to this destination labware
             ## Note that if there is only one destination labware, LB_volumes == LB_transfers
             LB_volumes = LB_transfers[0+(wells_in_labware*destination_labware_index):wells_in_labware+(wells_in_labware*destination_labware_index)]
-            for volume, destination in zip(LB_volumes, destination_labware.wells()):
-                # if volume is 0, skip the transfer
-                if volume == 0:
-                    continue
-                # Determine which pipette is needed
-                if volume > 20:
-                    pipette = p300
-                elif volume <= 20:
-                    pipette = p20
-                # Determine which LB aliquot to take from
-                source = LB_source[LB_tube_index]
-                # Perform the transfer
-                pipette.transfer(volume, source, destination, new_tip = "never")
-                # Iterate to the next LB aliquot, and check if need to go back to first aliquot
-                if LB_tube_index == len(LB_source) - 1:
-                    LB_tube_index = 0
-                else:
-                    LB_tube_index += 1
+            _OTProto.dispense_from_aliquots(self._protocol, LB_volumes, LB_source, destination_labware.wells(), new_tip = False)
 
-        # Drop tips which have been in use
-        if min_LB_volume <= 20:
-            p20.drop_tip()
-        if max_LB_volume > 20:
-            p300.drop_tip()
+#### Code below is replaced with code above, but is left for now incase of unexpected behaviour
+        # # This is to switch which LB aliquot is being used as the source
+        # LB_tube_index = 0
+        #
+        # # Determine which tip(s) are required and get it/them
+        # if min_LB_volume <= 20:
+        #     p20.pick_up_tip()
+        # if max_LB_volume > 20:
+        #     p300.pick_up_tip()
+        #
+        # # Create a list of LB volumes which need to be transfered to the destination labware
+        # LB_transfers = LB_dilution_volumes * len(self.cells)
+        # for destination_labware_index in range(0, len(dilution_labware)):
+        #     # Get the current destination laware
+        #     destination_labware = dilution_labware[destination_labware_index]
+        #     # Get all available wells in the destination labware
+        #     wells_in_labware = len(destination_labware.wells())
+        #     # Get the subset of LB volumes which will be transferred to this destination labware
+        #     ## Note that if there is only one destination labware, LB_volumes == LB_transfers
+        #     LB_volumes = LB_transfers[0+(wells_in_labware*destination_labware_index):wells_in_labware+(wells_in_labware*destination_labware_index)]
+        #     for volume, destination in zip(LB_volumes, destination_labware.wells()):
+        #         # if volume is 0, skip the transfer
+        #         if volume == 0:
+        #             continue
+        #         # Determine which pipette is needed
+        #         if volume > 20:
+        #             pipette = p300
+        #         elif volume <= 20:
+        #             pipette = p20
+        #         # Determine which LB aliquot to take from
+        #         source = LB_source[LB_tube_index]
+        #         # Perform the transfer
+        #         pipette.transfer(volume, source, destination, new_tip = "never")
+        #         # Iterate to the next LB aliquot, and check if need to go back to first aliquot
+        #         if LB_tube_index == len(LB_source) - 1:
+        #             LB_tube_index = 0
+        #         else:
+        #             LB_tube_index += 1
+        #
+        # # Drop tips which have been in use
+        # if min_LB_volume <= 20:
+        #     p20.drop_tip()
+        # if max_LB_volume > 20:
+        #     p300.drop_tip()
 
         ############################
         # Perform serial dilutions #
@@ -1024,10 +1213,10 @@ class Transformation:
         self.dna_source_type = DNA_Source_Type
         ## Competent cells ##
         self._competent_cells_source_type = Competent_Cells_Source_Type
-        self._competent_cells_source_volume_per_well  = 45 # uL
+        self.competent_cells_source_volume_per_well  = 45 # uL
         ## Media ##
-        self._LB_source_type = "3dprinted_15_tuberack_15000ul"
-        self._LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
+        self.LB_source_type = "3dprinted_15_tuberack_15000ul"
+        self.LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
 
         #######################
         # Destination Labware #
@@ -1112,7 +1301,7 @@ class Transformation:
 
         # Load all other labware #
         LB_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        LB_labware = _OTProto.load_labware(self._protocol, self._LB_source_type, LB_labware_slot, self.custom_labware_dir)
+        LB_labware = _OTProto.load_labware(self._protocol, self.LB_source_type, LB_labware_slot, self.custom_labware_dir)
 
         dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
         dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir)
@@ -1122,7 +1311,7 @@ class Transformation:
 
         # Calculate number of cell aliquots required #
         cc_volume_required = len(self.dna) * self._competent_cell_volume_per_transformation # uL
-        cc_aliquots_required = _BMS.aliquot_calculator(cc_volume_required, self._competent_cells_source_volume_per_well)
+        cc_aliquots_required = _BMS.aliquot_calculator(cc_volume_required, self.competent_cells_source_volume_per_well)
 
         # Specify competent cells location
         competent_cells_source = competent_cells_labware.wells()[0:cc_aliquots_required]
@@ -1130,7 +1319,7 @@ class Transformation:
         # Calculate number of LB aliquots required #
         LB_volume_per_transformation = self._transformation_volume - (self.dna_volume_per_transformation + self._competent_cell_volume_per_transformation)
         LB_Volume_required = len(self.dna) * LB_volume_per_transformation
-        LB_aliquots_required = _BMS.aliquot_calculator(LB_Volume_required, self._LB_source_volume_per_well)
+        LB_aliquots_required = _BMS.aliquot_calculator(LB_Volume_required, self.LB_source_volume_per_well)
 
         # Specify LB location
         LB_source = LB_labware.wells()[0:LB_aliquots_required]
