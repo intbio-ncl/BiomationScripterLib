@@ -66,7 +66,7 @@ class PlateLayout:
 
         wells = well_range(Well_Range)
 
-        if Use_Outer_Wells == False:
+        if not Use_Outer_Wells:
             temp_wells = []
             for w in wells:
                 if (plate_first_row in w) or (plate_last_row in w) or (str(plate_first_col) == w[1:]) or (str(plate_last_col) == w[1:]):

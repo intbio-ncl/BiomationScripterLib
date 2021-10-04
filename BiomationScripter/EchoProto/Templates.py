@@ -138,7 +138,7 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
         # Create required number of destination plates #
         ################################################
         # List to store destination plates
-        d_plates = []
+        dplates = []
         for d in range(0,n_dplates):
             # Generate an indexed name for the destination plates
             ## Name is based on the name given when the destination plate format was defined
