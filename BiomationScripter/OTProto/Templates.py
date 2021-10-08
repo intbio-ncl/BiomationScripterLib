@@ -1365,7 +1365,7 @@ class Transformation:
             # Set the next empty well in the transformation labware as the destination
             destination = transformation_plate.wells()[transformation_index]
             # Perform the transfer
-            pipette.transfer(self._competent_cell_volume_per_transformation, source, destination, new_tip = "never", mix_before = (5, self._competent_cell_volume_per_transformation))
+            pipette.transfer(self._competent_cell_volume_per_transformation, source, destination, new_tip = "never", mix_before = (5, self._competent_cell_volume_per_transformation), touch_tip = True, blow_out = True, blowout_location = "destination well")
             # Iterate to the next competent cell aliquot, and check if need to go back to first aliquot
             if cc_tube_index == len(competent_cells_source) - 1:
                 cc_tube_index = 0
@@ -1391,15 +1391,16 @@ class Transformation:
 
         for transformation_index in range(0, len(self.dna)):
             # Get the location of the dna to be added
-            source = dna_labware.wells()[transformation_index]
+            source = dna_labware.wells_by_name()[self.dna_source_wells[transformation_index]]
             # Get the 'well' to which the DNA should be added
             destination = transformation_plate.wells()[transformation_index]
             # Perform the transfer
-            pipette.transfer(self.dna_volume_per_transformation, source, destination, mix_after = (10, 10))
+            pipette.transfer(self.dna_volume_per_transformation, source, destination, mix_after = (10, 10), touch_tip = True, blow_out = True, blowout_location = "destination well")
 
         #####################
         # Heat shock at 42C #
         #####################
+        self._protocol.pause("Check that cells and DNA are collected at the bottom of the plate.")
         # Set the temp to heat shock
         temperature_module.set_temperature(self._heat_shock_temp)
         # Wait for a bit
