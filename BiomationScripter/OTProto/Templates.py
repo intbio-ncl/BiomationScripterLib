@@ -1222,6 +1222,7 @@ class Transformation:
         # Destination Labware #
         #######################
         self._transformation_destination_type = Transformation_Destination_Type
+        self.transformation_locations = []
 
         ###############
         # Robot Setup #
@@ -1433,3 +1434,6 @@ class Transformation:
                 LB_tube_index = 0
             else:
                 LB_tube_index += 1
+
+        for dna, well in zip(self.dna, transformation_plate.wells()):
+            self.transformation_locations.append([well, dna])

@@ -88,6 +88,8 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
         self.ligase = "T4 Ligase"
         self.water = "Water"
 
+        self.assembly_locations = []
+
     ###############################
     # Function to add an assembly #
     ###############################
@@ -193,8 +195,13 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
                     dplate.add_content(d_well, self.ligase, ligase_amount)
                     dplate.add_content(d_well, self.water, water_amount)
                     dplate.add_content(d_well, assembly[0], backbone_amount)
+                    part_string = ""
                     for part in assembly[1]:
                         dplate.add_content(d_well, part, part_amount)
+                        part_string += part + "+"
+
+                    assembly_name = "{}-{}-{}".format(assembly[0],part_string[0:-1],ratio)
+                    self.assembly_locations.append([dplate.name, d_well, assembly_name])
 
                     # Iterate to the next destination well
                     dplate_current_well += 1
@@ -203,6 +210,8 @@ class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol
                         # If so, iterate to the first well of the next destination plate
                         dplate_id += 1
                         dplate_current_well = 0
+
+        self.destination_plates = dplates
 
         ##########################################
         # Create protocol and generate picklists #
