@@ -37,6 +37,12 @@ class PlateLayout:
         self.rows = Rows
         self.columns = Columns
 
+    def update_volume_in_well(self, Volume, Reagent, Well):
+        well_content = self.get_content()[Well]
+        for content in well_content:
+            if content[0] == Reagent:
+                content[1] = float(Volume)
+
     def add_content(self, Well, Reagent, Volume, Liquid_Class = False):
         # TODO: * Check if Well exists in the plate
         #       * Allow well ranges to span multiple columns
@@ -85,6 +91,20 @@ class PlateLayout:
 
     def clear_content_from_well(self, Well):
         del self.content[Well]
+
+    def get_occupied_wells(self):
+        return(self.get_content().keys())
+
+    def get_wells_containing_liquid(self, Liquid_Name):
+        wells_to_return = []
+        content = self.get_content()
+        wells = self.get_occupied_wells()
+        for well in wells:
+            for liquid in content[well]:
+                if liquid[0] == Liquid_Name:
+                    wells_to_return.append(well)
+
+        return(wells_to_return)
 
     def print(self):
         print("Information for " + self.name)
