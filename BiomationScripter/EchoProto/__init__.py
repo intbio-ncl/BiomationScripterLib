@@ -8,6 +8,14 @@ Source_Plate_Types = {
     "6RES": [250, 2800, 2800]
 }
 
+def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
+    plates_required = math.ceil(Wells_Required/Wells_Available)
+    plates = []
+    for plate_index in range(0, plates_required):
+        name = "{}_{}".format(Plate_Format.name, plate_index)
+        plates.append(Plate_Format.clone_format(name))
+
+    return(plates)
 
 
 def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
