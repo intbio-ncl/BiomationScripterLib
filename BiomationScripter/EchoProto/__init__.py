@@ -1,4 +1,5 @@
 import BiomationScripter as _BMS
+import math
 
 Source_Plate_Types = {
 #   "type": [dead volume, max transfer volume, max storage volume], (volumes in uL)
@@ -6,6 +7,8 @@ Source_Plate_Types = {
     "384LDV": [3, 0.5, 12],
     "6RES": [250, 2800, 2800]
 }
+
+
 
 def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     for tl in Protocol.transfer_lists:
@@ -64,7 +67,7 @@ def Generate_Actions(Protocol):
                 dead_volume = Source_Plate_Types[plate.type][0]
                 max_storage_volume = Source_Plate_Types[plate.type][2]
                 if total_source_volume > max_storage_volume:
-                    print("Volume of {} in {}, well {}, is {} uL above the maximum storage volume. This well will be ignored.".format(required_reagent, plate.name, total_source_volume - max_storage_volume))
+                    print("Volume of {} in {}, well {}, is {} uL above the maximum storage volume. This well will be ignored.".format(required_reagent, plate.name, well, total_source_volume - max_storage_volume))
                     plate.clear_content_from_well(well)
                     continue
             else:
@@ -245,7 +248,10 @@ class Protocol:
         return(Available_Reagents)
 
     def get_reagent_volume(self, Reagent_Name, Plate, Well):
-        Reagents = Plate.get_content()[Well]
+        try:
+            Reagents = Plate.get_content()[Well]
+        except KeyError:
+            raise KeyError("Well {} not found when searching for {} in plate {}.\nPlate Content:\n{}".format(Well, Reagent_Name, Plate.name, Plate.get_content()))
         for reagent_info in Reagents:
             if reagent_info[0] == Reagent_Name:
                 return(reagent_info[1])
