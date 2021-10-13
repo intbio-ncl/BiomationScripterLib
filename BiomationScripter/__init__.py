@@ -3,6 +3,15 @@ from BiomationScripter import OTProto
 # from BiomationScripter import FelixProto
 import math
 
+# Exception classes #
+
+class NegativeVolumeError(Exception):
+    pass
+
+
+
+#####################
+
 class PlateLayout:
     def __init__(self, Name, Type):
         self.name = Name
@@ -10,6 +19,7 @@ class PlateLayout:
         self.rows = None
         self.columns = None
         self.content = {}
+        self.well_range = None
 
     def check_well(self, Well):
         Row = Well[0]
@@ -38,6 +48,8 @@ class PlateLayout:
         self.columns = Columns
 
     def update_volume_in_well(self, Volume, Reagent, Well):
+        if not Well in self.get_content().keys():
+            raise ValueError("{} has not been previously defined. Add content to this well using the `add_content` method.".format(Well))
         well_content = self.get_content()[Well]
         for content in well_content:
             if content[0] == Reagent:
@@ -47,6 +59,8 @@ class PlateLayout:
         # TODO: * Check if Well exists in the plate
         #       * Allow well ranges to span multiple columns
         #       * Don't overwrite current content if a well range is specified
+        if Volume < 0:
+            raise NegativeVolumeError
 
         # Volume should always be uL
         if Liquid_Class == False:
