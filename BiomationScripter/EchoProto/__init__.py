@@ -1,4 +1,5 @@
 import BiomationScripter as _BMS
+import math
 
 Source_Plate_Types = {
 #   "type": [dead volume, max transfer volume, max storage volume], (volumes in uL)
@@ -7,8 +8,18 @@ Source_Plate_Types = {
     "6RES": [250, 2800, 2800]
 }
 
+def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
+    plates_required = math.ceil(Wells_Required/Wells_Available)
+    plates = []
+    for plate_index in range(0, plates_required):
+        name = "{}_{}".format(Plate_Format.name, plate_index)
+        plates.append(Plate_Format.clone_format(name))
+
+    return(plates)
+
+
 def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
-    for tl in Protocol.transferlists:
+    for tl in Protocol.transfer_lists:
         TL = tl[0]
         Title = TL.title
         SPType = TL.source_plate.type
@@ -26,149 +37,155 @@ def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick 
 def Generate_Actions(Protocol):
     Exceptions = []
 
-
-    S_Plates = Protocol.source_plates # Get all source plates
+    # Get all source plates
+    Source_Plates = Protocol.source_plates
 
     # Get all destination plates
-    D_Plates = []
-    for dp in Protocol.destination_plates:
-        D_Plates.append(dp[0])
+    Destination_Plates = Protocol.destination_plates
 
     ## Check that all reagents in the destination plates are in a source plate
-    # Find required reagents
-    Required_Reagents = set()
-    for d in D_Plates:
-        for w in d.get_content().keys():
-            Required_Reagents = Required_Reagents.union( set( [r[0] for r in d.get_content()[w]] ) )
-    # Check that reagents are in a source plate # Will need to add in volume checking and account for dead volume
-    Available_Reagents = set()
-    for sp in S_Plates:
-        S_Wells = list(sp.get_content().keys())
-        Available_Reagents = Available_Reagents.union( set([sp.get_content()[w][0][0] for w in S_Wells]) )
-    # Compare required reagents with Available_Reagents
-    if len(Required_Reagents.difference(Available_Reagents)) == 0:
-        pass
-    else:
-        raise ValueError("Cannot find the following reagents in a source plate: {}".format(Required_Reagents.difference(Available_Reagents)))
-        # Add in ability to input different name without exiting the script???
+    # get required reagents
+    Required_Reagents = Protocol.get_required_reagents()
+    # get available source reagents
+    Available_Reagents = Protocol.get_available_reagents()
+    # Check if there are any required reagents which are not present in a source plate
+    Missing_Reagents = Required_Reagents.difference(Available_Reagents)
 
+    if len(Missing_Reagents) > 0:
+        raise ValueError("Cannot find the following reagents in a source plate: {}".format(Missing_Reagents))
 
-    for sp in S_Plates: # For each TransferList/source plate
+    # Check if there is enough volume for each of the required reagents present in the source plates
+    ## Also check that the storage volume is not above the maximum amount
+    Exceptions = []
+    for required_reagent in Required_Reagents:
+        required_volume = 0
+        required_reagent_locations = Protocol.get_reagent_destination_locations(required_reagent)
+        for location in required_reagent_locations:
+            plate = location[0]
+            well = location[1]
+            required_volume += Protocol.get_reagent_volume(required_reagent, plate, well)
+
+        available_volume = 0
+        source_reagent_locations = Protocol.get_reagent_source_locations(required_reagent)
+        for location in source_reagent_locations:
+            plate = location[0]
+            well = location[1]
+            total_source_volume = Protocol.get_reagent_volume(required_reagent, plate, well)
+            if plate.type in Source_Plate_Types.keys():
+                dead_volume = Source_Plate_Types[plate.type][0]
+                max_storage_volume = Source_Plate_Types[plate.type][2]
+                if total_source_volume > max_storage_volume:
+                    print("Volume of {} in {}, well {}, is {} uL above the maximum storage volume. This well will be ignored.".format(required_reagent, plate.name, well, total_source_volume - max_storage_volume))
+                    plate.clear_content_from_well(well)
+                    continue
+            else:
+                dead_volume = 0
+                print("Can't find source plate type for {} so dead volume set to 0, and no max transfer volume or max storage volume specified.".format(plate.name))
+
+            available_volume += total_source_volume - dead_volume
+
+        if available_volume < required_volume:
+            Exceptions.append([required_reagent, required_volume-available_volume])
+
+    if len(Exceptions) > 0:
+        error_text = ""
+        for e in Exceptions:
+            error_text += "Source plates do not contain enough volume of {}. {} uL more is required.\n".format(e[0], e[1])
+        raise ValueError(error_text)
+
+    ###########################
+    # Generate transfer lists #
+    ###########################
+
+    # Generate a transfer list for each source plate
+    for source_plate in Source_Plates:
         # Define dead volume, max transfer volume, and max storage volume for this source plate
-        if sp.type in Source_Plate_Types.keys():
-            dead_volume = Source_Plate_Types[sp.type][0]
-            max_transfer_volume = Source_Plate_Types[sp.type][1]
-            max_storage_volume = Source_Plate_Types[sp.type][2]
+        if source_plate.type in Source_Plate_Types.keys():
+            dead_volume = Source_Plate_Types[source_plate.type][0]
+            max_transfer_volume = Source_Plate_Types[source_plate.type][1]
+            max_storage_volume = Source_Plate_Types[source_plate.type][2]
         else:
             dead_volume = 0
-            max_transfer_volume = None
-            max_storage_volume = None
-            print("Can't find source plate type, dead volume set to 0, and no max transfer volume or max storage volume specified.")
-        # Check if any source plate wells contain too much volume
-        if max_storage_volume:
-            for source_well in sp.get_content():
-                source_reagent_name = sp.get_content()[source_well][0][0]
-                source_well_volume = sp.get_content()[source_well][0][1]
-                if source_well_volume > max_storage_volume:
-                    raise ValueError("Too much volume of {} in well {}, plate {} (current: {}, max: {}).".format(source_reagent_name,source_well,sp.name, source_well_volume, max_storage_volume))
+            max_transfer_volume = 10000
+            max_storage_volume = 10000
 
-        # print(sp.name)
-        proto = Protocol.make_transfer_list(sp)
-        for dp in D_Plates: # loop through all destination plates
-            # print(dp.name)
-            for destination_well in dp.get_content(): # Get each well and each required reagent
-                for d_reagent_info in dp.get_content()[destination_well]:
-                    d_reagent_name = d_reagent_info[0]
-                    d_reagent_volume = d_reagent_info[1]
-                    # Get a list of source wells which contain the required reagent
-                    source_wells = []
-                    for source_well in sp.get_content(): # Iterate through all specified wells in the current source plate
-                        if d_reagent_name in sp.get_content()[source_well][0][0]: # If the reagent is in the source well
-                            source_wells.append([source_well, sp.get_content()[source_well][0]]) # Add that source well and its contents to the source_wells list
+        # Create the transfer list
+        transfer_list = Protocol.make_transfer_list(source_plate)
+        # Add transfer actions from the source plate based on required reagents in the destination plate(s)
+        for destination_plate in Destination_Plates:
+            # Get the required reagents in the current destination plate which are present in the current source plate
+            required_reagents = Protocol.get_required_reagents(destination_plate)
+            available_source_reagents = Protocol.get_available_reagents(source_plate)
+            reagents_to_transfer = required_reagents.intersection(available_source_reagents)
 
-                    n_source_well = 0 # counter for reagents in multiple source wells, formerly swn
-                    for source_well in source_wells: # formerly sw
-                        n_source_well += 1
-                        # Check enough volume in source well
-                        sw_volume = source_well[1][1]
-                        available_sw_volume = sw_volume - dead_volume
-                        sw_liquid_class = source_well[1][2]
-                        # required_volume = reagent[1] Now d_reagent_volume
+            # For each reagent which will be transferred form this source plate
+            for reagent in reagents_to_transfer:
+                source_wells = source_plate.get_wells_containing_liquid(reagent)
+                destination_locations = Protocol.get_reagent_destination_locations(reagent)
 
-                        if available_sw_volume < d_reagent_volume: # If the current source well doesn't have enough volume
-                            if n_source_well == len(source_wells): # Check if there are more source wells with the same reagent (true if there aren't any more)
-                                Exceptions.append([d_reagent_name,source_well[0],sp.name,d_reagent_volume,available_sw_volume])
-                                # raise ValueError("Not enough volume in source plate for {} (well {}, plate {})).".format(reagent[0],source_well[0],sp.name))
-                            else: # If there are more, continue on to the next source well and try again
-                                continue
-                        else: # If the current source well does have enough volume
-                            if max_transfer_volume and (d_reagent_volume > max_transfer_volume):
-                                while d_reagent_volume >= max_transfer_volume:
-                                    # Add liquid transfer action for the max transfer volume
-                                    proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(max_transfer_volume*1000))
-                                    # Record that liquid has transfered
-                                    source_well[1][1] = source_well[1][1] - max_transfer_volume
-                                    d_reagent_volume -= max_transfer_volume
-
-                                if d_reagent_volume != 0:
-                                    # Add liquid transfer action for remaining liquid to transfer
-                                    proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(d_reagent_volume*1000))
-                                    # Record that liquid has transfered
-                                    source_well[1][1] = source_well[1][1] - d_reagent_volume
-                                    d_reagent_volume -= d_reagent_volume
-                            else:
-                                # Add liquid transfer action for remaining liquid to transfer
-                                proto.add_action(d_reagent_name, sw_liquid_class, source_well[0], dp.name, dp.type, destination_well, int(d_reagent_volume*1000))
-                                # Record that liquid has transfered
-                                source_well[1][1] = source_well[1][1] - d_reagent_volume
-                                d_reagent_volume -= d_reagent_volume
-                            break
-    if len(Exceptions) > 0:
-        Exception_Text = "\n"
-        reagent_exceptions = set()
-        for e in Exceptions:
-            reagent_exceptions.add(e[0])
-
-        for reagent in reagent_exceptions:
-            volume_lacking = 0
-            for e in Exceptions:
-                if reagent == e[0]:
-                    volume_lacking += e[3]
-                    available = e[4]
-            Exception_Text += "Lacking at least {} uL of {}\n".format(volume_lacking - available, reagent)
-        raise ValueError(Exception_Text)
+                # Iterate through the destination locations for the current reagent
+                for destination in destination_locations:
+                    destination_plate = destination[0]
+                    destination_well = destination[1]
+                    total_volume_to_transfer = Protocol.get_reagent_info(reagent, destination_plate, destination_well)[0]
 
 
-                            # if sp.type == "384PP" and int(float(required_volume)*1000) > 2000:
-                            #     transfer_volume = int(float(required_volume)*1000)
-                            #     while transfer_volume >= 2000:
-                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 2000) # Add action (volume in nL)
-                            #         sp.get_content()[sw[0]][0][1] -= 2000/1000 # Remove volume from source plate
-                            #         transfer_volume -= 2000
-                            #     if transfer_volume != 0:
-                            #         # print(reagent[0], sp.name, sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume)
-                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
-                            #
-                            #         sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                            #         break
-                            #     else:
-                            #         break
-                            # elif sp.type == "384LDV" and int(float(required_volume)*1000) > 500:
-                            #     transfer_volume = int(float(required_volume)*1000)
-                            #     while transfer_volume >= 500:
-                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, 500) # Add action (volume in nL)
-                            #         sp.get_content()[sw[0]][0][1] -= 500/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                            #         transfer_volume -= 500
-                            #     if transfer_volume != 0:
-                            #         proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, transfer_volume) # Add action (volume in nL)
-                            #         sp.get_content()[sw[0]][0][1] -= transfer_volume/1000 # Remove volume from source plate (but DON'T save changes to plate file)
-                            #         break
-                            #     else:
-                            #         break
-                            # else:
-                            #     proto.add_action(reagent[0], sw[1][0][2], sw[0], dp.name, dp.type, well, int(float(required_volume)*1000)) # Add action (volume in nL)
-                            #     sp.get_content()[sw[0]][0][1] -= required_volume # Remove volume from source plate (but DON'T save changes to plate file)
-                            #     break
+                    # Transfer liquid from source well(s) to destination well until the total volume has been transferred
+                    ## This may take multiple actions if the volume to transfer is above the max transfer volume, or multiple source wells are required
+                    source_index = 0
+                    while total_volume_to_transfer > 0:
+                        # get current source location
+                        source_well = source_wells[source_index]
+                        liquid_class = Protocol.get_reagent_info(reagent, source_plate, source_well)[1]
+                        # Check how much volume is available to transfer from the current source well
+                        available_volume = Protocol.get_reagent_volume(reagent, source_plate, source_well) - dead_volume
+                        # If the volume to transfer is below both the available volume and the max transfer volume, add the action to the transfer list
+                        if total_volume_to_transfer <= max_transfer_volume and total_volume_to_transfer <= available_volume:
+                            transfer_list.add_action(reagent,
+                                liquid_class,
+                                source_well,
+                                destination_plate.name,
+                                destination_plate.type,
+                                destination_well,
+                                int(total_volume_to_transfer * 1000)
+                            )
+                            total_volume_to_transfer = 0
+                            source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - total_volume_to_transfer, reagent, source_well)
+                        # If the total volume to transfer is above the max transfer limit, but there is enough to transfer the max transfer from the current source well
+                        elif total_volume_to_transfer > max_transfer_volume and available_volume >= max_transfer_volume:
+                            transfer_list.add_action(reagent,
+                                liquid_class,
+                                source_well,
+                                destination_plate.name,
+                                destination_plate.type,
+                                destination_well,
+                                int(max_transfer_volume * 1000)
+                            )
+                            total_volume_to_transfer -= max_transfer_volume
+                            source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - max_transfer_volume, reagent, source_well)
+                        # If the total volume to transfer is above the max transfer limit, and there isn't enough to transfer the max transfer from the current source well...
+                        # ..., transfer the entire content of the current source well and iterate to the next source well
+                        # Also if the total volume to transfer is below the max transfer limit, but there isn't enough to transfer the entire amount, do the same
+                        elif (total_volume_to_transfer > max_transfer_volume and available_volume < max_transfer_volume) or (total_volume_to_transfer <= max_transfer_volume and available_volume < total_volume_to_transfer):
+                            transfer_list.add_action(reagent,
+                                liquid_class,
+                                source_well,
+                                destination_plate.name,
+                                destination_plate.type,
+                                destination_well,
+                                int(available_volume * 1000)
+                            )
+                            total_volume_to_transfer -= available_volume
+                            source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - available_volume, reagent, source_well)
+                            source_index += 1
+                        # If the current source well is empty
+                        elif available_volume < 0.025:
+                            source_index += 1
+                        else:
+                            raise ValueError("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
+                        if source_index == len(source_wells):
+                            raise ValueError("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
+
 
 
 class Protocol:
@@ -176,7 +193,7 @@ class Protocol:
         self.title = Title
         self.source_plates = []
         self.destination_plates = []
-        self.transferlists = []
+        self.transfer_lists = []
 
     def add_source_plate(self,Plate):
         self.source_plates.append(Plate)
@@ -185,30 +202,107 @@ class Protocol:
         for p in Plates:
             self.add_source_plate(p)
 
-    def make_transfer_list(self,Source_Plate):
+    def make_transfer_list(self, Source_Plate):
         TL = TransferList(Source_Plate)
-        self.transferlists.append([TL])
+        self.transfer_lists.append([TL])
         return(TL)
 
     def get_transfer_list(self,Source_Plate):
-        for tl in self.transferlists:
+        for tl in self.transfer_lists:
             if Source_Plate == tl.source_plate:
                 return(tl)
-                break
 
-    def add_destination_plate(self,Plate,Use_Outer_Wells = True):
-        D_Plate = Plate
-        self.destination_plates.append([D_Plate, Use_Outer_Wells])
+    def add_destination_plate(self, Destination_Plate):
+        self.destination_plates.append(D_Plate)
 
-    def add_destination_plates(self, Plates, Use_Outer_Wells = True):
-        for D_Plate in Plates:
-            self.add_destination_plate(D_Plate, Use_Outer_Wells)
+    def add_destination_plates(self, Destination_Plates):
+        for Destination_Plate in Destination_Plates:
+            self.destination_plates.append(Destination_Plate)
 
     def get_destination_plates(self):
         return(self.destination_plates)
 
     def get_source_plates(self):
         return(self.source_plates)
+
+    def get_required_reagents(self, Destination_Plate = None):
+        if Destination_Plate:
+            Destination_Plates = [Destination_Plate]
+        else:
+            Destination_Plates = self.get_destination_plates()
+
+        Required_Reagents = set()
+        for plate in Destination_Plates:
+            occupied_wells = plate.get_content().keys()
+            for well in occupied_wells:
+                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                Required_Reagents = Required_Reagents.union(reagents_in_well)
+
+        return(Required_Reagents)
+
+    def get_available_reagents(self, Source_Plate = None):
+        if Source_Plate:
+            Source_Plates = [Source_Plate]
+        else:
+            Source_Plates = self.get_source_plates()
+
+        Available_Reagents = set()
+        for plate in Source_Plates:
+            occupied_wells = plate.get_content().keys()
+            for well in occupied_wells:
+                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                Available_Reagents = Available_Reagents.union(reagents_in_well)
+
+        return(Available_Reagents)
+
+    def get_reagent_volume(self, Reagent_Name, Plate, Well):
+        try:
+            Reagents = Plate.get_content()[Well]
+        except KeyError:
+            raise KeyError("Well {} not found when searching for {} in plate {}.\nPlate Content:\n{}".format(Well, Reagent_Name, Plate.name, Plate.get_content()))
+        for reagent_info in Reagents:
+            if reagent_info[0] == Reagent_Name:
+                return(reagent_info[1])
+
+        return(None)
+
+    def get_reagent_info(self, Reagent_Name, Plate, Well):
+        Reagents = Plate.get_content()[Well]
+        for reagent_info in Reagents:
+            if reagent_info[0] == Reagent_Name:
+                return(reagent_info[1:])
+
+        return(None)
+
+    def get_reagent_source_locations(self, Reagent_Name):
+        Source_Plates = self.get_source_plates()
+        Locations = []
+        for plate in Source_Plates:
+            occupied_wells = plate.get_occupied_wells()
+            for well in occupied_wells:
+                for reagent in plate.get_content()[well]:
+                    if reagent[0] == Reagent_Name:
+                        Locations.append([plate, well])
+
+        if len(Locations) > 0:
+            return(Locations)
+        else:
+            return(None)
+
+    def get_reagent_destination_locations(self, Reagent_Name):
+        Destination_Plates = self.get_destination_plates()
+        Locations = []
+        for plate in Destination_Plates:
+            occupied_wells = plate.get_occupied_wells()
+            for well in occupied_wells:
+                for reagent in plate.get_content()[well]:
+                    if reagent[0] == Reagent_Name:
+                        Locations.append([plate, well])
+
+        if len(Locations) > 0:
+            return(Locations)
+        else:
+            return(None)
 
 
 class TransferList:

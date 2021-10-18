@@ -3,6 +3,15 @@ from BiomationScripter import OTProto
 # from BiomationScripter import FelixProto
 import math
 
+# Exception classes #
+
+class NegativeVolumeError(Exception):
+    pass
+
+
+
+#####################
+
 class PlateLayout:
     def __init__(self, Name, Type):
         self.name = Name
@@ -10,6 +19,7 @@ class PlateLayout:
         self.rows = None
         self.columns = None
         self.content = {}
+        self.well_range = None
 
     def check_well(self, Well):
         Row = Well[0]
@@ -37,10 +47,20 @@ class PlateLayout:
         self.rows = Rows
         self.columns = Columns
 
+    def update_volume_in_well(self, Volume, Reagent, Well):
+        if not Well in self.get_content().keys():
+            raise ValueError("{} has not been previously defined. Add content to this well using the `add_content` method.".format(Well))
+        well_content = self.get_content()[Well]
+        for content in well_content:
+            if content[0] == Reagent:
+                content[1] = float(Volume)
+
     def add_content(self, Well, Reagent, Volume, Liquid_Class = False):
-        # TODO: * Check is Well exists in the plate
+        # TODO: * Check if Well exists in the plate
         #       * Allow well ranges to span multiple columns
         #       * Don't overwrite current content if a well range is specified
+        if Volume < 0:
+            raise NegativeVolumeError
 
         # Volume should always be uL
         if Liquid_Class == False:
@@ -66,7 +86,7 @@ class PlateLayout:
 
         wells = well_range(Well_Range)
 
-        if Use_Outer_Wells == False:
+        if not Use_Outer_Wells:
             temp_wells = []
             for w in wells:
                 if (plate_first_row in w) or (plate_last_row in w) or (str(plate_first_col) == w[1:]) or (str(plate_last_col) == w[1:]):
@@ -86,6 +106,20 @@ class PlateLayout:
     def clear_content_from_well(self, Well):
         del self.content[Well]
 
+    def get_occupied_wells(self):
+        return(self.get_content().keys())
+
+    def get_wells_containing_liquid(self, Liquid_Name):
+        wells_to_return = []
+        content = self.get_content()
+        wells = self.get_occupied_wells()
+        for well in wells:
+            for liquid in content[well]:
+                if liquid[0] == Liquid_Name:
+                    wells_to_return.append(well)
+
+        return(wells_to_return)
+
     def print(self):
         print("Information for " + self.name)
         print("Plate Type: " + self.type)
@@ -104,6 +138,28 @@ class Liquids:
 
     def add_liquid(self, liquid, labware, source_well):
         self.liquids[liquid] = [labware, source_well]
+
+    def get_liquids_in_labware(self, labware):
+        liquids_to_return = []
+        for liquid in self.liquids:
+            if labware == self.get_liquid_labware(liquid):
+                liquids_to_return.append(liquid)
+
+        return(liquids_to_return)
+
+    def get_liquid_by_location(self, labware, well):
+        liquid_to_return = None
+        for liquid in self.liquids:
+            if labware == self.get_liquid_labware(liquid) and well == self.get_liquid_well(liquid):
+                liquid_to_return = liquid
+                break
+        if liquid_to_return == None:
+            raise ValueError("No liquid found in labware {} at well {}".format(labware, well))
+        else:
+            return(liquid_to_return)
+
+    def get_liquid(self, liquid):
+        return(self.liquids[liquid])
 
     def get_liquid_labware(self, liquid):
         return(self.liquids[liquid][0])
@@ -166,16 +222,74 @@ def Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     for L in range(L1,L2+1):
         yield(chr(L))
 
-def well_range(Well):
-    first, last = Well.split(":")
-    firstL = first[0]
-    lastL = last[0]
-    firstN = int(first[1:len(first)])
-    lastN = int(last[1:len(last)])
-    rows = []
-    cols = []
-    wells = []
-    for L in Lrange(firstL,lastL):
-        for N in range(firstN,lastN+1):
-            wells.append(L+str(N))
-    return(wells)
+def Labware_Row_To_Index(row):
+    return(ord(row.upper()) - ord("A"))
+
+def well_range(Wells, Labware_Format = None, Direction = "Horizontal"):
+
+    if not Labware_Format:
+        Well = Wells
+        first, last = Well.split(":")
+        firstL = first[0]
+        lastL = last[0]
+        firstN = int(first[1:len(first)])
+        lastN = int(last[1:len(last)])
+        rows = []
+        cols = []
+        wells = []
+        for L in Lrange(firstL,lastL):
+            for N in range(firstN,lastN+1):
+                wells.append(L+str(N))
+        return(wells)
+
+    else:
+        # Labware_Format = [n_rows,n_columns]
+        end_row, end_col = Labware_Format
+
+        first_well, last_well = Wells.split(":")
+
+        first_row = first_well[0]
+        last_row = last_well[0]
+        first_col = int(first_well[1:])
+        last_col = int(last_well[1:])
+
+        # Check if first and last wells are in range
+        if (Labware_Row_To_Index(first_row) > end_row - 1) or (Labware_Row_To_Index(last_row) > end_row - 1) or (first_col > end_col) or (last_col > end_col):
+            raise ValueError("Wells are not in range of specified format")
+
+        wells = []
+
+        if Direction == "Horizontal":
+            rows = []
+            for r in Lrange(first_row, last_row):
+                rows.append(r)
+
+            first_col_of_row = first_col
+
+            for row in rows:
+                for col in range(first_col_of_row, end_col + 1):
+                    well = "{}{}".format(row, col)
+                    wells.append(well)
+                    if col == end_col:
+                        first_col_of_row = 1
+                    if well == last_well:
+                        return(wells)
+
+        elif Direction == "Vertical":
+            rows = []
+            for r in Lrange("A", chr(64 + end_row)):
+                rows.append(r)
+
+            first_row_of_col_index = Labware_Row_To_Index(first_row)
+
+            for col in range(first_col, last_col + 1):
+                for row in rows[first_row_of_col_index:]:
+                    well = "{}{}".format(row,col)
+                    wells.append(well)
+                    if row == rows[-1]:
+                        first_row_of_col_index = 0
+                    if well == last_well:
+                        return(wells)
+
+def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume = 0):
+    return(math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))
