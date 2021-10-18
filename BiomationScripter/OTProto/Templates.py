@@ -4,6 +4,398 @@ from opentrons import simulate as OT2
 import math
 import smtplib, ssl
 
+class OT2_Picklist:
+    def __init__(self, Protocol, Name, Metadata, Source_1, Source_Wells_1, Source_Plate_Type_1, Source_Label_1,
+    Destination_Plate_Type_1, Destination_Label_1, Transfer_Steps, Source_Plates, Destination_Plates,
+    Source_2 = None, Source_Wells_2 = None, Source_Plate_Type_2 = None, Source_Label_2 = None,
+    Source_3 = None, Source_Wells_3 = None, Source_Plate_Type_3 = None, Source_Label_3 = None,
+    Source_4 = None, Source_Wells_4 = None, Source_Plate_Type_4 = None, Source_Label_4 = None,
+    Source_5 = None, Source_Wells_5 = None, Source_Plate_Type_5 = None, Source_Label_5 = None,
+    Source_6 = None, Source_Wells_6 = None, Source_Plate_Type_6 = None, Source_Label_6 = None,
+    Source_7 = None, Source_Wells_7 = None, Source_Plate_Type_7 = None, Source_Label_7 = None,
+    Source_8 = None, Source_Wells_8 = None, Source_Plate_Type_8 = None, Source_Label_8 = None,
+    Source_9 = None, Source_Wells_9 = None, Source_Plate_Type_9 = None, Source_Label_9 = None,
+    Destination_Plate_Type_2 = None, Destination_Label_2 = None,
+    Destination_Plate_Type_3 = None, Destination_Label_3 = None,
+    Destination_Plate_Type_4 = None, Destination_Label_4 = None,
+    Destination_Plate_Type_5 = None, Destination_Label_5 = None,
+    Destination_Plate_Type_6 = None, Destination_Label_6 = None,
+    Destination_Plate_Type_7 = None, Destination_Label_7 = None,
+    Destination_Plate_Type_8 = None, Destination_Label_8 = None,
+    Destination_Plate_Type_9 = None, Destination_Label_9 = None,
+    Starting_20uL_Tip = "A1", Starting_300uL_Tip = "A1", API = "2.10", Simulate = "deprecated"):
+
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
+        self.Name = Name
+        self.Metadata = Metadata
+        self._simulate = Simulate
+        self._custom_labware_dir = "../Custom_Labware/"
+
+        if not Simulate == "deprecated":
+            print("Simulate no longer needs to be specified and will soon be removed.")
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
+        self.starting_20uL_tip = Starting_20uL_Tip
+        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
+        self.starting_300uL_tip = Starting_300uL_Tip
+        ## Source Plate 1 ##
+        self.source_plate_1 = Source_1
+        self.source_wells_1 = Source_Wells_1
+        self.source_plate_type_1 = Source_Plate_Type_1
+        self.source_label_1 = Source_Label_1
+        ## Other Source Plates ##
+        self.source_plates = Source_Plates
+        # There are 12 spaces on the deck
+        # 12 is taken by the waste tray
+        # at least 1 space is needed for a tip rack
+        # at least 1 space is needed for a destination plate
+        # This leaves a maximum of 9 possible free spaces
+        self.source_plate_2 = Source_2
+        self.source_wells_2 = Source_Wells_2
+        self.source_plate_type_2 = Source_Plate_Type_2
+        self.source_label_2 = Source_Label_2
+        self.source_plate_3 = Source_3
+        self.source_wells_3 = Source_Wells_3
+        self.source_plate_type_3 = Source_Plate_Type_3
+        self.source_label_3 = Source_Label_3
+        self.source_plate_4 = Source_4
+        self.source_wells_4 = Source_Wells_4
+        self.source_plate_type_4 = Source_Plate_Type_4
+        self.source_label_4 = Source_Label_4
+        self.source_plate_5 = Source_5
+        self.source_wells_5 = Source_Wells_5
+        self.source_plate_type_5 = Source_Plate_Type_5
+        self.source_label_5 = Source_Label_5
+        self.source_plate_6 = Source_6
+        self.source_wells_6 = Source_Wells_6
+        self.source_plate_type_6 = Source_Plate_Type_6
+        self.source_label_6 = Source_Label_6
+        self.source_plate_7 = Source_7
+        self.source_wells_7 = Source_Wells_7
+        self.source_plate_type_7 = Source_Plate_Type_7
+        self.source_label_7 = Source_Label_7
+        self.source_plate_8 = Source_8
+        self.source_wells_8 = Source_Wells_8
+        self.source_plate_type_8 = Source_Plate_Type_8
+        self.source_label_8 = Source_Label_8
+        self.source_plate_9 = Source_9
+        self.source_wells_9 = Source_Wells_9
+        self.source_plate_type_9 = Source_Plate_Type_9
+        self.source_label_9 = Source_Label_9
+
+        #######################
+        # Destination Labware #
+        #######################
+        self.destination_plate_type_1 = Destination_Plate_Type_1
+        self.destination_label_1 = Destination_Label_1
+        ## Other Destination Plates
+        self.destination_plates = Destination_Plates
+        # Maximum of 9 other destination plates
+        self.destination_plate_type_2 = Destination_Plate_Type_2
+        self.destination_label_2 = Destination_Label_2
+        self.destination_plate_type_3 = Destination_Plate_Type_3
+        self.destination_label_3 = Destination_Label_3
+        self.destination_plate_type_4 = Destination_Plate_Type_4
+        self.destination_label_4 = Destination_Label_4
+        self.destination_plate_type_5 = Destination_Plate_Type_5
+        self.destination_label_5 = Destination_Label_5
+        self.destination_plate_type_6 = Destination_Plate_Type_6
+        self.destination_label_6 = Destination_Label_6
+        self.destination_plate_type_7 = Destination_Plate_Type_7
+        self.destination_label_7 = Destination_Label_7
+        self.destination_plate_type_8 = Destination_Plate_Type_8
+        self.destination_label_8 = Destination_Label_8
+        self.destination_plate_type_9 = Destination_Plate_Type_9
+        self.destination_label_9 = Destination_Label_9
+        ## Information on transfers
+        self.transfer_steps = Transfer_Steps
+
+        ###############
+        # Robot Setup #
+        ###############
+        self._p20_type = "p20_single_gen2"
+        self._p20_position = "left"
+        self._p300_type = "p300_single_gen2"
+        self._p300_position = "right"
+
+    def run(self):
+        # Determine how many tips will be needed of each size
+        tips_needed_20uL = 0
+        tips_needed_300uL = 0
+        for t in self.transfer_steps:
+            if t[4] < 20:
+                tips_needed_20uL += 1
+            elif t[4] >= 20 and t[4] <= 300:
+                tips_needed_300uL += 1
+            elif t[4] > 300:
+                if t[4] % 300:
+                    tips_needed_300uL += round(t[4]/300) + 1
+                else:
+                    tips_needed_300uL += t[4] / 300
+    
+        # Calculate number of racks needed - account for the first rack missing some tips
+        racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
+        racks_needed_300uL = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
+        # Load tip racks
+        tip_racks_20uL = []
+        for rack20 in range(0, racks_needed_20uL):
+            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
+        tip_racks_300uL = []
+        for rack300 in range(0, racks_needed_300uL):
+            tip_racks_300uL.append(self._protocol.load_labware(self._300uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
+        # Set up pipettes
+        p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
+        p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
+        p300 = self._protocol.load_instrument(self._p300_type, self._p300_position, tip_racks = tip_racks_300uL)
+        p300.starting_tip = tip_racks_300uL[0].well(self.starting_300uL_tip)
+
+        # User prompts for number of tip boxes required, and locations of the tip boxes
+        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+        for tip_box_index in range(0, len(tip_racks_20uL)):
+            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+        self._protocol.pause("This protocol needs {} 300 uL tip racks".format(racks_needed_300uL))
+        for tip_box_index in range(0, len(tip_racks_300uL)):
+            self._protocol.pause("Place 300 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_300uL[tip_box_index].parent))
+
+        # Load all other labware
+        source_labware_1 = None
+        source_labware_2 = None
+        source_labware_3 = None
+        source_labware_4 = None
+        source_labware_5 = None
+        source_labware_6 = None
+        source_labware_7 = None
+        source_labware_8 = None
+        source_labware_9 = None
+        # Create dictionaries for source plate data
+        source_dict_1 = {
+            "plate": self.source_plate_1,
+            "type": self.source_plate_type_1,
+            "label": self.source_label_1,
+            "wells": self.source_wells_1,
+            "labware": source_labware_1,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_2 = {
+            "plate": self.source_plate_2,
+            "type": self.source_plate_type_2,
+            "label": self.source_label_2,
+            "wells": self.source_wells_2,
+            "labware": source_labware_2,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_3 = {
+            "plate": self.source_plate_3,
+            "type": self.source_plate_type_3,
+            "label": self.source_label_3,
+            "wells": self.source_wells_3,
+            "labware": source_labware_3,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_4 = {
+            "plate": self.source_plate_4,
+            "type": self.source_plate_type_4,
+            "label": self.source_label_4,
+            "wells": self.source_wells_4,
+            "labware": source_labware_4,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_5 = {
+            "plate": self.source_plate_5,
+            "type": self.source_plate_type_5,
+            "label": self.source_label_5,
+            "wells": self.source_wells_5,
+            "labware": source_labware_5,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_6 = {
+            "plate": self.source_plate_6,
+            "type": self.source_plate_type_6,
+            "label": self.source_label_6,
+            "wells": self.source_wells_6,
+            "labware": source_labware_6,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_7 = {
+            "plate": self.source_plate_7,
+            "type": self.source_plate_type_7,
+            "label": self.source_label_7,
+            "wells": self.source_wells_7,
+            "labware": source_labware_7,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_8 = {
+            "plate": self.source_plate_8,
+            "type": self.source_plate_type_8,
+            "label": self.source_label_8,
+            "wells": self.source_wells_8,
+            "labware": source_labware_8,
+            "liquid": _BMS.Liquids()
+        }
+        source_dict_9 = {
+            "plate": self.source_plate_9,
+            "type": self.source_plate_type_9,
+            "label": self.source_label_9,
+            "wells": self.source_wells_9,
+            "labware": source_labware_9,
+            "liquid": _BMS.Liquids()
+        }
+        # Create a list to store the dictionaries
+        source_list = [source_dict_1,source_dict_2,source_dict_3,source_dict_4,source_dict_5,source_dict_6,source_dict_7,source_dict_8,source_dict_9]
+        # remove entries for source plates that do not exist
+        for p in range(0,(9-self.source_plates)):
+            source_list.pop()
+
+        # Load all other labware
+        destination_labware_1 = None
+        destination_labware_2 = None
+        destination_labware_3 = None
+        destination_labware_4 = None
+        destination_labware_5 = None
+        destination_labware_6 = None
+        destination_labware_7 = None
+        destination_labware_8 = None
+        destination_labware_9 = None
+        # Create dictionaries for source plate data
+        destination_dict_1 = {
+            "type": self.destination_plate_type_1,
+            "label": self.destination_label_1,
+            "labware": destination_labware_1,
+        }
+        destination_dict_2 = {
+            "type": self.destination_plate_type_2,
+            "label": self.destination_label_2,
+            "labware": destination_labware_2,
+        }
+        destination_dict_3 = {
+            "type": self.destination_plate_type_3,
+            "label": self.destination_label_3,
+            "labware": destination_labware_3,
+        }
+        destination_dict_4 = {
+            "type": self.destination_plate_type_4,
+            "label": self.destination_label_4,
+            "labware": destination_labware_4,
+        }
+        destination_dict_5 = {
+            "type": self.destination_plate_type_5,
+            "label": self.destination_label_5,
+            "labware": destination_labware_5,
+        }
+        destination_dict_6 = {
+            "type": self.destination_plate_type_6,
+            "label": self.destination_label_6,
+            "labware": destination_labware_6,
+        }
+        destination_dict_7 = {
+            "type": self.destination_plate_type_7,
+            "label": self.destination_label_7,
+            "labware": destination_labware_7,
+        }
+        destination_dict_8 = {
+            "type": self.destination_plate_type_8,
+            "label": self.destination_label_8,
+            "labware": destination_labware_8,
+        }
+        destination_dict_9 = {
+            "type": self.destination_plate_type_9,
+            "label": self.destination_label_9,
+            "labware": destination_labware_9,
+        }
+        # Create a list to store the dictionaries
+        destination_list = [destination_dict_1,destination_dict_2,destination_dict_3,destination_dict_4,destination_dict_5,destination_dict_6,destination_dict_7,destination_dict_8,destination_dict_9]
+        # remove entries for destination plates that do not exist
+        for p in range(0,(9-self.destination_plates)):
+            destination_list.pop()
+
+        # Load labware and store liquid for Source
+        for dict in source_list: 
+            ## Find the next empty deck slot
+            labware_slot = _OTProto.next_empty_slot(self._protocol)
+            ## Load the labware
+            dict["labware"] = _OTProto.load_labware(self._protocol, dict["type"], labware_slot, self._custom_labware_dir, dict["label"])
+            # Store liquid locations
+            for l,w in zip(dict["plate"], dict["wells"]):
+                dict["liquid"].add_liquid(l, dict["labware"], w)
+            # dev note: if these functions do not work with None types, use the number of source plates as a break criteria
+
+        # Load labware for Destination
+        for dict in destination_list:
+            ## Find the next empty deck slot
+            labware_slot = _OTProto.next_empty_slot(self._protocol)
+            ## Load the labware
+            dict["labware"] = _OTProto.load_labware(self._protocol, dict["type"], labware_slot, self._custom_labware_dir, dict["label"])
+
+        # User prompts for number of tip boxes required, and locations of the tip boxes
+        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+        for tip_box_index in range(0, len(tip_racks_20uL)):
+            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+
+        # # Prompt user to check all liquids are correctly placed
+        # self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
+        # # one tube rack has been loaded for the destination plate, maximum number of samples is 24
+        # if len(destination_range) > 24:
+        #     self._protocol.pause("This protocol requires more than 24 tubes. Please limit the protocol to 24 tubes only.")
+
+        # # Prompt user to load DNA
+        # for l in DNA.get_all_liquids():
+        #     liquid_name = l
+        #     liquid_labware = DNA.get_liquid_labware(liquid_name)
+        #     liquid_well = DNA.get_liquid_well(liquid_name)
+        #     self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+        # # Prompt user to load Primers
+        # for l in Primers.get_all_liquids():
+        #     liquid_name = l
+        #     liquid_labware = Primers.get_liquid_labware(liquid_name)
+        #     liquid_well = Primers.get_liquid_well(liquid_name)
+        #     self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+
+        ##################################
+        # Start of protocol instructions #
+        ##################################
+
+        # Complete transfer steps
+        for i in range(len(self.transfer_steps)):
+            # extract liquid contents from list
+            transfer = self.transfer_steps[i]
+            source_label = transfer[0]
+            source_well = transfer[1]
+            destination_label = transfer[2]
+            destination_well = transfer[3]
+            transfer_volume = transfer[4]
+            liquid = transfer[5]
+            # reverse lookup source plate based on source_label
+            for dict in source_list:
+                if dict["label"] == source_label:
+                    source_plate = dict["liquid"]
+            # reverse lookup destination plate based on destination_label
+            for dict in destination_list:
+                if dict["label"] == destination_label:
+                    destination_labware = dict["labware"]
+
+            # get source well
+            source_labware = source_plate.get_liquid_labware(liquid)
+            source_well = source_plate.get_liquid_well(liquid)
+            source = source_labware.wells_by_name()[source_well]
+            # get destination well
+            destination = destination_labware.wells_by_name()[destination_well]
+
+            # transfer
+            if transfer_volume > 5 and transfer_volume < 20:
+                p20.transfer(transfer_volume, source, destination)
+            elif transfer_volume >= 20 and transfer_volume < 300:
+                p300.transfer(transfer_volume, source, destination)
+            else:
+                self._protocol.pause("Transfer volume > 300 uL. This will be split into two transfers. Continue?")
+
+
 class Primer_Mixing_LightRun:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
     Destination_Contents, primer_plate_is_DNA_plate = False,
