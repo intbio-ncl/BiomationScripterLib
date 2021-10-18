@@ -129,7 +129,6 @@ def Generate_Actions(Protocol):
                     destination_well = destination[1]
                     total_volume_to_transfer = Protocol.get_reagent_info(reagent, destination_plate, destination_well)[0]
 
-
                     # Transfer liquid from source well(s) to destination well until the total volume has been transferred
                     ## This may take multiple actions if the volume to transfer is above the max transfer volume, or multiple source wells are required
                     source_index = 0
@@ -140,7 +139,10 @@ def Generate_Actions(Protocol):
                         # Check how much volume is available to transfer from the current source well
                         available_volume = Protocol.get_reagent_volume(reagent, source_plate, source_well) - dead_volume
                         # If the volume to transfer is below both the available volume and the max transfer volume, add the action to the transfer list
-                        if total_volume_to_transfer <= max_transfer_volume and total_volume_to_transfer <= available_volume:
+                        # If the current source well is empty
+                        if available_volume < 0.025:
+                            source_index += 1
+                        elif total_volume_to_transfer <= max_transfer_volume and total_volume_to_transfer <= available_volume:
                             transfer_list.add_action(reagent,
                                 liquid_class,
                                 source_well,
@@ -149,8 +151,9 @@ def Generate_Actions(Protocol):
                                 destination_well,
                                 int(total_volume_to_transfer * 1000)
                             )
-                            total_volume_to_transfer = 0
                             source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - total_volume_to_transfer, reagent, source_well)
+                            total_volume_to_transfer = 0
+
                         # If the total volume to transfer is above the max transfer limit, but there is enough to transfer the max transfer from the current source well
                         elif total_volume_to_transfer > max_transfer_volume and available_volume >= max_transfer_volume:
                             transfer_list.add_action(reagent,
@@ -161,8 +164,9 @@ def Generate_Actions(Protocol):
                                 destination_well,
                                 int(max_transfer_volume * 1000)
                             )
-                            total_volume_to_transfer -= max_transfer_volume
                             source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - max_transfer_volume, reagent, source_well)
+                            total_volume_to_transfer -= max_transfer_volume
+
                         # If the total volume to transfer is above the max transfer limit, and there isn't enough to transfer the max transfer from the current source well...
                         # ..., transfer the entire content of the current source well and iterate to the next source well
                         # Also if the total volume to transfer is below the max transfer limit, but there isn't enough to transfer the entire amount, do the same
@@ -177,9 +181,6 @@ def Generate_Actions(Protocol):
                             )
                             total_volume_to_transfer -= available_volume
                             source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - available_volume, reagent, source_well)
-                            source_index += 1
-                        # If the current source well is empty
-                        elif available_volume < 0.025:
                             source_index += 1
                         else:
                             raise ValueError("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
