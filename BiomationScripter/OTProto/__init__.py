@@ -5,6 +5,17 @@ from opentrons import simulate as OT2
 
 ########################
 
+def get_pipette(Protocol, Pipette):
+    if Pipette == "p20":
+        return(get_p20(Protocol))
+    elif Pipette == "p300":
+        return(get_p300(Protocol))
+    elif Pipette == "p1000":
+        return(get_p1000(Protocol))
+    else:
+        raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+
+
 def get_p20(protocol):
     pipettes = protocol.loaded_instruments
     for position in pipettes.keys():
