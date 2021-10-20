@@ -3,6 +3,120 @@ import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
 
+
+class OTProto_Template:
+    def __init__(self,
+        Protocol,
+        Name,
+        Metadata,
+        Starting_20uL_Tip = "A1",
+        Starting_300uL_Tip = "A1",
+        Starting_1000uL_Tip = "A1"
+    ):
+        #####################
+        # Protocol Metadata #
+        #####################
+        self._protocol = Protocol
+        self.name = Name
+        self.metadata = Metadata
+        self.custom_labware_dir = "../Custom_Labware/"
+
+        ####################
+        # Source materials #
+        ####################
+        ## Pipette Tips ##
+        self.tip_types = {
+            "p20": "opentrons_96_tiprack_20ul",
+            "p300": "opentrons_96_tiprack_300ul",
+            "p1000": "opentrons_96_tiprack_1000ul"
+        }
+        self.starting_tips = {
+            "p20": Starting_20uL_Tip,
+            "p300": Starting_300uL_Tip,
+            "p1000": Starting_1000uL_Tip
+        }
+
+        self.tips_needed = {
+            "p20": 0,
+            "p300": 0,
+            "p1000": 0
+        }
+
+        # self._20uL_tip_type = "opentrons_96_tiprack_20ul"
+        # self._300uL_tip_type = "opentrons_96_tiprack_300ul"
+        # self.starting_20uL_tip = Starting_20uL_Tip
+        # self.starting_300uL_tip = Starting_300uL_Tip
+
+        ###############
+        # Robot Setup #
+        ###############
+        self._pipettes = {
+            "left": "p20_single_gen2",
+            "right": "p300_single_gen2"
+        }
+        self.__pipettes_loaded = False
+
+        # self._left_pipette = "p20_single_gen2"
+        # self._right_pipette = "p300_single_gen2"
+
+        # self._p20_type = "p20_single_gen2"
+        # self._p20_position = "left"
+        # self._p300_type = "p300_single_gen2"
+        # self._p300_position = "right"
+
+    def custom_labware_directory(self, Directory):
+        self.custom_labware_dir = Directory
+
+    def pipette_config(self, Pipette_Type, Position):
+        if self.__pipettes_loaded:
+            raise _BMS.BMSTemplateError("Pipettes have already been loaded. Please modify pipette configuration before loading pipettes. Changes to configuration have NOT been saved.")
+        try:
+            self._pipettes[Position.lower()] = Pipette_Type
+        except KeyError:
+            raise _BMS.RobotConfigurationError("{} is an invalid pipette positon. Please specify either 'right' or 'left'".format(Position))
+
+    def load_pipettes(self):
+        for pipette_position in self._pipettes.keys():
+            pipette = self._pipettes[pipette_position]
+            self._protocol.load_instrument(pipette, pipette_position)
+        self.__pipettes_loaded = True
+
+    def tip_type(self, Pipette, Tip_Type):
+        try:
+            self.tip_types[Pipette] = Tip_Type
+        except KeyError:
+            raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+
+
+    def starting_tip_position(self, Pipette, Tip_Position):
+        try:
+            self.starting_tips[Pipette] = Tip_Position
+        except:
+            raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+
+    def add_tip_boxes_to_pipettes(self):
+        for pipette_type in self.tips_needed.keys():
+            # Get the current pipette
+            pipette = get_pipette(self._protocol, pipette_type)
+            # Get the amount of tips needed for this pipette
+            tips_needed = self.tips_needed[pipette_type]
+            if tips_needed == 0:
+                continue
+            elif pipette == None and not self.tips_needed[pipette_type] == 0:
+                raise _BMS.RobotConfigurationError("Tips have been specifed for {}, however this pipette type has not been loaded. Please ensure pipettes have been loaded and check your protocol.".format(pipette_type))
+            else:
+                tip_boxes_needed = tip_racks_needed(tips_needed, self.starting_tips[pipette_type])
+                tip_type = self.tip_types[pipette_type]
+                for tip_box in range(0, tip_boxes_needed):
+                    tip_box_deck_slot = next_empty_slot(self._protocol)
+                    tip_box = load_labware(self._protocol, tip_type, tip_box_deck_slot)
+                    pipette.tip_racks.append(tip_box)
+
+    def run(self):
+        raise _BMS.BMSTemplateError("This template has no `run` method.")
+
+
+
 ########################
 
 def get_pipette(Protocol, Pipette):
