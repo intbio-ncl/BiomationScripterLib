@@ -384,6 +384,60 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
 
     return(pipette, tip_racks)
 
+def select_pipette_by_volume(Protocol, Volume):
+
+    # Check which pipettes are available - any unavailable will return None
+    p20 = get_p20(Protocol)
+    p300 = get_p300(Protocol)
+    p1000 = get_p1000(Protocol)
+
+    if Volume < 1:
+        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
+    elif Volume < 20 and p20:
+        return(p20)
+    elif Volume == 20 and p20:
+        return(p20)
+    elif Volume == 20 and not p20:
+        return(p300)
+    elif Volume > 20 and Volume <= 300 and p300:
+        return(p300)
+    elif Volume > 300 and p1000:
+        return(p1000)
+    elif Volume >= 100 and not p300 and p1000:
+        return(p1000)
+    elif Volume > 300 and not p1000 and p300:
+        return(p300)
+    elif p20 and not p300 and not p1000:
+        return(p20)
+    else:
+        raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
+
+def calculate_tips_needed(protocol, transfers, new_tip = True):
+    if not type(transfers) == list:
+        transfers = [transfers]
+
+    tips_needed = {
+        "20uL": 0,
+        "300uL": 0,
+        "1000uL": 0
+    }
+
+    for transfer in transfers:
+        # Get the most appropriate pipette from those which are loaded
+        pipette = select_pipette_by_volume(protocol, transfer)
+        # Check how many trasfers will be needed to transfer the entire volume (e.g. if p300 is chosen for 400 uL, two transfers needed)
+        ## This can be ignored if new_tip == False (i.e. one tip will be used no matter hwhat)
+        if new_tip:
+            transfers_needed = math.ceil(transfer/pipette.max_volume)
+        else:
+            transfers_needed = 1
+        # For each transfer that is needed, add to the appropriate tips_needed counter
+        for n in range(0, transfers_needed):
+            tips_needed["{}uL".format(pipette.max_volume)] += 1
+
+    # Return a list of all tips needed
+    return(tips_needed["20uL"], tips_needed["300uL"], tips_needed["1000uL"])
+
 def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
     tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position), [8,12], "Vertical"))
     if tips_needed > tips_in_first_rack:
