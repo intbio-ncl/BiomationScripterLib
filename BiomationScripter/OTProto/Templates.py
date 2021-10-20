@@ -2,7 +2,30 @@ import BiomationScripter as _BMS
 import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
-import smtplib, ssl
+# import smtplib, ssl
+
+class Example_Template(_OTProto.OTProto_Template):
+    def __init__(self,
+        # insert custom arguments here, e.g.:
+#       arg_1,
+#       arg_2,
+        **kwargs # this accepts default keyword arguments from OTProto_Template, i.e. Protocol, Name, and Metadata
+    ):
+        # Instantiate custom attributes here, e.g.:
+#       self.att1 = arg_1
+#       self.att2 = arg_2
+#       self.att3 = "Cello"
+        super().__init__(**kwargs) # This passes the Protocol, Name, Metadata, and various starting tip kw args
+
+    def run(self):
+
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+        # The rest of your code goes here #
+
 
 class OT2_Picklist:
     def __init__(self, Protocol, Name, Metadata, Source_1, Source_Wells_1, Source_Plate_Type_1, Source_Label_1,
