@@ -151,13 +151,14 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
     min_transfer = min(Transfer_Volumes)
     max_transfer = max(Transfer_Volumes)
 
-    # Check that the correct pipettes are available #
+    # Check which pipettes are available #
     p20 = get_p20(Protocol)
     p300 = get_p300(Protocol)
     p1000 = get_p1000(Protocol)
 
+    # Raise an error if not pipettes are loaded
     if not p20 and not p300 and not p1000:
-        raise ValueError("No pipettes have been loaded")
+        raise _BMS.RobotConfigurationError("No pipettes have been loaded")
 
     for volume in Transfer_Volumes:
         if volume == 0:
