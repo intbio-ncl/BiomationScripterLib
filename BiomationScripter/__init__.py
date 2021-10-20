@@ -8,7 +8,17 @@ import math
 class NegativeVolumeError(Exception):
     pass
 
+class UnknownLabware(Exception):
+    pass
 
+class UnknownHardware(Exception):
+    pass
+
+class RobotConfigurationError(Exception):
+    pass
+
+class BMSTemplateError(Exception):
+    pass
 
 #####################
 
