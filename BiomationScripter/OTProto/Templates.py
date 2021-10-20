@@ -162,7 +162,7 @@ class OT2_Picklist:
                     tips_needed_300uL += round(t[4]/300) + 1
                 else:
                     tips_needed_300uL += t[4] / 300
-    
+
         # Calculate number of racks needed - account for the first rack missing some tips
         racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
         racks_needed_300uL = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
@@ -339,7 +339,7 @@ class OT2_Picklist:
             destination_list.pop()
 
         # Load labware and store liquid for Source
-        for dict in source_list: 
+        for dict in source_list:
             ## Find the next empty deck slot
             labware_slot = _OTProto.next_empty_slot(self._protocol)
             ## Load the labware
@@ -417,7 +417,6 @@ class OT2_Picklist:
                 p300.transfer(transfer_volume, source, destination)
             else:
                 self._protocol.pause("Transfer volume > 300 uL. This will be split into two transfers. Continue?")
-
 
 class Primer_Mixing_LightRun:
     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
@@ -773,9 +772,6 @@ class DNA_fmol_Dilution:
 
             ## Add DNA to water
             _OTProto.transfer_liquids(self._protocol, dna_to_add, DNA_Locations, destination_locations, new_tip = True, mix_after = (5,"transfer_volume"))
-
-
-
 
 class Monarch_Miniprep:
     def __init__(self,
@@ -1572,7 +1568,6 @@ class Spot_Plating:
                 destination_labware_index += 1
                 plating_index = 0
                 self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[destination_labware_index].parent))
-
 
 class Transformation:
     def __init__(self,
