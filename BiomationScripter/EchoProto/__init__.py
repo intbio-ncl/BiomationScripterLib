@@ -214,7 +214,7 @@ class Protocol:
                 return(tl)
 
     def add_destination_plate(self, Destination_Plate):
-        self.destination_plates.append(D_Plate)
+        self.destination_plates.append(Destination_Plate)
 
     def add_destination_plates(self, Destination_Plates):
         for Destination_Plate in Destination_Plates:
