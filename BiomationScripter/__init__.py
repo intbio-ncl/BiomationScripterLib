@@ -2,6 +2,7 @@ from BiomationScripter import EchoProto
 from BiomationScripter import OTProto
 # from BiomationScripter import FelixProto
 import math
+import pandas as pd
 
 # Exception classes #
 
@@ -141,6 +142,29 @@ class PlateLayout:
                 content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
                 print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
         return(content_return)
+    
+    # create a dummy PlateLayout object before running this method
+    def import_plate(self, filename, path="~"):
+        # look at Sheet1 (the Plate Metadata)
+        sheet1 = pd.read_excel(path+filename, sheet_name=0, header=None)
+        # look at Sheet2 (the Well lookup)
+        sheet2 = pd.read_excel(path+filename, sheet_name=1)
+
+        # get plate name and plate type from Sheet 1
+        self.name = sheet1[1].iloc[0] # column 2, row 1
+        self.type = sheet1[1].iloc[1] # column 2, row 2
+
+        # if Current Volume column is empty (NaN), replace with Initial Volume
+        sheet2["Volume (uL) - Current"].fillna(sheet2["Volume (uL) - Initial"], inplace=True)
+        # select subset of columns as "content"
+        content = sheet2[["Well", "Name", "Volume (uL) - Current", "Calibration Type"]]
+        # delete rows where the Name is blank
+        content = content.dropna(subset=["Name"])
+        # iterate over rows
+        for row in content.itertuples(index=False):
+            # add contents to PlateLayout object
+            self.add_content(row[0], row[1], row[2], row[3])
+        return(self)
 
 class Liquids:
     def __init__(self):
