@@ -339,6 +339,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             if transfer_volume == 0:
                 continue
             # Deal with mix_before and mix_after
+            # TODO: I have q: what happens if the transfer volume specified is outside of the working range?
             if mix_before and mix_before[1] == "transfer_volume":
                 mix_before = (mix_before[0], transfer_volume)
             if mix_after and mix_after[1] == "transfer_volume":
@@ -362,6 +363,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             elif not p300 and not p1000:
                 p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
             Aliquot_Index += 1
+            # TODO: I have q: does BMS check to see if there is enough liquid left in the well for the transfer?
             if Aliquot_Index == len(Aliquot_Source_Locations):
                 Aliquot_Index = 0
 
