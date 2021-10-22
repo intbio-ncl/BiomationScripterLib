@@ -177,6 +177,13 @@ def get_p1000(protocol):
     return(None)
 
 def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
+    if not type(Transfer_Volumes) == list:
+        Transfer_Volumes = [Transfer_Volumes]
+    if not type(Source_Locations) == list:
+        Source_Locations = [Source_Locations]
+    if not type(Destination_Locations) == list:
+        Destination_Locations = [Destination_Locations]
+
     min_transfer = min(Transfer_Volumes)
     max_transfer = max(Transfer_Volumes)
 
@@ -221,32 +228,27 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if not p1000.has_tip:
                 p1000.pick_up_tip()
 
+
         for transfer_volume, source, destination in zip(Transfer_Volumes, Source_Locations, Destination_Locations):
             if transfer_volume == 0:
                 continue
+
+            # Choose best pipette to use
+            pipette = select_pipette_by_volume(Protocol, transfer_volume)
+
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
                 mix_before = (mix_before[0], transfer_volume)
             if mix_after and mix_after[1] == "transfer_volume":
                 mix_after = (mix_after[0], transfer_volume)
 
-            # Choose best pipette to use
-            if transfer_volume < 20 and p20:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and p20:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and not p20:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume >= 100 and not p300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and not p1000 and p300:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif not p300 and not p1000:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
+            # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
+            if mix_before and mix_before[1] > pipette.max_volume:
+                mix_before[1] = pipette.max_volume
+            if mix_after and mix_after[1] > pipette.max_volume:
+                mix_after[1] = pipette.max_volume
+
+            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
 
         if p20:
             if p20.has_tip:
@@ -269,145 +271,65 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
                 mix_after = (mix_after[0], transfer_volume)
 
             # Choose best pipette to use
-            if transfer_volume < 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and not p20:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume >= 100 and not p300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and not p1000 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif not p300 and not p1000:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+            pipette = select_pipette_by_volume(Protocol, transfer_volume)
 
-
-
-def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, new_tip = True, mix_after = None, mix_before = None):
-    min_transfer = min(Transfer_Volumes)
-    max_transfer = max(Transfer_Volumes)
-
-    # Check which pipettes are available #
-    p20 = get_p20(Protocol)
-    p300 = get_p300(Protocol)
-    p1000 = get_p1000(Protocol)
-
-    # Raise an error if not pipettes are loaded
-    if not p20 and not p300 and not p1000:
-        raise _BMS.RobotConfigurationError("No pipettes have been loaded")
-
-    for volume in Transfer_Volumes:
-        if volume == 0:
-            continue
-        if volume < 20 and not p20:
-            raise ValueError("p20 pipette is required, but has not been loaded")
-        if volume == 20 and (not p20 and not p300):
-            raise ValueError("p20 or p300 pipette is required, but neither have been loaded")
-        if (volume <= 100 and volume > 20) and not p300:
-            raise ValueError("p300 pipette is required, but has not been loaded")
-        if volume <=300 and (not p300 and not p1000):
-            raise ValueError("p300 or p1000 pipette is required, but neither have been loaded")
-
-    if not new_tip:
-        # Select tip for smallest transfers
-        if min_transfer == 0:
-            pass
-        elif min_transfer <= 20 and p20:
-            p20.pick_up_tip()
-        elif min_transfer == 20 and p300 and not p20:
-            p300.pick_up_tip()
-        elif min_transfer <= 300 and p300:
-            p300.pick_up_tip()
-        else:
-            p1000.pick_up_tip()
-
-        # Select tip for largest transfers (if not already selected)
-        if (max_transfer > 20 and max_transfer <= 300) and p300:
-            if not p300.has_tip:
-                p300.pick_up_tip()
-        elif max_transfer >= 100 and not p300 and p1000:
-            if not p1000.has_tip:
-                p1000.pick_up_tip()
-
-        Aliquot_Index = 0
-        for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
-            if transfer_volume == 0:
-                continue
-            # Deal with mix_before and mix_after
-            # TODO: I have q: what happens if the transfer volume specified is outside of the working range?
-            if mix_before and mix_before[1] == "transfer_volume":
-                mix_before = (mix_before[0], transfer_volume)
-            if mix_after and mix_after[1] == "transfer_volume":
-                mix_after = (mix_after[0], transfer_volume)
-            source = Aliquot_Source_Locations[Aliquot_Index]
-            # Choose best pipette to use
-            if transfer_volume < 20 and p20:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and p20:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and not p20:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume >= 100 and not p300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and not p1000 and p300:
-                p300.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            elif not p300 and not p1000:
-                p20.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
-            Aliquot_Index += 1
-            # TODO: I have q: does BMS check to see if there is enough liquid left in the well for the transfer?
-            if Aliquot_Index == len(Aliquot_Source_Locations):
-                Aliquot_Index = 0
-
-        if p20:
-            if p20.has_tip:
-                p20.drop_tip()
-        if p300:
-            if p300.has_tip:
-                p300.drop_tip()
-        if p1000:
-            if p1000.has_tip:
-                p1000.drop_tip()
-
-    else:
-        Aliquot_Index = 0
-        for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
-            if transfer_volume == 0:
-                continue
-            source = Aliquot_Source_Locations[Aliquot_Index]
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
                 mix_before = (mix_before[0], transfer_volume)
             if mix_after and mix_after[1] == "transfer_volume":
                 mix_after = (mix_after[0], transfer_volume)
-            # Choose best pipette to use
-            if transfer_volume < 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume == 20 and not p20:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 20 and transfer_volume <= 300 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume >= 100 and not p300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif transfer_volume > 300 and not p1000 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            elif not p300 and not p1000:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
-            Aliquot_Index += 1
-            if Aliquot_Index == len(Aliquot_Source_Locations):
-                Aliquot_Index = 0
+
+            # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
+            if mix_before and mix_before[1] > pipette.max_volume:
+                mix_before[1] = pipette.max_volume
+            if mix_after and mix_after[1] > pipette.max_volume:
+                mix_after[1] = pipette.max_volume
+
+            pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+
+
+
+
+
+
+
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None):
+
+    Initial_Source_Locations = Aliquot_Source_Locations.copy()
+
+    # Create list to store order of Aliquot Source Location usage
+    Aliquot_Source_Order = []
+
+    # Format aliquot volumes so it is useable
+    if Aliquot_Volumes:
+        if type(Aliquot_Volumes) == int or type(Aliquot_Volumes) == float:
+            Aliquot_Volumes = [Aliquot_Volumes] * len(Aliquot_Source_Locations)
+
+
+    Aliquot_Index = 0
+    for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
+        # Check if there is enough volume in the current aliquot
+        if Aliquot_Volumes:
+            # If there is, then continue
+            if Aliquot_Volumes[Aliquot_Index] >= transfer_volume:
+                Aliquot_Volumes[Aliquot_Index] -= transfer_volume
+            # If not, then remove the current aliquot from the list of those available
+            else:
+                Aliquot_Volumes.remove(Aliquot_Volumes[Aliquot_Index])
+                Aliquot_Source_Locations.remove(Aliquot_Source_Locations[Aliquot_Index])
+                # If the aliquot removed was the last in the list, move back to the first aliquot
+                if Aliquot_Index == len(Aliquot_Source_Locations):
+                    Aliquot_Index = 0
+                # If there aren't any aliquots left, raise an error
+                if len(Aliquot_Source_Locations) == 0:
+                    raise _BMS.OutOFSourceMaterial("Ran out of source material when aliquoting into {}.\nSource Locations:\n{}".format(destination, Initial_Source_Locations))
+
+        Aliquot_Source_Order.append(Aliquot_Source_Locations[Aliquot_Index])
+        Aliquot_Index += 1
+        if Aliquot_Index == len(Aliquot_Source_Locations):
+            Aliquot_Index = 0
+    transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after)
+
 
 
 # def calculate_aliquots_required(Transfers, Aliquot_Volume):
