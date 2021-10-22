@@ -152,13 +152,13 @@ class PlateLayout:
         # NOTE: this only checks for a "." so could easily throw errors if given atypical input
         if "." in filename:
             # look at Sheet1 (the Plate Metadata)
-            sheet1 = pd.read_excel(path+filename, sheet_name=0, header=None)
+            sheet1 = pd.read_excel(path+filename, sheet_name=0, header=None, engine='openpyxl')
             # look at Sheet2 (the Well lookup)
-            sheet2 = pd.read_excel(path+filename, sheet_name=1)
+            sheet2 = pd.read_excel(path+filename, sheet_name=1, engine='openpyxl')
         else:
             # add extension (default = ".xlsx") to arg1
-            sheet1 = pd.read_excel(path+filename+ext, sheet_name=0, header=None)
-            sheet2 = pd.read_excel(path+filename+ext, sheet_name=1)
+            sheet1 = pd.read_excel(path+filename+ext, sheet_name=0, header=None, engine='openpyxl')
+            sheet2 = pd.read_excel(path+filename+ext, sheet_name=1, engine='openpyxl')
 
         # get plate name and plate type from Sheet 1
         self.name = sheet1[1].iloc[0] # column 2, row 1
