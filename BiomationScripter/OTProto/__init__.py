@@ -390,21 +390,21 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
                 mix_after = (mix_after[0], transfer_volume)
             # Choose best pipette to use
             if transfer_volume < 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p20.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume == 20 and p20:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p20.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume == 20 and not p20:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p300.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume > 20 and transfer_volume <= 300 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p300.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume > 300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p1000.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume >= 100 and not p300 and p1000:
-                p1000.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p1000.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif transfer_volume > 300 and not p1000 and p300:
-                p300.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p300.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             elif not p300 and not p1000:
-                p20.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+                p20.transfer(transfer_volume, source, destination, new_tip = "always", mix_before = mix_before, mix_after = mix_after)
             Aliquot_Index += 1
             if Aliquot_Index == len(Aliquot_Source_Locations):
                 Aliquot_Index = 0
