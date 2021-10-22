@@ -21,6 +21,9 @@ class RobotConfigurationError(Exception):
 class BMSTemplateError(Exception):
     pass
 
+class OutOFSourceMaterial(Exception):
+    pass
+
 #####################
 
 class PlateLayout:
@@ -142,7 +145,7 @@ class PlateLayout:
                 content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
                 print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
         return(content_return)
-    
+
     # create a dummy PlateLayout object before running this method
     def import_plate(self, filename, path="~", ext=".xlsx"):
         # check if filename contains the extension
