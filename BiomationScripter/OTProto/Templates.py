@@ -1421,7 +1421,7 @@ class Spot_Plating:
             # Get the subset of LB volumes which will be transferred to this destination labware
             ## Note that if there is only one destination labware, LB_volumes == LB_transfers
             LB_volumes = LB_transfers[0+(wells_in_labware*destination_labware_index):wells_in_labware+(wells_in_labware*destination_labware_index)]
-            _OTProto.dispense_from_aliquots(self._protocol, LB_volumes, LB_source, destination_labware.wells(), new_tip = False)
+            _OTProto.dispense_from_aliquots(self._protocol, LB_volumes, LB_source, destination_labware.wells(), new_tip = False, Aliquot_Volumes = self.LB_source_volume_per_well)
 
 #### Code below is replaced with code above, but is left for now incase of unexpected behaviour
         # # This is to switch which LB aliquot is being used as the source
