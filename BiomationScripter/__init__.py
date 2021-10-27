@@ -142,6 +142,8 @@ class PlateLayout:
             if content[0] == Liquid:
                 return(content[1])
 
+        return(0.0)
+
     def update_volume_in_well(self, Volume, Reagent, Well):
         if not Well in self.get_content().keys():
             raise LabwareError("{} has not been previously defined. Add content to this well using the `add_content` method.".format(Well))
