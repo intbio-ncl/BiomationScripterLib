@@ -7,8 +7,11 @@ This is a python package containg a set of tool to help with writing automation 
 To install the package, first, clone the repository on to your working area. Run the following command to install the python package on your machine:
 `pip install git+https://github.com/intbio-ncl/BiomationScripter.git`
 
+## Getting Started
+https://github.com/intbio-ncl/BiomationScripterLib/wiki/Getting-Started
+
 ## BiomationScripter - Generic Tools
-https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started
+https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter
 
 ## EchoProto
 https://github.com/intbio-ncl/BiomationScripter/wiki/EchoProto
