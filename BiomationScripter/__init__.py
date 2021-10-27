@@ -107,6 +107,17 @@ class PlateLayout:
     def get_occupied_wells(self):
         return(list(self.get_content().keys()))
 
+    def get_liquids_in_well(self, Well):
+        if not Well in self.get_occupied_wells():
+            raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
+
+        liquids_in_well = []
+        content_in_well = self.content[Well]
+        for content in content_in_well:
+            liquids_in_well.append(content[0])
+
+        return(liquids_in_well)
+
     def get_wells_containing_liquid(self, Liquid_Name):
         wells_to_return = []
         content = self.get_content()
@@ -122,6 +133,14 @@ class PlateLayout:
 
     def clear_content_from_well(self, Well):
         del self.content[Well]
+
+    def get_volume_of_liquid_in_well(self, Liquid, Well):
+        if not Well in self.get_occupied_wells():
+            raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
+        well_content = self.get_content()[Well]
+        for content in well_content:
+            if content[0] == Liquid:
+                return(content[1])
 
     def update_volume_in_well(self, Volume, Reagent, Well):
         if not Well in self.get_content().keys():
@@ -253,6 +272,11 @@ class Liquids:
 ##########################################
 # Functions
 
+def Import_Plate_Layout(Filename):
+    plate_layout = PlateLayout("name", "type")
+    plate_layout.import_plate(Filename)
+    return(plate_layout)
+
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
@@ -270,7 +294,7 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
 
 
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = True):
-    if not Direction == "Horizontal" and not Direction = "Vertical":
+    if not Direction == "Horizontal" and not Direction == "Vertical":
         raise ValueError("`Direction` must be either 'Horizontal' or 'Vertical'")
 
     if not Labware_Format and not Box:
