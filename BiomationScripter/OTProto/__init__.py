@@ -85,14 +85,14 @@ class OTProto_Template:
         try:
             self.tip_types[Pipette] = Tip_Type
         except KeyError:
-            raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+            raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
 
 
     def starting_tip_position(self, Pipette, Tip_Position):
         try:
             self.starting_tips[Pipette] = Tip_Position
         except:
-            raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+            raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
 
     def add_tip_boxes_to_pipettes(self):
         for pipette_type in self.tips_needed.keys():
@@ -119,6 +119,13 @@ class OTProto_Template:
 
 ########################
 
+def load_labware_from_PlateLayout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
+    labware_type = Plate_Layout.type
+    labware_name = Plate_Layout.name
+    labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
+
+    return(labware)
+
 def get_locations(Labware, Wells, Direction = None):
     # Argument Direction is ignored is Wells is a list of wells
     ## It is only used if Wells is a well range (e.g. A1:H4)
@@ -143,7 +150,7 @@ def get_pipette(Protocol, Pipette):
     elif Pipette == "p1000":
         return(get_p1000(Protocol))
     else:
-        raise _BMS.UnknownHardware("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
+        raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
 
 
 def get_p20(protocol):
