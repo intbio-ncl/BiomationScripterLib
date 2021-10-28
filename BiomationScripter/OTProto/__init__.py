@@ -292,7 +292,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if mix_after and mix_after[1] > pipette.max_volume:
                 mix_after[1] = pipette.max_volume
 
-            pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after)
+            pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after, new_tip = "always")
 
 
 
