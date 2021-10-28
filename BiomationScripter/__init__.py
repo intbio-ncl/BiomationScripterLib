@@ -24,7 +24,7 @@ class OutOFSourceMaterial(Exception):
 #####################
 # Classes
 
-class PlateLayout:
+class Labware_Layout:
     def __init__(self, Name, Type):
         self.name = Name
         self.type = Type
@@ -195,6 +195,11 @@ class PlateLayout:
             self.add_content(row[0], row[1], row[2], row[3])
         return(self)
 
+
+class PlateLayout(Labware_Layout):
+    pass
+
+
 class Liquids:
     def __init__(self):
         self.liquids = {}
@@ -246,31 +251,6 @@ class Liquids:
     def get_all_liquids(self):
         return(list(self.liquids.keys()))
 
-
-# def well_range_for_plate(Plate_Layout, Well_Range=None, UseOuterWells=True):
-#     n_rows = Plate_Layout.rows
-#     n_cols = Plate_Layout.columns
-#     if Well_Range == None:
-#         Well_Range = "A1:{}{}".format(chr(64+n_rows),n_cols)
-#
-#     plate_first_row = "A"
-#     plate_last_row = chr(64+n_rows)
-#     plate_first_col = 1
-#     plate_last_col = n_cols
-#
-#     wells = well_range(Well_Range)
-#
-#     if UseOuterWells == False:
-#         temp_wells = []
-#         for w in wells:
-#             if (plate_first_row in w) or (plate_last_row in w) or (str(plate_first_col) == w[1:]) or (str(plate_last_col) == w[1:]):
-#                 continue
-#             else:
-#                 temp_wells.append(w)
-#         wells = temp_wells
-#
-#     return(wells)
-
 ##########################################
 # Functions
 
@@ -292,8 +272,6 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
         Plate_Name = Plate_Format.name + str(plate_n)
         Plates.append(Plate_Format.clone_format(Plate_Name))
     return(Plates)
-
-
 
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = True):
     if not Direction == "Horizontal" and not Direction == "Vertical":
@@ -379,7 +357,6 @@ def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
 
 def _Labware_Row_To_Index(row):
     return(ord(row.upper()) - ord("A"))
-
 
 ## To be deprecated ##
 
