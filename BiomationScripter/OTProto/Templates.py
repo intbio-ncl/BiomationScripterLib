@@ -27,6 +27,128 @@ class Example_Template(_OTProto.OTProto_Template):
         # The rest of your code goes here #
 
 
+class Protocol_From_Layout(_OTProto.OTProto_Template):
+    def __init__(self,
+        Source_Labware_Files,
+        Destination_Labware_Files,
+        **kwargs
+    ):
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.source_files = Source_Labware_Files
+        self.destination_files = Destination_Labware_Files
+
+        ##################################################
+        # Protocol Metadata and Instrument Configuration #
+        ##################################################
+        super().__init__(**kwargs)
+
+    def run(self):
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+        ###################################################
+        # Load source labware type(s) and current content #
+        ###################################################
+        source_layouts = []
+
+        for source_file in self.source_files:
+            source_layouts.append(_BMS.Import_Plate_Layout(source_file))
+
+        #########################################################
+        # Load destination labware type(s) and intended content #
+        #########################################################
+        destination_layouts = []
+        for destination_file in self.destination_files:
+            destination_layouts.append(_BMS.Import_Plate_Layout(destination_file))
+
+        ###########################################
+        # Create and load PlateLayouts as labware #
+        ###########################################
+        source_labware = []
+
+        for source_layout in source_layouts:
+            source_labware.append(
+                _OTProto.load_labware_from_PlateLayout(
+                                                    Protocol = self._protocol,
+                                                    Plate_Layout = source_layout,
+                                                    custom_labware_dir = self.custom_labware_dir)
+            )
+
+        destination_labware = []
+        for destination_layout in destination_layouts:
+            destination_labware.append(
+                _OTProto.load_labware_from_PlateLayout(
+                                                    Protocol = self._protocol,
+                                                    Plate_Layout = destination_layout,
+                                                    custom_labware_dir = self.custom_labware_dir)
+            )
+
+        ###########################################
+        # Create a lists for the transfer actions #
+        ###########################################
+        transfer_volumes = []
+        source_locations = []
+        destination_locations = []
+        # For every destination labware specified
+        for current_destination_labware, destination_layout in zip(destination_labware, destination_layouts):
+            occupied_wells = destination_layout.get_occupied_wells()
+            # For every well in the destination labware which needs liquid transfered to it
+            for well in occupied_wells:
+                # Check which reagents are required in each destination well
+                required_reagents = destination_layout.get_liquids_in_well(well)
+                # For each reagent, find a source location for it
+                for required_reagent in required_reagents:
+                    source_material_found = False
+                    reagent_volume_required = destination_layout.get_volume_of_liquid_in_well(required_reagent, well)
+                    for current_source_labware, source_layout in zip(source_labware, source_layouts):
+                        wells_with_reagent = source_layout.get_wells_containing_liquid(required_reagent)
+                        if len(wells_with_reagent) == 0:
+                            continue
+                        else:
+                            for source_well in wells_with_reagent:
+                                reagent_volume_available = source_layout.get_volume_of_liquid_in_well(required_reagent, source_well)
+                                if not reagent_volume_available >= reagent_volume_required:
+                                    continue
+                                else:
+                                    source = current_source_labware.wells_by_name()[source_well]
+                                    destination = current_destination_labware.wells_by_name()[well]
+                                    transfer_volumes.append(reagent_volume_required)
+                                    source_locations.append(source)
+                                    destination_locations.append(destination)
+                                    source_layout.update_volume_in_well(reagent_volume_available - reagent_volume_required, required_reagent, source_well)
+                                    source_material_found = True
+                                    break
+                        if source_material_found:
+                            break
+                    if not source_material_found:
+                        raise _BMS.OutOFSourceMaterial("Failed to find {} to transfer to labware {}, well {}".format(required_reagent, destination_layout.name, well))
+                    else:
+                        continue
+
+        ###################################################
+        # Determine number of tips and tip racks required #
+        ###################################################
+        # Calculate number of tips needed:
+        self.tips_needed["p20"], self.tips_needed["p300"], self.tips_needed["p1000"] = _OTProto.calculate_tips_needed(self._protocol, transfer_volumes, new_tip = True)
+        # Add required number of tip boxes to the loaded pipettes
+        self.add_tip_boxes_to_pipettes()
+
+        #########################
+        # Begin liquid handling #
+        #########################
+        for slot in self._protocol.deck:
+            if slot == 12:
+                continue
+            labware = self._protocol.deck[slot]
+            if labware:
+                self._protocol.pause("Place {} ({}) in slot {}".format(labware.get_name(), labware.load_name, slot))
+
+        _OTProto.transfer_liquids(self._protocol, transfer_volumes, source_locations, destination_locations, new_tip = True, mix_before = (5,"transfer_volume"), mix_after = (5,"transfer_volume"))
+
 class OT2_Picklist:
     def __init__(self, Protocol, Name, Metadata, Source_1, Source_Wells_1, Source_Plate_Type_1, Source_Label_1,
     Destination_Plate_Type_1, Destination_Label_1, Transfer_Steps, Source_Plates, Destination_Plates,
@@ -1421,7 +1543,7 @@ class Spot_Plating:
             # Get the subset of LB volumes which will be transferred to this destination labware
             ## Note that if there is only one destination labware, LB_volumes == LB_transfers
             LB_volumes = LB_transfers[0+(wells_in_labware*destination_labware_index):wells_in_labware+(wells_in_labware*destination_labware_index)]
-            _OTProto.dispense_from_aliquots(self._protocol, LB_volumes, LB_source, destination_labware.wells(), new_tip = False)
+            _OTProto.dispense_from_aliquots(self._protocol, LB_volumes, LB_source, destination_labware.wells(), new_tip = False, Aliquot_Volumes = self.LB_source_volume_per_well)
 
 #### Code below is replaced with code above, but is left for now incase of unexpected behaviour
         # # This is to switch which LB aliquot is being used as the source
