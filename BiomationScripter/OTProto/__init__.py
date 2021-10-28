@@ -3,7 +3,6 @@ import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
 
-
 class OTProto_Template:
     def __init__(self,
         Protocol,
@@ -115,11 +114,9 @@ class OTProto_Template:
     def run(self):
         raise _BMS.BMSTemplateError("This template has no `run` method.")
 
-
-
 ########################
 
-def load_labware_from_PlateLayout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
+def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
     labware_type = Plate_Layout.type
     labware_name = Plate_Layout.name
     labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
@@ -151,7 +148,6 @@ def get_pipette(Protocol, Pipette):
         return(get_p1000(Protocol))
     else:
         raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
-
 
 def get_p20(protocol):
     pipettes = protocol.loaded_instruments
@@ -294,12 +290,6 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
 
             pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after, new_tip = "always")
 
-
-
-
-
-
-
 def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None):
 
     Initial_Source_Locations = Aliquot_Source_Locations.copy()
@@ -347,7 +337,6 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
 #             aliquots_required += 1
 #             volume_left_in_aliquot = Aliquot_Volume
 
-
 def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
     # Determine amount of labware required #
     labware = []
@@ -378,7 +367,6 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, custo
 
     # Return the list of loaded labware
     return(labware, well_locations)
-
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
