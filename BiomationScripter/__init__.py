@@ -304,11 +304,14 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Tru
             return(wells)
 
     else:
-        # Labware_Format = [n_rows,n_columns]
-        end_row, end_col = Labware_Format
+        # Get the end row and end column number for the labware being used
+        end_row = Labware_Format.rows
+        end_col = Labware_Format.columns
 
+        # Get the first and last wells in the specified well range
         first_well, last_well = Wells.split(":")
 
+        # Split the first and last wells up into rows and columns
         first_row = first_well[0]
         last_row = last_well[0]
         first_col = int(first_well[1:])
