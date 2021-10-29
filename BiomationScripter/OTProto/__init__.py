@@ -41,11 +41,6 @@ class OTProto_Template:
             "p1000": 0
         }
 
-        # self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        # self._300uL_tip_type = "opentrons_96_tiprack_300ul"
-        # self.starting_20uL_tip = Starting_20uL_Tip
-        # self.starting_300uL_tip = Starting_300uL_Tip
-
         ###############
         # Robot Setup #
         ###############
@@ -54,14 +49,6 @@ class OTProto_Template:
             "right": "p300_single_gen2"
         }
         self.__pipettes_loaded = False
-
-        # self._left_pipette = "p20_single_gen2"
-        # self._right_pipette = "p300_single_gen2"
-
-        # self._p20_type = "p20_single_gen2"
-        # self._p20_position = "left"
-        # self._p300_type = "p300_single_gen2"
-        # self._p300_position = "right"
 
     def custom_labware_directory(self, Directory):
         self.custom_labware_dir = Directory
@@ -179,6 +166,34 @@ def get_p1000(protocol):
             return(pipettes[position])
     return(None)
 
+def select_pipette_by_volume(Protocol, Volume):
+
+    # Check which pipettes are available - any unavailable will return None
+    p20 = get_p20(Protocol)
+    p300 = get_p300(Protocol)
+    p1000 = get_p1000(Protocol)
+
+    if Volume < 1:
+        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
+    elif Volume < 20 and p20:
+        return(p20)
+    elif Volume == 20 and p20:
+        return(p20)
+    elif Volume == 20 and not p20:
+        return(p300)
+    elif Volume > 20 and Volume <= 300 and p300:
+        return(p300)
+    elif Volume > 300 and p1000:
+        return(p1000)
+    elif Volume >= 100 and not p300 and p1000:
+        return(p1000)
+    elif Volume > 300 and not p1000 and p300:
+        return(p300)
+    elif p20 and not p300 and not p1000:
+        return(p20)
+    else:
+        raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
+
 def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
     if not type(Transfer_Volumes) == list:
         Transfer_Volumes = [Transfer_Volumes]
@@ -186,6 +201,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
         Source_Locations = [Source_Locations]
     if not type(Destination_Locations) == list:
         Destination_Locations = [Destination_Locations]
+
+    if not len(Transfer_Volumes) == len(Source_Locations) or not len(Transfer_Volumes) == len(Destination_Locations):
+        raise ValueError("The number of transfer volumes, source locations, and destination locations are not the same.")
 
     min_transfer = min(Transfer_Volumes)
     max_transfer = max(Transfer_Volumes)
@@ -327,16 +345,6 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             Aliquot_Index = 0
     transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after)
 
-# def calculate_aliquots_required(Transfers, Aliquot_Volume):
-#     aliquots_required = 1
-#     volume_left_in_aliquot = Aliquot_Volume
-#     for transfer in Transfers:
-#         if transfer <= volume_left_in_aliquot:
-#             volume_left_in_aliquot -= transfer
-#         else:
-#             aliquots_required += 1
-#             volume_left_in_aliquot = Aliquot_Volume
-
 def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
     # Determine amount of labware required #
     labware = []
@@ -430,34 +438,6 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
     pipette.starting_tip = tip_racks[0].well(Starting_Tip)
 
     return(pipette, tip_racks)
-
-def select_pipette_by_volume(Protocol, Volume):
-
-    # Check which pipettes are available - any unavailable will return None
-    p20 = get_p20(Protocol)
-    p300 = get_p300(Protocol)
-    p1000 = get_p1000(Protocol)
-
-    if Volume < 1:
-        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
-    elif Volume < 20 and p20:
-        return(p20)
-    elif Volume == 20 and p20:
-        return(p20)
-    elif Volume == 20 and not p20:
-        return(p300)
-    elif Volume > 20 and Volume <= 300 and p300:
-        return(p300)
-    elif Volume > 300 and p1000:
-        return(p1000)
-    elif Volume >= 100 and not p300 and p1000:
-        return(p1000)
-    elif Volume > 300 and not p1000 and p300:
-        return(p300)
-    elif p20 and not p300 and not p1000:
-        return(p20)
-    else:
-        raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
 
 def calculate_tips_needed(protocol, transfers, new_tip = True):
     if not type(transfers) == list:
