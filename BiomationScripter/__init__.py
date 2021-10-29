@@ -305,9 +305,14 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Tru
 
     else:
         # Get the end row and end column number for the labware being used
-        end_row = Labware_Format.rows
-        end_col = Labware_Format.columns
+        if type(Labware_Format) is list:
+            if not len(Labware_Format) == 2:
+                raise ValueError("Labware_Format argument MUST either be a BiomationScripter.PlateLayout object, or a list specifying number of rows and number of columns (e.g. [8, 12]).")
+            end_row, end_col = Labware_Format
+        else:
+            Labware_Format = [Labware_Format.rows, Labware_Format.columns]
 
+        end_row, end_col = Labware_Format
         # Get the first and last wells in the specified well range
         first_well, last_well = Wells.split(":")
 
