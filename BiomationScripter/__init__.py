@@ -1,6 +1,10 @@
 from BiomationScripter import EchoProto
 from BiomationScripter import OTProto
-# from BiomationScripter import FelixProto
+# from BiomationScripter import FeliXProto
+# from BiomationScripter import PIXLProto
+# from BiomationScripter import AttuneProto
+# from BiomationScripter import ClarioProto
+
 import math
 import pandas as pd
 
