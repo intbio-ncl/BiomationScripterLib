@@ -41,6 +41,9 @@ class Labware_Layout:
         self.rows = Rows
         self.columns = Columns
 
+    def get_format(self):
+        return(self.rows, self.columns)
+
     def get_well_range(self, Well_Range=None, Use_Outer_Wells = True):
         n_rows = self.rows
         n_cols = self.columns
