@@ -3,6 +3,8 @@ import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
 
+########################
+
 class OTProto_Template:
     def __init__(self,
         Protocol,
@@ -102,13 +104,6 @@ class OTProto_Template:
         raise _BMS.BMSTemplateError("This template has no `run` method.")
 
 ########################
-
-def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
-    labware_type = Plate_Layout.type
-    labware_name = Plate_Layout.name
-    labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
-
-    return(labware)
 
 def get_locations(Labware, Wells, Direction = None):
     # Argument Direction is ignored is Wells is a list of wells
@@ -345,37 +340,6 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             Aliquot_Index = 0
     transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after)
 
-def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
-    # Determine amount of labware required #
-    labware = []
-    ## Load first labware to get format - assume always at least one required
-    labware_slot = next_empty_slot(protocol)
-    loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
-    labware.append(loaded_labware)
-    ## Determine space in labware
-    wells_in_labware = len(labware[0].wells())
-    ## Determine total amount of dilution labware required
-    n_labware = math.ceil(wells_required/wells_in_labware)
-    ## Load more labware if required
-    for lw in range(0, n_labware - 1):
-        labware_slot = next_empty_slot(protocol)
-        loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
-        labware.append(loaded_labware)
-
-    well_locations = []
-    labware_index = 0
-    location_in_labware_index = 0
-    for well in range(0,wells_required):
-        current_labware_wells = labware[labware_index].wells()
-        well_locations.append(current_labware_wells[location_in_labware_index])
-        location_in_labware_index += 1
-        if location_in_labware_index == len(current_labware_wells):
-            labware_index += 1
-            location_in_labware_index = 0
-
-    # Return the list of loaded labware
-    return(labware, well_locations)
-
 def next_empty_slot(protocol):
     for slot in protocol.deck:
         labware = protocol.deck[slot]
@@ -413,6 +377,8 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
         else:
             labware = parent.load_labware(labware_api_name, label)
     except:
+        if not custom_labware_dir:
+            raise ValueError("{} appears to be custom labware; use `custom_labware_dir` to provide the directory location for this labware file".format(labware_api_name))
         labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
 
     if labware == None:
@@ -420,24 +386,43 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
 
     return(labware)
 
-def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = False, Starting_Tip = "A1"):
-    ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
-    tip_racks = []
+def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
+    # Determine amount of labware required #
+    labware = []
+    ## Load first labware to get format - assume always at least one required
+    labware_slot = next_empty_slot(protocol)
+    loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
+    labware.append(loaded_labware)
+    ## Determine space in labware
+    wells_in_labware = len(labware[0].wells())
+    ## Determine total amount of dilution labware required
+    n_labware = math.ceil(wells_required/wells_in_labware)
+    ## Load more labware if required
+    for lw in range(0, n_labware - 1):
+        labware_slot = next_empty_slot(protocol)
+        loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
+        labware.append(loaded_labware)
 
-    if Number_Tips_Required:
-        n_tip_racks = tip_racks_needed(Number_Tips_Required, Starting_Tip)
-    else:
-        n_tip_racks = 1
+    well_locations = []
+    labware_index = 0
+    location_in_labware_index = 0
+    for well in range(0,wells_required):
+        current_labware_wells = labware[labware_index].wells()
+        well_locations.append(current_labware_wells[location_in_labware_index])
+        location_in_labware_index += 1
+        if location_in_labware_index == len(current_labware_wells):
+            labware_index += 1
+            location_in_labware_index = 0
 
-    for tip_rack in range(0, n_tip_racks):
-        tip_rack_deck_slot = next_empty_slot(Protocol)
-        tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
-        tip_racks.append(tip_rack)
+    # Return the list of loaded labware
+    return(labware, well_locations)
 
-    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
-    pipette.starting_tip = tip_racks[0].well(Starting_Tip)
+def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
+    labware_type = Plate_Layout.type
+    labware_name = Plate_Layout.name
+    labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
 
-    return(pipette, tip_racks)
+    return(labware)
 
 def calculate_tips_needed(protocol, transfers, new_tip = True):
     if not type(transfers) == list:
@@ -473,3 +458,22 @@ def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
         extra_racks_required = 0
     racks_required = 1 + extra_racks_required
     return(racks_required)
+
+def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = False, Starting_Tip = "A1"):
+    ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
+    tip_racks = []
+
+    if Number_Tips_Required:
+        n_tip_racks = tip_racks_needed(Number_Tips_Required, Starting_Tip)
+    else:
+        n_tip_racks = 1
+
+    for tip_rack in range(0, n_tip_racks):
+        tip_rack_deck_slot = next_empty_slot(Protocol)
+        tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
+        tip_racks.append(tip_rack)
+
+    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
+    pipette.starting_tip = tip_racks[0].well(Starting_Tip)
+
+    return(pipette, tip_racks)
