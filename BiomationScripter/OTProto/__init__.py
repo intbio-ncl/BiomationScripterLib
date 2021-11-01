@@ -459,7 +459,7 @@ def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
     racks_required = 1 + extra_racks_required
     return(racks_required)
 
-def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = False, Starting_Tip = "A1"):
+def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = None, Starting_Tip = "A1"):
     ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
     tip_racks = []
 
