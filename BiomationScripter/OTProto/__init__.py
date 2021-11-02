@@ -347,6 +347,22 @@ def next_empty_slot(protocol):
             return(slot)
     raise IndexError('No Deck Slots Remaining')
 
+def get_labware_format(labware_api_name, custom_labware_dir = None):
+    # If try code block fails, labware may be custom, so treat it as such
+    try:
+        labware_definition = OT2.protocol_api.labware.get_labware_definition(labware_api_name)
+        n_cols = len(labware_definition["ordering"])
+        n_rows = len(labware_definition["ordering"][0])
+        return(n_rows, n_cols)
+
+    except FileNotFoundError:
+        definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
+        with open(definition_file_location) as labware_definition:
+            data = json.load(labware_definition)
+            n_cols = len(data["ordering"])
+            n_rows = len(data["ordering"][0])
+            return(n_rows, n_cols)
+
 def load_custom_labware(parent, file, deck_position = None, label = None):
     # Open the labware json file
     with open(file) as labware_file:
