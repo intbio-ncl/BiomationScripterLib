@@ -269,7 +269,7 @@ def Import_Plate_Layout(Filename):
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
-            N_Wells_Available = Plate_Format.rows * Plate_Format.cols
+            N_Wells_Available = Plate_Format.rows * Plate_Format.columns
         else:
             raise ValueError("`N_Wells_Available` should either be an integer, or 'All'.")
 
