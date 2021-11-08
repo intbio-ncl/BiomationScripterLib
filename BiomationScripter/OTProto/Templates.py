@@ -26,7 +26,6 @@ class Example_Template(_OTProto.OTProto_Template):
 
         # The rest of your code goes here #
 
-
 class Protocol_From_Layout(_OTProto.OTProto_Template):
     def __init__(self,
         Source_Labware_Files,
@@ -148,6 +147,166 @@ class Protocol_From_Layout(_OTProto.OTProto_Template):
                 self._protocol.pause("Place {} ({}) in slot {}".format(labware.get_name(), labware.load_name, slot))
 
         _OTProto.transfer_liquids(self._protocol, transfer_volumes, source_locations, destination_locations, new_tip = True, mix_before = (5,"transfer_volume"), mix_after = (5,"transfer_volume"))
+
+class DNA_fmol_Dilution(_OTProto.OTProto_Template):
+    def __init__(self,
+        Final_fmol,
+        DNA,
+        DNA_Concentration,
+        DNA_Length,
+        DNA_Source_Type,
+        DNA_Source_Wells,
+        Keep_In_Current_Wells,
+        Water_Source_Labware_Type,
+        Water_Per_Well,
+        Final_Volume = None,
+        Current_Volume = None,
+        Destination_Labware_Type = None,
+        Destination_Labware_Range = None,
+        **kwargs
+    ):
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.final_fmol = Final_fmol
+        self._keep_in_current_wells = Keep_In_Current_Wells
+        self._final_volume = Final_Volume
+
+        ####################
+        # Source materials #
+        ####################
+        ## DNA to be diluted ##
+        self.dna = DNA
+        self.dna_source_wells = DNA_Source_Wells
+        self.dna_source_type = DNA_Source_Type
+        self.dna_starting_volume = Current_Volume
+        self.dna_starting_concentration = DNA_Concentration
+        self.dna_length = DNA_Length
+        ## Water ##
+        self.water_source_labware_type = Water_Source_Labware_Type
+        self.water_per_well = Water_Per_Well
+
+        #######################
+        # Destination Labware #
+        #######################
+        self._destination_labware_type = Destination_Labware_Type
+        self._destination_labware_range = Destination_Labware_Range
+
+        ##################################################
+        # Protocol Metadata and Instrument Configuration #
+        ##################################################
+        super().__init__(**kwargs)
+
+    def run(self):
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+        #################################################
+        # Calculate dilution factor for each DNA sample #
+        #################################################
+        dna_current_fmol = []
+        dna_dilution_factor = []
+        for dna_starting_concentration, dna_length in zip(self.dna_starting_concentration, self.dna_length):
+            mass_g = dna_starting_concentration * 1e-9
+            length = dna_length
+            fmol = (mass_g/((length * 617.96) + 36.04)) * 1e15
+            dna_current_fmol.append(fmol)
+            dilution_factor = self.final_fmol/fmol
+            dna_dilution_factor.append(dilution_factor)
+
+        ####################################################################
+        # Determine if DNA will be diluted in current wells or transferred #
+        ####################################################################
+        if self._keep_in_current_wells == True:
+            # Calculate amount of water to add to each DNA sample #
+            water_to_add = []
+            for starting_volume, dilution_factor in zip(self.dna_starting_volume, dna_dilution_factor):
+                water_to_add.append((starting_volume / dilution_factor) - starting_volume)
+
+            # Calculate number of tips needed:
+            self.tips_needed["p20"], self.tips_needed["p300"], self.tips_needed["p1000"] = _OTProto.calculate_tips_needed(self._protocol, water_to_add, new_tip = True)
+            # Add required number of tip boxes to the loaded pipettes
+            self.add_tip_boxes_to_pipettes()
+
+            # Load source labware #
+            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
+            ## Calculate number of water aliquots required
+            total_water_required = sum(water_to_add)
+            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            ## Load required water source labware
+            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
+
+            ## DNA source labware is also the destination labware in this case
+            ## But get DNA locations
+            DNA_Locations = []
+            for dna_well in self.dna_source_wells:
+                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
+
+            # Liquid handling begins #
+            ## Dispense water into DNA source wells and mix
+            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, DNA_Locations, new_tip = True, mix_after = (5,"transfer_volume"))
+
+        else:
+            # Calculate amount of water to add to each DNA sample #
+            water_to_add = []
+            dna_to_add = []
+            for dilution_factor in dna_dilution_factor:
+                final_volume = self._final_volume
+                dna_volume = final_volume * dilution_factor
+                water_volume = final_volume - dna_volume
+                water_to_add.append(water_volume)
+                dna_to_add.append(dna_volume)
+
+            # Calculate number of tips needed:
+            water_tips_needed_20uL, water_tips_needed_300uL, water_tips_needed_1000uL = _OTProto.calculate_tips_needed(self._protocol, water_to_add, new_tip = False)
+            dna_tips_needed_20uL, dna_tips_needed_300uL, dna_tips_needed_1000uL = _OTProto.calculate_tips_needed(self._protocol, dna_to_add, new_tip = True)
+
+            self.tips_needed["p20"] = water_tips_needed_20uL + dna_tips_needed_20uL
+            self.tips_needed["p300"] = water_tips_needed_300uL + dna_tips_needed_300uL
+            self.tips_needed["p1000"] = water_tips_needed_1000uL + dna_tips_needed_1000uL
+
+            # Add required number of tip boxes to the loaded pipettes
+            self.add_tip_boxes_to_pipettes()
+
+            # Load source labware #
+            ## Calculate number of water aliquots required
+            total_water_required = sum(water_to_add)
+            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            ## Load required water source labware
+            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
+
+            ## Load DNA Source Labware and get locations
+            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
+            DNA_Locations = []
+            for dna_well in self.dna_source_wells:
+                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
+
+            # Load destination labware #
+            destination_labware = _OTProto.load_labware(self._protocol, self._destination_labware_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
+            destination_locations = []
+            for destination_well in self._destination_labware_range:
+                destination_locations.append(destination_labware.wells_by_name()[destination_well])
+
+            if not _OTProto.get_p20 == None:
+                self._protocol.pause("This protocol uses {} 20 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p20"], self.starting_tips["p20"])))
+            if not _OTProto.get_p300 == None:
+                self._protocol.pause("This protocol uses {} 300 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p300"], self.starting_tips["p300"])))
+            if not _OTProto.get_p1000 == None:
+                self._protocol.pause("This protocol uses {} 1000 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p1000"], self.starting_tips["p1000"])))
+
+            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(water_source_locations), self.water_per_well, water_source_locations))
+
+            for dna, location, volume in zip(self.dna, DNA_Locations, dna_to_add):
+                self._protocol.pause("Place DNA sample {} at {}. {} uL will be used".format(dna, location, volume))
+            # Liquid handling begins #
+            ## Dispense water into DNA source wells and mix
+            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, destination_locations, new_tip = True)
+
+            ## Add DNA to water
+            _OTProto.transfer_liquids(self._protocol, dna_to_add, DNA_Locations, destination_locations, new_tip = True, mix_after = (5,"transfer_volume"))
 
 class OT2_Picklist:
     def __init__(self, Protocol, Name, Metadata, Source_1, Source_Wells_1, Source_Plate_Type_1, Source_Label_1,
@@ -696,204 +855,6 @@ class Primer_Mixing_LightRun:
             p20.transfer(5, dna_source, destination)
             # transfer 5uL of primer to each tube
             p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
-
-class DNA_fmol_Dilution:
-    def __init__(self,
-        Protocol,
-        Name,
-        Metadata,
-        Final_fmol,
-        DNA,
-        DNA_Concentration,
-        DNA_Length,
-        DNA_Source_Type,
-        DNA_Source_Wells,
-        Keep_In_Current_Wells,
-        Water_Source_Labware_Type,
-        Water_Per_Well,
-        Final_Volume = None,
-        Current_Volume = None,
-        Destination_Labware_Type = None,
-        Destination_Labware_Range = None,
-        Starting_20uL_Tip = "A1",
-        Starting_300uL_Tip = "A1",
-        Tip_Type_20uL = "opentrons_96_tiprack_20ul",
-        Tip_Type_300uL = "opentrons_96_tiprack_300ul"
-    ):
-        #####################
-        # Protocol Metadata #
-        #####################
-        self._protocol = Protocol
-        self.name = Name
-        self.metadata = Metadata
-        self.custom_labware_dir = "../Custom_Labware/"
-
-        ########################################
-        # User defined aspects of the protocol #
-        ########################################
-        self.final_fmol = Final_fmol
-        self._keep_in_current_wells = Keep_In_Current_Wells
-        self._final_volume = Final_Volume
-
-        ####################
-        # Source materials #
-        ####################
-        ## Pipette Tips ##
-        self._20uL_tip_type = Tip_Type_20uL
-        self._300uL_tip_type = Tip_Type_300uL
-        self.starting_20uL_tip = Starting_20uL_Tip
-        self.starting_300uL_tip = Starting_300uL_Tip
-        ## DNA to be diluted ##
-        self.dna = DNA
-        self.dna_source_wells = DNA_Source_Wells
-        self.dna_source_type = DNA_Source_Type
-        self.dna_starting_volume = Current_Volume
-        self.dna_starting_concentration = DNA_Concentration
-        self.dna_length = DNA_Length
-        ## Water ##
-        self.water_source_labware_type = Water_Source_Labware_Type
-        self.water_per_well = Water_Per_Well
-
-        #######################
-        # Destination Labware #
-        #######################
-        self._destination_labware_type = Destination_Labware_Type
-        self._destination_labware_range = Destination_Labware_Range
-
-        ###############
-        # Robot Setup #
-        ###############
-        self._pipettes = {
-            "p20": ["p20_single_gen2", "left"],
-            "p300": ["p300_single_gen2", "right"]
-        }
-        # Below may be redundant
-        self._p20_type = "p20_single_gen2"
-        self._p20_position = "left"
-        self._p300_type = "p300_single_gen2"
-        self._p300_position = "right"
-
-    def run(self):
-
-        #################################################
-        # Calculate dilution factor for each DNA sample #
-        #################################################
-        dna_current_fmol = []
-        dna_dilution_factor = []
-        for dna_starting_concentration, dna_length in zip(self.dna_starting_concentration, self.dna_length):
-            mass_g = dna_starting_concentration * 1e-9
-            length = dna_length
-            fmol = (mass_g/((length * 617.96) + 36.04)) * 1e15
-            dna_current_fmol.append(fmol)
-            dilution_factor = self.final_fmol/fmol
-            dna_dilution_factor.append(dilution_factor)
-
-
-        ####################################################################
-        # Determine if DNA will be diluted in current wells or transferred #
-        ####################################################################
-        if self._keep_in_current_wells == True:
-            # Calculate amount of water to add to each DNA sample #
-            water_to_add = []
-            for starting_volume, dilution_factor in zip(self.dna_starting_volume, dna_dilution_factor):
-                water_to_add.append((starting_volume / dilution_factor) - starting_volume)
-
-            # Load pipettes etc. #
-            tips_required_20uL = 0
-            tips_required_300uL = 0
-            for transfer in water_to_add:
-                if transfer <= 20:
-                    tips_required_20uL += 1
-                elif transfer > 20 and transfer <= 300:
-                    tips_required_300uL += 1
-                elif transfer > 300:
-                    tips_required_300uL += math.ceil(transfer/300)
-
-            p20, p20_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p20_type, self._p20_position, self._20uL_tip_type, tips_required_20uL, Starting_Tip = self.starting_20uL_tip)
-            p300, p300_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p300_type, self._p300_position, self._300uL_tip_type, tips_required_300uL, Starting_Tip = self.starting_300uL_tip)
-
-            # Load source labware #
-            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
-            ## Calculate number of water aliquots required
-            total_water_required = sum(water_to_add)
-            aliquots_required = math.ceil(total_water_required/self.water_per_well)
-            ## Load required water source labware
-            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
-
-            ## DNA source labware is also the destination labware in this case
-            ## But get DNA locations
-            DNA_Locations = []
-            for dna_well in self.dna_source_wells:
-                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
-
-            # Liquid handling begins #
-            ## Dispense water into DNA source wells and mix
-            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, DNA_Locations, new_tip = True, mix_after = (5,"transfer_volume"))
-
-        else:
-            # Calculate amount of water to add to each DNA sample #
-            water_to_add = []
-            dna_to_add = []
-            for dilution_factor in dna_dilution_factor:
-                final_volume = self._final_volume
-                dna_volume = final_volume * dilution_factor
-                water_volume = final_volume - dna_volume
-                water_to_add.append(water_volume)
-                dna_to_add.append(dna_volume)
-
-            # Load pipettes etc. #
-            tips_required_20uL = 0
-            tips_required_300uL = 0
-            for transfer in water_to_add:
-                if transfer <= 20:
-                    tips_required_20uL += 1
-                elif transfer > 20 and transfer <= 300:
-                    tips_required_300uL += 1
-                elif transfer > 300:
-                    tips_required_300uL += math.ceil(transfer/300)
-            for transfer in dna_to_add:
-                if transfer <= 20:
-                    tips_required_20uL += 1
-                elif transfer > 20 and transfer <= 300:
-                    tips_required_300uL += 1
-                elif transfer > 300:
-                    tips_required_300uL += math.ceil(transfer/300)
-
-            p20, p20_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p20_type, self._p20_position, self._20uL_tip_type, tips_required_20uL, Starting_Tip = self.starting_20uL_tip)
-            p300, p300_tip_racks = _OTProto.load_pipettes_and_tips(self._protocol, self._p300_type, self._p300_position, self._300uL_tip_type, tips_required_300uL, Starting_Tip = self.starting_300uL_tip)
-
-            # Load source labware #
-            ## Calculate number of water aliquots required
-            total_water_required = sum(water_to_add)
-            aliquots_required = math.ceil(total_water_required/self.water_per_well)
-            ## Load required water source labware
-            water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
-
-            ## Load DNA Source Labware and get locations
-            DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
-            DNA_Locations = []
-            for dna_well in self.dna_source_wells:
-                DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
-
-            # Load destination labware #
-            destination_labware = _OTProto.load_labware(self._protocol, self._destination_labware_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
-            destination_locations = []
-            for destination_well in self._destination_labware_range:
-                destination_locations.append(destination_labware.wells_by_name()[destination_well])
-
-            self._protocol.pause("This protocol uses {} 20 uL tip boxes".format(len(p20_tip_racks)))
-            self._protocol.pause("This protocol uses {} 300 uL tip boxes".format(len(p300_tip_racks)))
-
-            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(water_source_locations), self.water_per_well, water_source_locations))
-
-            for dna, location, volume in zip(self.dna, DNA_Locations, dna_to_add):
-                self._protocol.pause("Place DNA sample {} at {}. {} uL will be used".format(dna, location, volume))
-            # Liquid handling begins #
-            ## Dispense water into DNA source wells and mix
-            _OTProto.dispense_from_aliquots(self._protocol, water_to_add, water_source_locations, destination_locations, new_tip = True)
-
-            ## Add DNA to water
-            _OTProto.transfer_liquids(self._protocol, dna_to_add, DNA_Locations, destination_locations, new_tip = True, mix_after = (5,"transfer_volume"))
 
 class Monarch_Miniprep:
     def __init__(self,
