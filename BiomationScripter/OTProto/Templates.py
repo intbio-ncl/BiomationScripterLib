@@ -26,7 +26,7 @@ class Example_Template(_OTProto.OTProto_Template):
 
         # The rest of your code goes here #
 
-class Protocol_From_Layout(_OTProto.OTProto_Template):
+class Protocol_From_Layouts(_OTProto.OTProto_Template):
     def __init__(self,
         Source_Labware_Files,
         Destination_Labware_Files,
