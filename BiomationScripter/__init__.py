@@ -28,6 +28,62 @@ class OutOFSourceMaterial(Exception):
 #####################
 # Classes
 
+class DoE_Experiment:
+    def __init__(self, Name, DoE_File):
+        self.name = Name
+        self.doe_file = DoE_File
+
+        # Open the CSV file containing the DoE run data
+        file = open(DoE_File, "r")
+        # Store the DoE data from the file as a list
+        data = []
+        for row in file:
+            data.append(row)
+
+        # Close the file
+        file.close()
+
+        # Remove any empty lines imported
+        if "" in data:
+            data.remove("")
+
+        # Get the factor names
+        self.factors = data[0].replace("\n", "").split(",")
+
+        # store run data using the DoE_Run_Data class
+        self.runs = []
+        ID = 0
+        for run in data[1:]:
+            # remove new line symbols if present, and convert string to a list
+            run = run.replace("\n", "").split(",")
+            if "" in run:
+                raise ValueError("Missing value found in run {} for factor {}; check that all values are present and objectives are not present in the file.".format(ID, self.factors[run.index("")]))
+            self.runs.append(DoE_Run_Data(ID, self.factors, run))
+            ID += 1
+
+    def get_run(self, ID):
+        for run in self.runs:
+            if run.id == ID:
+                return(run)
+
+    def batch_by_factor_value(self, Factor, Value):
+        batched_experiment = DoE_Experiment("{}-Batched-{}-{}".format(self.name, Factor, Value), self.doe_file)
+        runs = batched_experiment.runs.copy()
+        for run in runs:
+            if not run.get_factor_value(Factor) == Value:
+                batched_experiment.runs.remove(run)
+        return(batched_experiment)
+
+class DoE_Run_Data:
+    def __init__(self, ID, Factors, Values):
+        self.id = ID
+        self.run_data = {}
+        for factor, value in zip(Factors, Values):
+            self.run_data[factor] = value
+
+    def get_factor_value(self, Factor):
+        return(self.run_data[Factor])
+
 class Labware_Layout:
     def __init__(self, Name, Type):
         self.name = Name
@@ -260,6 +316,22 @@ class Liquids:
 
 ##########################################
 # Functions
+
+def Combine_DoE_Factors(DoE_Experiment, Factor_Names):
+    # Create an empty list to store each of the specified factor combinations
+    Combined_Factors = []
+    # For each run in the DoE
+    for run in DoE_Experiment.runs:
+        # Get the values of all the specified factors
+        combined_factor = []
+        for component_factor in Factor_Names:
+            component_factor_value = run.get_factor_value(component_factor)
+            # Store the factor name-value combination as a string in a list
+            combined_factor.append("{}({})".format(component_factor, component_factor_value))
+        # Convert the list of factor name-value combinations to a string and add to the previously created list
+        Combined_Factors.append("-".join(combined_factor))
+
+    return(Combined_Factors)
 
 def Import_Plate_Layout(Filename):
     plate_layout = PlateLayout("name", "type")
