@@ -28,15 +28,26 @@ class Example_Template(_OTProto.OTProto_Template):
 
 class Protocol_From_Layouts(_OTProto.OTProto_Template):
     def __init__(self,
-        Source_Labware_Files,
-        Destination_Labware_Files,
+        Source_Layouts,
+        Destination_Layouts,
+        Import_From_Files = False,
         **kwargs
     ):
         ########################################
         # User defined aspects of the protocol #
         ########################################
-        self.source_files = Source_Labware_Files
-        self.destination_files = Destination_Labware_Files
+        self._import_from_files = Import_From_Files
+
+        if self._import_from_files:
+            self.source_files = Source_Layouts
+            self.destination_files = Destination_Layouts
+            self.source_layouts = []
+            self.destination_layouts = []
+        else:
+            self.source_files = None
+            self.destination_files = None
+            self.source_layouts = Source_Layouts
+            self.destination_layouts = Destination_Layouts
 
         ##################################################
         # Protocol Metadata and Instrument Configuration #
@@ -52,24 +63,25 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
         ###################################################
         # Load source labware type(s) and current content #
         ###################################################
-        source_layouts = []
-
-        for source_file in self.source_files:
-            source_layouts.append(_BMS.Import_Plate_Layout(source_file))
+        # If Import_From_Files is specified, import and create the layouts from file locations
+        if self._import_from_files:
+            for source_file in self.source_files:
+                self.source_layouts.append(_BMS.Import_Plate_Layout(source_file))
 
         #########################################################
         # Load destination labware type(s) and intended content #
         #########################################################
-        destination_layouts = []
-        for destination_file in self.destination_files:
-            destination_layouts.append(_BMS.Import_Plate_Layout(destination_file))
+        # If Import_From_Files is specified, import and create the layouts from file locations
+        if self._import_from_files:
+            for destination_file in self.destination_files:
+                self.destination_layouts.append(_BMS.Import_Plate_Layout(destination_file))
 
         ###########################################
         # Create and load PlateLayouts as labware #
         ###########################################
         source_labware = []
 
-        for source_layout in source_layouts:
+        for source_layout in self.source_layouts:
             source_labware.append(
                 _OTProto.load_labware_from_PlateLayout(
                                                     Protocol = self._protocol,
@@ -78,7 +90,7 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
             )
 
         destination_labware = []
-        for destination_layout in destination_layouts:
+        for destination_layout in self.destination_layouts:
             destination_labware.append(
                 _OTProto.load_labware_from_PlateLayout(
                                                     Protocol = self._protocol,
@@ -93,7 +105,7 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
         source_locations = []
         destination_locations = []
         # For every destination labware specified
-        for current_destination_labware, destination_layout in zip(destination_labware, destination_layouts):
+        for current_destination_labware, destination_layout in zip(destination_labware, self.destination_layouts):
             occupied_wells = destination_layout.get_occupied_wells()
             # For every well in the destination labware which needs liquid transfered to it
             for well in occupied_wells:
@@ -103,7 +115,7 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
                 for required_reagent in required_reagents:
                     source_material_found = False
                     reagent_volume_required = destination_layout.get_volume_of_liquid_in_well(required_reagent, well)
-                    for current_source_labware, source_layout in zip(source_labware, source_layouts):
+                    for current_source_labware, source_layout in zip(source_labware, self.source_layouts):
                         wells_with_reagent = source_layout.get_wells_containing_liquid(required_reagent)
                         if len(wells_with_reagent) == 0:
                             continue
