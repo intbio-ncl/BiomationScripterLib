@@ -184,11 +184,17 @@ class Labware_Layout:
             sheet2 = pd.read_excel(path+filename+ext, sheet_name=1, engine='openpyxl')
 
         # get plate name and plate type from Sheet 1
+        # TODO: throw an error message if the name and/or type are blank
         self.name = sheet1[1].iloc[0] # column 2, row 1
         self.type = sheet1[1].iloc[1] # column 2, row 2
 
         # if Current Volume column is empty (NaN), replace with Initial Volume
         sheet2["Volume (uL) - Current"].fillna(sheet2["Volume (uL) - Initial"], inplace=True)
+        # if both Volume columns are empty, replace with zeroes
+        # TODO: add a warning to the user to say they are empty
+        sheet2["Volume (uL) - Current"].fillna(0, inplace=True)
+        # TODO: add a warning that liquid class has been set to a default value
+        sheet2["Calibration Type"].fillna("AQ_BP", inplace=True)
         # select subset of columns as "content"
         content = sheet2[["Well", "Name", "Volume (uL) - Current", "Calibration Type"]]
         # delete rows where the Name is blank
