@@ -3,6 +3,8 @@ import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
 
+########################
+
 class OTProto_Template:
     def __init__(self,
         Protocol,
@@ -41,11 +43,6 @@ class OTProto_Template:
             "p1000": 0
         }
 
-        # self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        # self._300uL_tip_type = "opentrons_96_tiprack_300ul"
-        # self.starting_20uL_tip = Starting_20uL_Tip
-        # self.starting_300uL_tip = Starting_300uL_Tip
-
         ###############
         # Robot Setup #
         ###############
@@ -54,14 +51,6 @@ class OTProto_Template:
             "right": "p300_single_gen2"
         }
         self.__pipettes_loaded = False
-
-        # self._left_pipette = "p20_single_gen2"
-        # self._right_pipette = "p300_single_gen2"
-
-        # self._p20_type = "p20_single_gen2"
-        # self._p20_position = "left"
-        # self._p300_type = "p300_single_gen2"
-        # self._p300_position = "right"
 
     def custom_labware_directory(self, Directory):
         self.custom_labware_dir = Directory
@@ -115,13 +104,6 @@ class OTProto_Template:
         raise _BMS.BMSTemplateError("This template has no `run` method.")
 
 ########################
-
-def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
-    labware_type = Plate_Layout.type
-    labware_name = Plate_Layout.name
-    labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
-
-    return(labware)
 
 def get_locations(Labware, Wells, Direction = None):
     # Argument Direction is ignored is Wells is a list of wells
@@ -179,6 +161,34 @@ def get_p1000(protocol):
             return(pipettes[position])
     return(None)
 
+def select_pipette_by_volume(Protocol, Volume):
+
+    # Check which pipettes are available - any unavailable will return None
+    p20 = get_p20(Protocol)
+    p300 = get_p300(Protocol)
+    p1000 = get_p1000(Protocol)
+
+    if Volume < 1:
+        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
+    elif Volume < 20 and p20:
+        return(p20)
+    elif Volume == 20 and p20:
+        return(p20)
+    elif Volume == 20 and not p20:
+        return(p300)
+    elif Volume > 20 and Volume <= 300 and p300:
+        return(p300)
+    elif Volume > 300 and p1000:
+        return(p1000)
+    elif Volume >= 100 and not p300 and p1000:
+        return(p1000)
+    elif Volume > 300 and not p1000 and p300:
+        return(p300)
+    elif p20 and not p300 and not p1000:
+        return(p20)
+    else:
+        raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
+
 def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
     if not type(Transfer_Volumes) == list:
         Transfer_Volumes = [Transfer_Volumes]
@@ -186,6 +196,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
         Source_Locations = [Source_Locations]
     if not type(Destination_Locations) == list:
         Destination_Locations = [Destination_Locations]
+
+    if not len(Transfer_Volumes) == len(Source_Locations) or not len(Transfer_Volumes) == len(Destination_Locations):
+        raise ValueError("The number of transfer volumes, source locations, and destination locations are not the same.")
 
     min_transfer = min(Transfer_Volumes)
     max_transfer = max(Transfer_Volumes)
@@ -327,15 +340,67 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             Aliquot_Index = 0
     transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after)
 
-# def calculate_aliquots_required(Transfers, Aliquot_Volume):
-#     aliquots_required = 1
-#     volume_left_in_aliquot = Aliquot_Volume
-#     for transfer in Transfers:
-#         if transfer <= volume_left_in_aliquot:
-#             volume_left_in_aliquot -= transfer
-#         else:
-#             aliquots_required += 1
-#             volume_left_in_aliquot = Aliquot_Volume
+def next_empty_slot(protocol):
+    for slot in protocol.deck:
+        labware = protocol.deck[slot]
+        if not labware: # if no labware loaded into slot
+            return(slot)
+    raise IndexError('No Deck Slots Remaining')
+
+def get_labware_format(labware_api_name, custom_labware_dir = None):
+    # If try code block fails, labware may be custom, so treat it as such
+    try:
+        labware_definition = OT2.protocol_api.labware.get_labware_definition(labware_api_name)
+        n_cols = len(labware_definition["ordering"])
+        n_rows = len(labware_definition["ordering"][0])
+        return(n_rows, n_cols)
+
+    except FileNotFoundError:
+        definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
+        with open(definition_file_location) as labware_definition:
+            data = json.load(labware_definition)
+            n_cols = len(data["ordering"])
+            n_rows = len(data["ordering"][0])
+            return(n_rows, n_cols)
+
+def load_custom_labware(parent, file, deck_position = None, label = None):
+    # Open the labware json file
+    with open(file) as labware_file:
+        labware_file = json.load(labware_file)
+
+    # Check if `parent` is the deck or a hardware module, and treat it acordingly
+    if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+        # If no deck position, get the next empty slot
+        if not deck_position:
+            deck_position = next_empty_slot(parent)
+        labware = parent.load_labware_from_definition(labware_file, deck_position, label)
+    else:
+        labware = parent.load_labware_from_definition(labware_file, label)
+
+    return(labware)
+
+def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
+    labware = None
+
+    # Try and load not as custom
+    try:
+        # Check if `parent` is the deck or a hardware module, and treat it acordingly
+        if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+            # If no deck position, get the next empty slot
+            if not deck_position:
+                deck_position = next_empty_slot(parent)
+            labware = parent.load_labware(labware_api_name, deck_position, label)
+        else:
+            labware = parent.load_labware(labware_api_name, label)
+    except:
+        if not custom_labware_dir:
+            raise ValueError("{} appears to be custom labware; use `custom_labware_dir` to provide the directory location for this labware file".format(labware_api_name))
+        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
+
+    if labware == None:
+        raise ValueError("Labware not loaded for unknown reasons.")
+
+    return(labware)
 
 def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
     # Determine amount of labware required #
@@ -368,96 +433,12 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, custo
     # Return the list of loaded labware
     return(labware, well_locations)
 
-def next_empty_slot(protocol):
-    for slot in protocol.deck:
-        labware = protocol.deck[slot]
-        if not labware: # if no labware loaded into slot
-            return(slot)
-    raise IndexError('No Deck Slots Remaining')
-
-def load_custom_labware(parent, file, deck_position = None, label = None):
-    # Open the labware json file
-    with open(file) as labware_file:
-        labware_file = json.load(labware_file)
-
-    # Check if `parent` is the deck or a hardware module, and treat it acordingly
-    if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
-        # If no deck position, get the next empty slot
-        if not deck_position:
-            deck_position = next_empty_slot(parent)
-        labware = parent.load_labware_from_definition(labware_file, deck_position, label)
-    else:
-        labware = parent.load_labware_from_definition(labware_file, label)
+def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
+    labware_type = Plate_Layout.type
+    labware_name = Plate_Layout.name
+    labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
 
     return(labware)
-
-def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
-    labware = None
-
-    # Try and load not as custom
-    try:
-        # Check if `parent` is the deck or a hardware module, and treat it acordingly
-        if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
-            # If no deck position, get the next empty slot
-            if not deck_position:
-                deck_position = next_empty_slot(parent)
-            labware = parent.load_labware(labware_api_name, deck_position, label)
-        else:
-            labware = parent.load_labware(labware_api_name, label)
-    except:
-        labware = load_custom_labware(parent, custom_labware_dir + "/" + labware_api_name + ".json", deck_position, label)
-
-    if labware == None:
-        raise ValueError("Labware not loaded for unknown reasons.")
-
-    return(labware)
-
-def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = False, Starting_Tip = "A1"):
-    ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
-    tip_racks = []
-
-    if Number_Tips_Required:
-        n_tip_racks = tip_racks_needed(Number_Tips_Required, Starting_Tip)
-    else:
-        n_tip_racks = 1
-
-    for tip_rack in range(0, n_tip_racks):
-        tip_rack_deck_slot = next_empty_slot(Protocol)
-        tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
-        tip_racks.append(tip_rack)
-
-    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
-    pipette.starting_tip = tip_racks[0].well(Starting_Tip)
-
-    return(pipette, tip_racks)
-
-def select_pipette_by_volume(Protocol, Volume):
-
-    # Check which pipettes are available - any unavailable will return None
-    p20 = get_p20(Protocol)
-    p300 = get_p300(Protocol)
-    p1000 = get_p1000(Protocol)
-
-    if Volume < 1:
-        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
-    elif Volume < 20 and p20:
-        return(p20)
-    elif Volume == 20 and p20:
-        return(p20)
-    elif Volume == 20 and not p20:
-        return(p300)
-    elif Volume > 20 and Volume <= 300 and p300:
-        return(p300)
-    elif Volume > 300 and p1000:
-        return(p1000)
-    elif Volume >= 100 and not p300 and p1000:
-        return(p1000)
-    elif Volume > 300 and not p1000 and p300:
-        return(p300)
-    elif p20 and not p300 and not p1000:
-        return(p20)
-    else:
-        raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
 
 def calculate_tips_needed(protocol, transfers, new_tip = True):
     if not type(transfers) == list:
@@ -493,3 +474,22 @@ def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
         extra_racks_required = 0
     racks_required = 1 + extra_racks_required
     return(racks_required)
+
+def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, Number_Tips_Required = None, Starting_Tip = "A1"):
+    ## When Number_Tips_Required is False, just one tip box is created and asigned to the pipette
+    tip_racks = []
+
+    if Number_Tips_Required:
+        n_tip_racks = tip_racks_needed(Number_Tips_Required, Starting_Tip)
+    else:
+        n_tip_racks = 1
+
+    for tip_rack in range(0, n_tip_racks):
+        tip_rack_deck_slot = next_empty_slot(Protocol)
+        tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
+        tip_racks.append(tip_rack)
+
+    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
+    pipette.starting_tip = tip_racks[0].well(Starting_Tip)
+
+    return(pipette, tip_racks)
