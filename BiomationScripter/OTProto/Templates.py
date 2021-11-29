@@ -83,7 +83,7 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
 
         for source_layout in self.source_layouts:
             source_labware.append(
-                _OTProto.load_labware_from_PlateLayout(
+                _OTProto.load_labware_from_layout(
                                                     Protocol = self._protocol,
                                                     Plate_Layout = source_layout,
                                                     custom_labware_dir = self.custom_labware_dir)
@@ -92,7 +92,7 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
         destination_labware = []
         for destination_layout in self.destination_layouts:
             destination_labware.append(
-                _OTProto.load_labware_from_PlateLayout(
+                _OTProto.load_labware_from_layout(
                                                     Protocol = self._protocol,
                                                     Plate_Layout = destination_layout,
                                                     custom_labware_dir = self.custom_labware_dir)
