@@ -297,9 +297,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
 
             # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
             if mix_before and mix_before[1] > pipette.max_volume:
-                mix_before[1] = pipette.max_volume
+                mix_before = (mix_before[0], pipette.max_volume)
             if mix_after and mix_after[1] > pipette.max_volume:
-                mix_after[1] = pipette.max_volume
+                mix_after = (mix_after[0], pipette.max_volume)
 
             pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after, new_tip = "always")
 
