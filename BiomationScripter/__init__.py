@@ -25,13 +25,49 @@ class LabwareError(Exception):
 class OutOFSourceMaterial(Exception):
     pass
 
+class DoEError(Exception):
+    pass
+
 #####################
 # Classes
+
+class DoE_Material:
+    def __init__(self, ID, Material_Type, Factors = None, Factor_Values = None):
+        if (Factors and not Factor_Values) or (not Factors and Factor_Values):
+            raise DoEError("Error creating source type {} {} - factor names or factor values were specified without the other.".format(Material_Type, ID))
+
+        self.id = ID
+        self.material_type = Material_Type
+        self.factors = {}
+
+        if Factors:
+            for factor, value in zip(Factors, Factor_Values):
+                self.factors[factor] = value
+
+    def get_factor_value(self, Factor):
+        return(self.factors[Factor])
+
+class DoE_Intermediate:
+    def __init__(self, ID, Intermediate_Type, Component_Types, Component_IDs, Component_Amount_Types, Component_Amount_Values):
+        self.id = ID
+        self.intermediate_type = Intermediate_Type
+        self.components = {}
+
+        for component_type, id, amount_type, amount_value in zip(Component_Types, Component_IDs, Component_Amount_Types, Component_Amount_Values):
+            self.components[component_type] = [id, amount_type, amount_value]
+
+    def get_component_id(self, Component):
+        return(self.components[Component][0])
+
+    def get_component_amount_info(self, Component):
+        return(self.components[Component][1:])
 
 class DoE_Experiment:
     def __init__(self, Name, DoE_File):
         self.name = Name
         self.doe_file = DoE_File
+        self.materials = {}
+        self.intermediates = {}
 
         # Open the CSV file containing the DoE run data
         file = open(DoE_File, "r")
@@ -61,6 +97,18 @@ class DoE_Experiment:
             self.runs.append(DoE_Run_Data(ID, self.factors, run))
             ID += 1
 
+    def add_material(self, Material):
+        self.materials[Material.id] = Material
+
+    def get_material(self, Material_Name):
+        return(self.materials[Material_Name])
+
+    def add_intermediate(self, Intermediate):
+        self.intermediates[Intermediate.id] = Intermediate
+
+    def get_intermediate(self, Intermediate_Name):
+        return(self.intermediates[Intermediate_Name])
+
     def get_run(self, ID):
         for run in self.runs:
             if run.id == ID:
@@ -74,15 +122,67 @@ class DoE_Experiment:
                 batched_experiment.runs.remove(run)
         return(batched_experiment)
 
+    def get_all_values(self, Name):
+        Values = []
+        for run in self.runs:
+            Values.append(run.get_value_by_name(Name))
+
+        return(Values)
+
 class DoE_Run_Data:
     def __init__(self, ID, Factors, Values):
         self.id = ID
+        self.source_materials = {}
+        self.intermediates = {}
         self.run_data = {}
         for factor, value in zip(Factors, Values):
             self.run_data[factor] = value
 
     def get_factor_value(self, Factor):
         return(self.run_data[Factor])
+
+    def add_factor(self, Factor, Value):
+        self.run_data[Factor] = Value
+
+    def specify_source_material(self, Material, Value):
+        self.source_materials[Material] = Value
+
+    def get_source_material_value(self, Source_Material):
+        return(self.source_materials[Source_Material])
+
+    def specify_intermediate(self, Intermediate, Value):
+        self.intermediates[Intermediate] = Value
+
+    def get_intermediate_value(self, Intermediate):
+        return(self.intermediates[Intermediate])
+
+    def get_value_by_name(self, Name):
+        found = False
+        Value = None
+        if not found:
+            try:
+                Value = self.get_factor_value(Name)
+                found = True
+            except KeyError:
+                pass
+        if not found:
+            try:
+                Value = self.get_source_material_value(Name)
+                found = True
+            except KeyError:
+                pass
+        if not found:
+            try:
+                Value = self.get_intermediate_value(Name)
+                found = True
+            except KeyError:
+                pass
+        if not found:
+            raise DoEError("Cannot find {}.".format(Name))
+        else:
+            return(Value)
+
+
 
 class Labware_Layout:
     def __init__(self, Name, Type):
@@ -323,21 +423,124 @@ class Liquids:
 ##########################################
 # Functions
 
-def Combine_DoE_Factors(DoE_Experiment, Factor_Names):
-    # Create an empty list to store each of the specified factor combinations
-    Combined_Factors = []
+def DoE_Get_Value_From_Combined_Factor(Factor_Name, Combined_Factor):
+    Value = Combined_Factor.split(Factor_Name)[1].split("(")[1].split(")")[0]
+
+    # Try and return as a float - if a ValueError is raised, assume the value is a string and just return as is
+    try:
+        Value = float(Value)
+    except ValueError:
+        pass
+
+    return(Value)
+
+def DoE_Create_Source_Material(DoE_Experiment, Source_Material_Name, Factor_Names, Add_To_Runs = True):
+    # Create an empty list to store each of source material types
+    ## Each source material type is formed from combinations of the same factors...
+    ## ... with different values as specified by the DoE
+    Source_Material_Types = []
+
+    Source_Material_Component_Info = {} # ID: list(Factor Values)
+
+    if Factor_Names:
+        # For each run in the DoE
+        for run in DoE_Experiment.runs:
+            # Get the values of all the specified factors
+            source_material_type = []
+            component_factor_values = []
+            for component_factor in Factor_Names:
+                component_factor_value = run.get_factor_value(component_factor)
+                component_factor_values.append(component_factor_value)
+                # Store the factor name-value combination as a string in a list
+                source_material_type.append("{}({})".format(component_factor, component_factor_value))
+            # Convert the list of factor name-value combinations to a string and add to the previously created list
+            Source_Material_Types.append("-".join(source_material_type))
+            Source_Material_Component_Info["-".join(source_material_type)] = component_factor_values
+            if Add_To_Runs:
+                run.specify_source_material(Source_Material_Name, "-".join(source_material_type))
+        for material_id in set(Source_Material_Types):
+            Material_Object = DoE_Material(material_id, Source_Material_Name, Factor_Names, Source_Material_Component_Info[material_id])
+            DoE_Experiment.add_material(Material_Object)
+    else:
+        Source_Material_Types = [Source_Material_Name]
+        Source_Material_Component_Info = {
+            Source_Material_Name: None
+        }
+        if Add_To_Runs:
+            for run in DoE_Experiment.runs:
+                run.specify_source_material(Source_Material_Name, Source_Material_Name)
+
+        Material_Object = DoE_Material(Source_Material_Name, Source_Material_Name)
+        DoE_Experiment.add_material(Material_Object)
+
+    return(Source_Material_Types)
+
+def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_Names, Source_Materials_Amount_Types, Source_Materials_Amount_Values, Add_To_Runs = True):
+    # Create an empty list to store each of intermediate types
+    ## Each intermediate type is formed from combinations of the same source materials...
+    ## ... with different values as specified by the DoE
+    Intermediate_Types = []
+
+    Intermediate_Component_Info = {}
+
     # For each run in the DoE
     for run in DoE_Experiment.runs:
-        # Get the values of all the specified factors
-        combined_factor = []
-        for component_factor in Factor_Names:
-            component_factor_value = run.get_factor_value(component_factor)
-            # Store the factor name-value combination as a string in a list
-            combined_factor.append("{}({})".format(component_factor, component_factor_value))
-        # Convert the list of factor name-value combinations to a string and add to the previously created list
-        Combined_Factors.append("-".join(combined_factor))
+        # Get the values of all the specified source_materials
+        intermediate_type = []
+        component_source_material_values = []
+        for component_source_material, amount_type, amount_value in zip(Source_Material_Names, Source_Materials_Amount_Types, Source_Materials_Amount_Values):
+            component_source_material_value = run.get_source_material_value(component_source_material)
 
-    return(Combined_Factors)
+            # Check to see if any factors are specified as references for amounts of components to be added
+            ## Different amounts of a source material being added results in extra combinations
+            ### e.g. an intermediate type might be composed of a buffer and a chemical
+            ### But the amount of chemical is determined by Factor-1, which has two values in the DoE
+            ### Therefore, there will need to be two unique versions of the intermediate type to account for these differences
+
+            if amount_value in DoE_Experiment.factors:
+                amount_value = run.get_factor_value(amount_value)
+                component_source_material = "{}[{}]".format(component_source_material, amount_value)
+
+
+            component_source_material_values.append([component_source_material_value, amount_value])
+            # Store the source_material name-value combination as a string in a list
+            intermediate_type.append("{}({})".format(component_source_material, component_source_material_value))
+
+
+
+        # Convert the list of source_material name-value combinations to a string and add to the previously created list
+        Intermediate_Types.append("-".join(intermediate_type))
+        Intermediate_Component_Info["-".join(intermediate_type)] = component_source_material_values
+        if Add_To_Runs:
+            run.specify_intermediate(Intermediate_Name, "-".join(intermediate_type))
+
+    for intermediate_id in set(Intermediate_Types):
+        component_ids = [id[0] for id in Intermediate_Component_Info[intermediate_id]]
+        component_amount_values = [id[1] for id in Intermediate_Component_Info[intermediate_id]]
+        Intermediate_Object = DoE_Intermediate(intermediate_id, Intermediate_Name, Source_Material_Names, component_ids, Source_Materials_Amount_Types, component_amount_values)
+        DoE_Experiment.add_intermediate(Intermediate_Object)
+
+
+    return(Intermediate_Types)
+
+#
+# def Combine_DoE_Factors(DoE_Experiment, New_Factor_Name, Factor_Names):
+#     # Create an empty list to store each of the specified factor combinations
+#     Combined_Factors = []
+#     # For each run in the DoE
+#     for run in DoE_Experiment.runs:
+#         # Get the values of all the specified factors
+#         combined_factor = []
+#         for component_factor in Factor_Names:
+#             component_factor_value = run.get_factor_value(component_factor)
+#             # Store the factor name-value combination as a string in a list
+#             combined_factor.append("{}({})".format(component_factor, component_factor_value))
+#         # Convert the list of factor name-value combinations to a string and add to the previously created list
+#         Combined_Factors.append("-".join(combined_factor))
+#         run.add_factor(New_Factor_Name, "-".join(combined_factor))
+#
+#     return(Combined_Factors)
+
 
 def Import_Plate_Layout(Filename):
     plate_layout = PlateLayout("name", "type")

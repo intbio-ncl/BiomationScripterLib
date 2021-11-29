@@ -2,6 +2,7 @@ import json
 import BiomationScripter as _BMS
 import math
 from opentrons import simulate as OT2
+import warnings
 
 ########################
 
@@ -65,6 +66,9 @@ class OTProto_Template:
 
     def load_pipettes(self):
         for pipette_position in self._pipettes.keys():
+            if pipette_position in self._protocol.loaded_instruments.keys():
+                warnings.warn("Pipette already loaded in {} position so loading was skipped".format(pipette_position))
+                continue
             pipette = self._pipettes[pipette_position]
             self._protocol.load_instrument(pipette, pipette_position)
         self.__pipettes_loaded = True
@@ -101,7 +105,39 @@ class OTProto_Template:
                     pipette.tip_racks.append(tip_box)
 
     def run(self):
-        raise _BMS.BMSTemplateError("This template has no `run` method.")
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+    def run_as_module(self, Parent):
+        #############################
+        # Duplicate parent settings #
+        #############################
+        self.custom_labware_dir = Parent.custom_labware_dir
+        self.tip_types = Parent.tip_types
+        self._pipettes = Parent._pipettes
+        self.__pipettes_loaded = True
+
+        #############################
+        # Get updated starting tips #
+        #############################
+        for pipette_type in self.starting_tips:
+            pipette = get_pipette(self._protocol, pipette_type)
+            if pipette:
+                last_tip_rack = pipette.tip_racks[-1]
+                next_tip_in_rack = last_tip_rack.next_tip().well_name
+                self.starting_tip_position(pipette_type, next_tip_in_rack)
+
+        ############################
+        # Clear deck and tip racks #
+        ############################
+        for position in self._protocol.deck:
+            del self._protocol.deck[position]
+
+
+        self.run()
+
 
 ########################
 
