@@ -2204,7 +2204,6 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
 
                             intermediate_dilution_in_destination = intermediate_dilution_in_destination.pop()
                             concentration_in_intermediate = final_concentration/intermediate_dilution_in_destination
-                            print("intermediate concentration:", concentration_in_intermediate)
 
                             # Calculate the volume which needs to be added to the intermediate from the stock solution
                             component_volume = round((concentration_in_intermediate*volume_per_slot)/stock_concentration, 1)
