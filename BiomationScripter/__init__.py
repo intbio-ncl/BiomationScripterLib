@@ -191,7 +191,7 @@ class Labware_Layout:
         self.rows = None
         self.columns = None
         self.content = {}
-        self.well_range = None
+        self.available_wells = None
 
     def define_format(self, Rows, Columns):
         self.rows = Rows
@@ -199,6 +199,12 @@ class Labware_Layout:
 
     def get_format(self):
         return(self.rows, self.columns)
+
+    def set_available_wells(self, Well_Range = None, Use_Outer_Wells = True):
+        self.available_wells = self.get_well_range(Well_Range, Use_Outer_Wells)
+
+    def get_available_wells(self):
+        return(self.available_wells)
 
     def get_well_range(self, Well_Range=None, Use_Outer_Wells = True):
         n_rows = self.rows
