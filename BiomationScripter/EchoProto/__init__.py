@@ -1,6 +1,8 @@
 import BiomationScripter as _BMS
 import math
 
+########################
+
 Source_Plate_Types = {
 #   "type": [dead volume, max transfer volume, max storage volume], (volumes in uL)
     "384PP": [15, 2, 65],
@@ -8,6 +10,58 @@ Source_Plate_Types = {
     "6RES": [250, 2800, 2800]
 }
 
+########################
+
+class EchoProto_Template:
+    def __init__(self,
+        Name,
+        Picklist_Save_Directory = ".",
+        Metadata = None
+    ):
+
+        #####################
+        # Protocol Metadata #
+        #####################
+        self.name = Name
+        self.metadata = Metadata
+        self.save_dir = Picklist_Save_Directory
+        self._protocol = _BMS.EchoProto.Protocol(Name)
+
+        #################
+        # Plate Layouts #
+        #################
+        self.source_plate_layouts = []
+        self.destination_plate_layouts = []
+
+    def create_picklists(self):
+        _BMS.EchoProto.Generate_Actions(self._protocol)
+        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir)
+
+    def add_source_layout(self, Layout):
+        # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
+        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+            pass
+        elif type(Layout) is str:
+            # Import file as a Labware_Layout object
+            Layout = _BMS.Import_Plate_Layout(Layout)
+
+        self.source_plate_layouts.append(Layout)
+        self._protocol.add_source_plates([Layout])
+
+    def add_destination_layout(self, Layout):
+        # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
+        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+            pass
+        elif type(Layout) is str:
+            # Import file as a Labware_Layout object
+            Layout = _BMS.Import_Plate_Layout(Layout)
+
+
+        self.destination_plate_layouts.append(Layout)
+        self._protocol.add_destination_plates([Layout])
+
+
+# This is redundant (BMS.Create_Plates_Needed seems to do the same thing)
 def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
     plates_required = math.ceil(Wells_Required/Wells_Available)
     plates = []
@@ -17,22 +71,21 @@ def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
 
     return(plates)
 
-
 def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     for tl in Protocol.transfer_lists:
         TL = tl[0]
         Title = TL.title
         SPType = TL.source_plate.type
 
-        PickList = open(Save_Location+"/"+Protocol.title + "-" + Title + ".csv", "w")
+        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title), "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
         for action in TL.get_actions():
             UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
             SPT = SPType + "_" + Cali
-            line = str(UID) + "," + SPN + "," + SPT + "," + SW + "," + DPN + "," + DPT + "," + DW + "," + str(Vol) + "," + Rea + "\n" # Make less stupid (#DougKnows)
+            line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
             PickList.write(line)
         PickList.close()
-        print(Save_Location+"/"+Protocol.title + "-" + Title + ".csv")
+        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title))
 
 def Generate_Actions(Protocol):
     Exceptions = []
@@ -80,7 +133,7 @@ def Generate_Actions(Protocol):
                     continue
             else:
                 dead_volume = 0
-                print("Can't find source plate type for {} so dead volume set to 0, and no max transfer volume or max storage volume specified.".format(plate.name))
+                print("Can't seem to find source plate type for {} so dead volume set to 0, and no max transfer volume or max storage volume specified.".format(plate.name))
 
             available_volume += total_source_volume - dead_volume
 
@@ -187,7 +240,7 @@ def Generate_Actions(Protocol):
                         if source_index == len(source_wells):
                             raise ValueError("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
 
-
+#################################
 
 class Protocol:
     def __init__(self,Title):
@@ -304,7 +357,6 @@ class Protocol:
             return(Locations)
         else:
             return(None)
-
 
 class TransferList:
     ## Class for storing the TransferList
