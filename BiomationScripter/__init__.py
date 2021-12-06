@@ -529,31 +529,12 @@ def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_N
 
     return(Intermediate_Types)
 
-#
-# def Combine_DoE_Factors(DoE_Experiment, New_Factor_Name, Factor_Names):
-#     # Create an empty list to store each of the specified factor combinations
-#     Combined_Factors = []
-#     # For each run in the DoE
-#     for run in DoE_Experiment.runs:
-#         # Get the values of all the specified factors
-#         combined_factor = []
-#         for component_factor in Factor_Names:
-#             component_factor_value = run.get_factor_value(component_factor)
-#             # Store the factor name-value combination as a string in a list
-#             combined_factor.append("{}({})".format(component_factor, component_factor_value))
-#         # Convert the list of factor name-value combinations to a string and add to the previously created list
-#         Combined_Factors.append("-".join(combined_factor))
-#         run.add_factor(New_Factor_Name, "-".join(combined_factor))
-#
-#     return(Combined_Factors)
-
-
 def Import_Plate_Layout(Filename):
     plate_layout = PlateLayout("name", "type")
     plate_layout.import_plate(Filename)
     return(plate_layout)
 
-def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"):
+def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
             N_Wells_Available = Plate_Format.rows * Plate_Format.columns
@@ -561,7 +542,10 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
             raise ValueError("`N_Wells_Available` should either be an integer, or 'All'.")
 
     N_Plates_Needed = math.ceil(N_Wells_Needed/N_Wells_Available)
-    Plates = [Plate_Format]
+    if Return_Original_Layout == True:
+        Plates = [Plate_Format]
+    elif Return_Original_Layout == False:
+        Plates = []
     for plate_n in range(1, N_Plates_Needed):
         Plate_Name = Plate_Format.name + str(plate_n)
         Plates.append(Plate_Format.clone_format(Plate_Name))
