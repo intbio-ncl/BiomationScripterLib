@@ -529,9 +529,9 @@ def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_N
 
     return(Intermediate_Types)
 
-def Import_Plate_Layout(Filename):
+def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
     plate_layout = PlateLayout("name", "type")
-    plate_layout.import_plate(Filename)
+    plate_layout.import_plate(Filename, path = path, ext = ext)
     return(plate_layout)
 
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
