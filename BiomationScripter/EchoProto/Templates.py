@@ -138,45 +138,45 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         # Generate the picklists
         self.create_picklists()
 
-class PCR:
+class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Name,
-        Volume,
         Polymerase,
         Polymerase_Buffer,
-        Repeats = 1,
+        Source_Plates,
+        Destination_Plate_Layout,
+        Volume,
+        Reactions,
         Master_Mix = False,
-        Colony = False
+        Repeats = 1,
+        **kwargs
     ):
 
-        #####################
-        # Protocol Metadata #
-        #####################
-        self.name = Name
+        super().__init__(**kwargs)
 
         ########################################
         # User defined aspects of the protocol #
         ########################################
-        self.samples = []
-        self.volume = Volume
+        self.volume = Volume # uL
         self.repeats = Repeats
-        self.buffer = Polymerase_Buffer
+        self.reactions = Reactions
         self.polymerase = Polymerase
-        self._master_mix = Master_Mix
-        self.colony_pcr = Colony
+        self.buffer = Polymerase_Buffer
+        self.master_mix = Master_Mix
 
         ###########
         # Labware #
         ###########
-        self.source_plates = []
-        self.destination_plate_format = None
+        # Add source layouts to self.source_plate_layouts
+        for source in Source_Plates:
+            self.add_source_layout(source)
 
+        # Add the destination layout (more may be created later if needed)
+        self.add_destination_layout(Destination_Plate_Layout)
 
         ###########################
         # Default reagent amounts #
         ###########################
         self.__default_volume = 5
-        self.__volume_factor = self.volume/self.__default_volume
 
         self._dNTPs_amount = 0.1
         self._buffer_amount = 1
@@ -195,156 +195,216 @@ class PCR:
         # Default reagent names #
         #########################
         self.dNTPs = "dNTPs"
-        self.master_mix = "Master Mix"
         self.water = "Water"
 
-    def add_sample(self,Template,Primer1,Primer2):
-        self.samples.append([Template,Primer1,Primer2])
+    def run(self):
 
-    def add_source_plate(self,SPlate):
-        self.source_plates.append(SPlate)
+        ###################################################
+        # Calculate number of destination plates required #
+        ###################################################
+        # Determine final number of reactions, and hence number of destination wells required
+        n_reactions = len(self.reactions) * self.repeats
 
-    def define_destination_plate(self, Plate_Layout, Well_Range=None, Use_Outer_Wells=True):
-        self.destination_plate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, Use_Outer_Wells)]
+        # Create the number of destination plates needed as layout objects
+        extra_destination_layouts = _BMS.Create_Plates_Needed(
+            Plate_Format = self.destination_plate_layouts[0],
+            N_Wells_Needed = n_reactions,
+            N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
+            Return_Original_Layout = False
+        )
 
-    def make_picklist(self, Directory):
-        n_samples = len(self.samples) * self.repeats
-        wells_per_dplate = len(self.destination_plate_format[1])
-        dplates = _BMS.Create_Plates_Needed(self.destination_plate_format[0], n_samples, wells_per_dplate)
+        # Add any extra destination plates needed
+        for layout in extra_destination_layouts:
+            self.add_destination_layout(layout)
 
-        dna_amount = self._dNTPs_amount*self.__volume_factor
-        primer_amount = self._primer_amount*self.__volume_factor
+        ######################################
+        # Calculate reagent volumes required #
+        ######################################
+        # Volume factor is the difference between the default volume (5 uL) and the user-define final volume
+        volume_factor = self.volume/self.__default_volume
 
-        if self._master_mix:
-            master_mix_amount = self._master_mix_amount*self.__volume_factor
+        # Use the volume factor to calculate the reagent volumes
+        dna_amount = self._dNTPs_amount * volume_factor
+        primer_amount = self._primer_amount * volume_factor
+
+        # Determine if a mastermix is being used
+        if self.master_mix:
+            master_mix_amount = self._master_mix_amount * volume_factor
             reagent_amount = master_mix_amount + dna_amount + (2 * primer_amount)
         else:
-            dNTPs_amount = self._dNTPs_amount*self.__volume_factor
-            buffer_amount = self._buffer_amount*self.__volume_factor
-            polymerase_amount = self._polymerase_amount*self.__volume_factor
+            dNTPs_amount = self._dNTPs_amount * volume_factor
+            buffer_amount = self._buffer_amount * volume_factor
+            polymerase_amount = self._polymerase_amount * volume_factor
             reagent_amount = dNTPs_amount + buffer_amount + polymerase_amount + dna_amount + (2 * primer_amount)
 
         water_amount = self.volume - reagent_amount
-        # If need to add less than 0.025 uL water, just add none (too small for echo to transfer)
-        if water_amount < 0.025:
-            water_amount = 0
 
-        dplate_id = 0
-        dplate_current_well = 0
-        dplate_well_range = self.destination_plate_format[1]
+        ########################################
+        # Add liquids to destination layout(s) #
+        ########################################
+        # Counter to track which destination plate is in use
+        destination_plate_index = 0
+        # Counter to track which destination well is in use
+        destination_well_index = 0
 
-        for sample in self.samples:
+        # For every reaction
+        for reaction in self.reactions:
             for rep in range(0, self.repeats):
-                dplate = dplates[dplate_id]
-                if not self.colony_pcr:
-                    dplate.add_content(dplate_well_range[dplate_current_well], sample[0], dna_amount)
-                dplate.add_content(dplate_well_range[dplate_current_well], sample[1], primer_amount)
-                dplate.add_content(dplate_well_range[dplate_current_well], sample[2], primer_amount)
-                dplate.add_content(dplate_well_range[dplate_current_well], self.water, water_amount)
+                # Get the current destination plate and well
+                current_destination_plate = self.destination_plate_layouts[destination_plate_index]
+                current_destination_well = current_destination_plate.available_wells[destination_well_index]
 
-                if self._master_mix:
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.master_mix, master_mix_amount)
-                else:
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.dNTPs, dNTPs_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.buffer, buffer_amount)
-                    dplate.add_content(dplate_well_range[dplate_current_well], self.polymerase, polymerase_amount)
+                # Add the reagents, water, and DNA to the destinaton plate
+                try:
+                    current_destination_plate.add_content(current_destination_well, self.water, water_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[0], dna_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[1], primer_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[2], primer_amount)
 
-                dplate_current_well += 1
-                # Check if the current destination plate is full, and if so move on to the next plate
-                if dplate_current_well - 1 == len(dplate_well_range):
-                    dplate_id += 1
-                    dplate_current_well = 0
+                    if self.master_mix:
+                        current_destination_plate.add_content(current_destination_well, self.master_mix, master_mix_amount)
+                    else:
+                        current_destination_plate.add_content(current_destination_well, self.dNTPs, dNTPs_amount)
+                        current_destination_plate.add_content(current_destination_well, self.buffer, buffer_amount)
+                        current_destination_plate.add_content(current_destination_well, self.polymerase, polymerase_amount)
+                # Raise a more relevant error message if NegativeVolumeError occurs
+                except _BMS.NegativeVolumeError:
+                    raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
 
-        # Create protocol and generate picklists
-        Protocol = _BMS.EchoProto.Protocol(self.name)
-        Protocol.add_source_plates(self.source_plates)
-        Protocol.add_destination_plates(dplates)
-        _BMS.EchoProto.Generate_Actions(Protocol)
-        _BMS.EchoProto.Write_Picklists(Protocol,Directory)
+                # Iterate to the next destination well
+                destination_well_index += 1
+                # Check if the current destinaton plate is full
+                if destination_well_index - 1 == len(current_destination_plate.available_wells):
+                    # If so, iterate to the first well of the next destination plate
+                    destination_plate_index += 1
+                    destination_well_index = 0
 
+        # Generate the picklists
+        self.create_picklists()
 
-
-
-
-
-        #
-        #
-        # # Note that DestinationWellRange overrides UseOuterWells
-        # # DestinationWellRange can be a list of wells, or a continous range in the format "R1C1:R2C2"
-        # # Gap refers to gaps between well range given, so a well range of A2:A6 with a gap of 1 would give A2, A4, A6, and a gap of 0 would give A2, A3, A4, A5, A6
-        # if Name == None:
-        #     Name = self.name + "_Destination_Plate"
-        # self.dplate = _BMS.PlateLayout(Name, Type)
-        # self.dplate.define_format(Rows, Columns)
-        # if DestinationWellRange:
-        #     if isinstance(DestinationWellRange, list):
-        #         for w in DestinationWellRange:
-        #             if not self.dplate.check_well(w):
-        #                 raise ValueError("Destination Well {} does not exist in plate {}".format(w,self.dplate.name))
-        #         g = 0
-        #         for w in DestinationWellRange:
-        #             if g == 0:
-        #                 self.dwellrange.append(w)
-        #             if g == gap:
-        #                 g = 0
-        #             else:
-        #                 g += 1
-        #     elif isinstance(DestinationWellRange, str):
-        #         start,end = DestinationWellRange.split(":")
-        #         wells = []
-        #         startrow = start[0]
-        #         endrow = end[0]
-        #         rows = _BMS.Lrange(startrow,endrow)
-        #         c = int(start[1:])
-        #         for r in rows:
-        #             if r == endrow:
-        #                 endc = int(end[1:])
-        #             else:
-        #                 endc = self.dplate.columns
-        #             for c in range(c,endc+1):
-        #                 if not UseOuterWells and (r == "A" or r >= chr(64 + self.dplate.rows) or c == 1 or c >= self.dplate.columns):
-        #                     continue
-        #                 else:
-        #                     if not self.dplate.check_well("{}{}".format(r,c)):
-        #                         raise ValueError("Destination Well {} does not exist in plate {}".format("{}{}".format(r,c),self.dplate.name))
-        #                     wells.append("{}{}".format(r,c))
-        #             c = 1
-        #         g = 0
-        #         for w in wells:
-        #             if g == 0:
-        #                 self.dwellrange.append(w)
-        #             if g == gap:
-        #                 g = 0
-        #             else:
-        #                 g += 1
-        # else:
-        #     start,end = "{}{}:{}{}".format("A","1",chr(64 + self.dplate.rows), self.dplate.columns).split(":")
-        #     wells = []
-        #     startrow = start[0]
-        #     endrow = end[0]
-        #     rows = _BMS.Lrange(startrow,endrow)
-        #     c = int(start[1:])
-        #     for r in rows:
-        #         if r == endrow:
-        #             endc = int(end[1:])
-        #         else:
-        #             endc = self.dplate.columns
-        #         for c in range(c,endc+1):
-        #             if not UseOuterWells and (r == "A" or r >= chr(64 + self.dplate.rows) or c == 1 or c >= self.dplate.columns):
-        #                 continue
-        #             else:
-        #                 if not self.dplate.check_well("{}{}".format(r,c)):
-        #                     raise ValueError("Destination Well {} does not exist in plate {}".format("{}{}".format(r,c),self.dplate.name))
-        #                 wells.append("{}{}".format(r,c))
-        #         c = 1
-        #     g = 0
-        #     for w in wells:
-        #         if g == 0:
-        #             self.dwellrange.append(w)
-        #         if g == gap:
-        #             g = 0
-        #         else:
-        #             g += 1
+# class PCR:
+#     def __init__(self,
+#         Name,
+#         Volume,
+#         Polymerase,
+#         Polymerase_Buffer,
+#         Repeats = 1,
+#         Master_Mix = False,
+#         Colony = False
+#     ):
+#
+#         #####################
+#         # Protocol Metadata #
+#         #####################
+#         self.name = Name
+#
+#         ########################################
+#         # User defined aspects of the protocol #
+#         ########################################
+#         self.samples = []
+#         self.volume = Volume
+#         self.repeats = Repeats
+#         self.buffer = Polymerase_Buffer
+#         self.polymerase = Polymerase
+#         self._master_mix = Master_Mix
+#         self.colony_pcr = Colony
+#
+#         ###########
+#         # Labware #
+#         ###########
+#         self.source_plates = []
+#         self.destination_plate_format = None
+#
+#
+#         ###########################
+#         # Default reagent amounts #
+#         ###########################
+#         self.__default_volume = 5
+#         self.__volume_factor = self.volume/self.__default_volume
+#
+#         self._dNTPs_amount = 0.1
+#         self._buffer_amount = 1
+#         self._polymerase_amount = 0.05
+#         self._master_mix_amount = 2.5
+#
+#         ##################################
+#         # Default DNA and primer amounts #
+#         ##################################
+#         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
+#         self._dna_amount = 1
+#         # Default primer amounts in uL for 5 uL reactions, and 10 μM stock concentration
+#         self._primer_amount = 0.25
+#
+#         #########################
+#         # Default reagent names #
+#         #########################
+#         self.dNTPs = "dNTPs"
+#         self.master_mix = "Master Mix"
+#         self.water = "Water"
+#
+#     def add_sample(self,Template,Primer1,Primer2):
+#         self.samples.append([Template,Primer1,Primer2])
+#
+#     def add_source_plate(self,SPlate):
+#         self.source_plates.append(SPlate)
+#
+#     def define_destination_plate(self, Plate_Layout, Well_Range=None, Use_Outer_Wells=True):
+#         self.destination_plate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, Use_Outer_Wells)]
+#
+#     def make_picklist(self, Directory):
+#         n_samples = len(self.samples) * self.repeats
+#         wells_per_dplate = len(self.destination_plate_format[1])
+#         dplates = _BMS.Create_Plates_Needed(self.destination_plate_format[0], n_samples, wells_per_dplate)
+#
+#         dna_amount = self._dNTPs_amount*self.__volume_factor
+#         primer_amount = self._primer_amount*self.__volume_factor
+#
+#         if self._master_mix:
+#             master_mix_amount = self._master_mix_amount*self.__volume_factor
+#             reagent_amount = master_mix_amount + dna_amount + (2 * primer_amount)
+#         else:
+#             dNTPs_amount = self._dNTPs_amount*self.__volume_factor
+#             buffer_amount = self._buffer_amount*self.__volume_factor
+#             polymerase_amount = self._polymerase_amount*self.__volume_factor
+#             reagent_amount = dNTPs_amount + buffer_amount + polymerase_amount + dna_amount + (2 * primer_amount)
+#
+#         water_amount = self.volume - reagent_amount
+#         # If need to add less than 0.025 uL water, just add none (too small for echo to transfer)
+#         if water_amount < 0.025:
+#             water_amount = 0
+#
+#         dplate_id = 0
+#         dplate_current_well = 0
+#         dplate_well_range = self.destination_plate_format[1]
+#
+#         for sample in self.samples:
+#             for rep in range(0, self.repeats):
+#                 dplate = dplates[dplate_id]
+#                 if not self.colony_pcr:
+#                     dplate.add_content(dplate_well_range[dplate_current_well], sample[0], dna_amount)
+#                 dplate.add_content(dplate_well_range[dplate_current_well], sample[1], primer_amount)
+#                 dplate.add_content(dplate_well_range[dplate_current_well], sample[2], primer_amount)
+#                 dplate.add_content(dplate_well_range[dplate_current_well], self.water, water_amount)
+#
+#                 if self._master_mix:
+#                     dplate.add_content(dplate_well_range[dplate_current_well], self.master_mix, master_mix_amount)
+#                 else:
+#                     dplate.add_content(dplate_well_range[dplate_current_well], self.dNTPs, dNTPs_amount)
+#                     dplate.add_content(dplate_well_range[dplate_current_well], self.buffer, buffer_amount)
+#                     dplate.add_content(dplate_well_range[dplate_current_well], self.polymerase, polymerase_amount)
+#
+#                 dplate_current_well += 1
+#                 # Check if the current destination plate is full, and if so move on to the next plate
+#                 if dplate_current_well - 1 == len(dplate_well_range):
+#                     dplate_id += 1
+#                     dplate_current_well = 0
+#
+#         # Create protocol and generate picklists
+#         Protocol = _BMS.EchoProto.Protocol(self.name)
+#         Protocol.add_source_plates(self.source_plates)
+#         Protocol.add_destination_plates(dplates)
+#         _BMS.EchoProto.Generate_Actions(Protocol)
+#         _BMS.EchoProto.Write_Picklists(Protocol,Directory)
 
 # class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol/uL
 #
