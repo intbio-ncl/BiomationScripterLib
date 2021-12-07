@@ -24,7 +24,6 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         self.volume = Volume # uL
         self.ratios = Backbone_to_Part
         self.repeats = Repeats
-        self.assemblies = []
         self.enzyme = Enzyme
         self.assemblies = Assemblies # [ [Backbone, [Part1, ... Partn]] ]
 
@@ -41,6 +40,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         ##############################################
         # Default reagent amounts for 5 uL reactions #
         ##############################################
+        self.__default_volume = 5
         self._enzyme_amount = 0.125
         self._ligase_buffer_amount = 0.5
         self._ligase_amount = 0.125
@@ -85,7 +85,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         # Calculate reagent volumes required #
         ######################################
         # Volume factor is the difference between the default volume (5 uL) and the user-define final volume
-        volume_factor = self.volume/5
+        volume_factor = self.volume/self.__default_volume
         # Use the volume factor to calculate the reagent volumes
         enzyme_amount = self._enzyme_amount*volume_factor
         ligase_buffer_amount = self._ligase_buffer_amount*volume_factor
