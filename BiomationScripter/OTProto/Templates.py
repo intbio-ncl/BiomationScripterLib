@@ -711,162 +711,271 @@ class OT2_Picklist:
             else:
                 self._protocol.pause("Transfer volume > 300 uL. This will be split into two transfers. Continue?")
 
-class Primer_Mixing_LightRun:
-    def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
-    Destination_Contents, primer_plate_is_DNA_plate = False,
-    DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul", Destination_Type = "3dprinted_24_tuberack_1500ul",
-    Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
-
-        #####################
-        # Protocol Metadata #
-        #####################
-        self._protocol = Protocol
-        self.Name = Name
-        self.Metadata = Metadata
-        self._simulate = Simulate
-        self.custom_labware_dir = "../Custom_Labware/"
-
-        if not Simulate == "deprecated":
-            print("Simulate no longer needs to be specified and will soon be removed.")
+class Primer_Mixing(_OTProto.OTProto_Template):
+    def __init__(self,
+        DNA,
+        DNA_Source_Type,
+        DNA_Source_Wells,
+        Primers,
+        Primer_Source_Wells,
+        Primer_Source_Type,
+        Water_Source_Type,
+        Water_Aliquot_Volume,
+        DNA_Primer_Mixtures,
+        Destination_Type,
+        DNA_Volume,
+        Primer_Volume,
+        Final_Volume,
+        DNA_Primers_Same_Source = False,
+        **kwargs
+    ):
 
         ########################################
         # User defined aspects of the protocol #
         ########################################
-        self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
+        self.dna_primer_mixtures = DNA_Primer_Mixtures
+        self.dna_volume = DNA_Volume
+        self.primer_volume = Primer_Volume
+        self.final_volume = Final_Volume
 
         ####################
         # Source materials #
         ####################
-        ## Pipette Tips ##
-        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        self.starting_20uL_tip = Starting_20uL_Tip
-        ## DNA samples ##
         self.dna = DNA
-        self.dna_source_wells = DNA_Source_Wells
-        self.dna_source_type = DNA_Source_Type
-        ## Primer samples ##
         self.primers = Primers
+
+        self.dna_source_wells = DNA_Source_Wells
         self.primer_source_wells = Primer_Source_Wells
+
+        self.dna_source_type = DNA_Source_Type
         self.primer_source_type = Primer_Source_Type
+        self.water_source_type = Water_Source_Type
+
+        self.water_aliquot_volume = Water_Aliquot_Volume
+
+        self.dna_primers_same_source = DNA_Primers_Same_Source
 
         #######################
         # Destination Labware #
         #######################
         self.destination_type = Destination_Type
-        self.destination_contents = Destination_Contents
 
-        ###############
-        # Robot Setup #
-        ###############
-        self._p20_type = "p20_single_gen2"
-        self._p20_position = "left"
+        ##################################################
+        # Protocol Metadata and Instrument Configuration #
+        ##################################################
+        super().__init__(**kwargs)
 
     def run(self):
-        # Determine how many tips will be needed
-        # this will be twice the length of destination contents
-        # one tip for DNA, one tip for primer - per destination
-        tips_needed_20uL = 2 * len(self.destination_contents)
-        # Calculate number of racks needed - account for the first rack missing some tips
-        racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
-        # Load tip racks
-        tip_racks_20uL = []
-        for rack20 in range(0, racks_needed_20uL):
-            tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
-        # Set up pipettes
-        p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
-        p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
 
-        # User prompts for number of tip boxes required, and locations of the tip boxes
-        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
-        for tip_box_index in range(0, len(tip_racks_20uL)):
-            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
 
-        # Load all other labware
-        if not self.primer_plate_is_dna_plate:
-            ## Find the next empty deck slot
-            dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
-            ## Load the DNA labware
-            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA Plate")
+        ################################
+        # Calculate and load tip boxes #
+        ################################
+        # Number of tips needed is:
+        # > One tip for the water total - volume = final - (DNA + Primer)
+        # > One tip per DNA sample per destination
+        # > One tip per primer per destination
 
-            ## Find the next empty deck slot
-            primer_labware_slot = _OTProto.next_empty_slot(self._protocol)
-            ## Load the primer labware
-            primer_labware = _OTProto.load_labware(self._protocol, self.primer_source_type, primer_labware_slot, self.custom_labware_dir, label = "Primer Plate")
+        # Calculate and store all of the transfers which need to be performed by this protocol
+        Water_Transfers = []
+        DNA_Transfers = []
+        Primer_Transfers = []
+        for mixture in self.dna_primer_mixtures:
+            dna = mixture[0]
+            primers = mixture[1:]
+            water_vol = self.final_volume - (self.dna_volume + len(primers) * self.primer_volume)
+            DNA_Transfers.append(self.dna_volume)
+            for primer in primers:
+                Primer_Transfers.append(self.primer_volume)
+            Water_Transfers.append(water_vol)
+
+        # This calculates the number of each tip type needed, and adds them to the tips_needed attribute
+        water_tips_needed = _OTProto.calculate_tips_needed(self._protocol, Water_Transfers, template = self, new_tip = False)
+        dna_tips_needed = _OTProto.calculate_tips_needed(self._protocol, DNA_Transfers, template = self, new_tip = True)
+        primer_tips_needed = _OTProto.calculate_tips_needed(self._protocol, Primer_Transfers, template = self, new_tip = True)
+
+        # Add required number of tip boxes to the loaded pipettes
+        self.add_tip_boxes_to_pipettes()
+
+        #######################
+        # Load source labware #
+        #######################
+        # Calculate how many water aliquots are required
+        number_water_aliquots = _BMS.aliquot_calculator(
+                                            Volume_Required = sum(Water_Transfers),
+                                            Volume_Per_Aliquot = self.water_aliquot_volume,
+                                            Dead_Volume = self.water_aliquot_volume * 0.01
+         )
+
+        # Load the required number of water labware
+        Water_Labware, Water_Locations = _OTProto.calculate_and_load_labware(
+                                                    protocol = self._protocol,
+                                                    labware_api_name = self.water_source_type,
+                                                    wells_required = number_water_aliquots,
+                                                    custom_labware_dir = self.custom_labware_dir
+        )
+
+        #########################################
+        # Create labware layout for DNA labware #
+        #########################################
+
+        dna_layout = _BMS.Labware_Layout(
+                                Name = "DNA",
+                                Type = self.dna_source_type
+        )
+        n_dna_layout_rows, n_dna_layout_cols = _OTProto.get_labware_format(self.dna_source_type, self.custom_labware_dir)
+        dna_layout.define_format(n_dna_layout_rows, n_dna_layout_cols)
+
+        # Add content to the layout
+        for dna, dna_well in zip(self.dna, self.dna_source_wells):
+         dna_layout.add_content(
+                        Well = dna_well,
+                        Reagent = dna,
+                        Volume = 30 # This refers to nothing important - should add in a calculator somewhere to let user know how much is needed
+         )
+
+        ###########################################################################################
+        # Create labware layout for Primer labware (if primer and dna aren't in the same labware) #
+        ###########################################################################################
+
+        if not self.dna_primers_same_source:
+            primer_layout = _BMS.Labware_Layout(
+                                       Name = "Primers",
+                                       Type = self.primer_source_type
+            )
+            n_primer_layout_rows, n_primer_layout_cols = _OTProto.get_labware_format(self.primer_source_type, self.custom_labware_dir)
+            primer_layout.define_format(n_primer_layout_rows, n_primer_layout_cols)
         else:
-            ## Find the next empty deck slot
-            dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
-            ## Load the DNA labware
-            dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA and Primer Plate")
+            dna_layout.name = "DNA and Primers"
+            primer_layout = dna_layout
+
+        # Add content to the layout
+        for primer, primer_well in zip(self.primers, self.primer_source_wells):
+            primer_layout.add_content(
+                           Well = primer_well,
+                           Reagent = primer,
+                           Volume = 30 # This refers to nothing important - should add in a calculator somewhere to let user know how much is needed
+            )
+
+        ###################################
+        # Load labware from layout object #
+        ###################################
+        dna_labware = _OTProto.load_labware_from_layout(
+                                Protocol = self._protocol,
+                                Plate_Layout = dna_layout,
+                                custom_labware_dir = self.custom_labware_dir
+        )
+
+        if not self.dna_primers_same_source:
+            primer_labware = _OTProto.load_labware_from_layout(
+                                    Protocol = self._protocol,
+                                    Plate_Layout = primer_layout,
+                                    custom_labware_dir = self.custom_labware_dir
+            )
+        else:
             primer_labware = dna_labware
 
-        destination_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        destination_labware = _OTProto.load_labware(self._protocol, self.destination_type, destination_labware_slot, self.custom_labware_dir, label = "Tube Rack")
-
-        # Store DNA locations
-        DNA = _BMS.Liquids()
-        for d,w in zip(self.dna, self.dna_source_wells):
-            DNA.add_liquid(d, dna_labware, w)
-        # Store primer locations
-        Primers = _BMS.Liquids()
-        for p,w in zip(self.primers, self.primer_source_wells):
-            Primers.add_liquid(p, primer_labware, w)
-
-        # specify wells to be used for LightRun tubes
-        destination_plate_wells_by_row = []
-        for r in destination_labware.rows():
-            for w in r:
-                destination_plate_wells_by_row.append(w)
-        destination_range = destination_plate_wells_by_row[0:len(self.destination_contents)]
-
-        # User prompts for number of tip boxes required, and locations of the tip boxes
-        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
-        for tip_box_index in range(0, len(tip_racks_20uL)):
-            self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
-
-        # Prompt user to check all liquids are correctly placed
-        self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
-        # one tube rack has been loaded for the destination plate, maximum number of samples is 24
-        if len(destination_range) > 24:
-            self._protocol.pause("This protocol requires more than 24 tubes. Please limit the protocol to 24 tubes only.")
-
-        # Prompt user to load DNA
-        for l in DNA.get_all_liquids():
-            liquid_name = l
-            liquid_labware = DNA.get_liquid_labware(liquid_name)
-            liquid_well = DNA.get_liquid_well(liquid_name)
-            self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
-        # Prompt user to load Primers
-        for l in Primers.get_all_liquids():
-            liquid_name = l
-            liquid_labware = Primers.get_liquid_labware(liquid_name)
-            liquid_well = Primers.get_liquid_well(liquid_name)
-            self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+        ############################
+        # Load destination labware #
+        ############################
+        destination_labware, destination_locations = _OTProto.calculate_and_load_labware(
+                                                       protocol = self._protocol,
+                                                       labware_api_name = self.destination_type,
+                                                       wells_required = len(self.dna_primer_mixtures),
+                                                       custom_labware_dir = self.custom_labware_dir
+        )
 
         ##################################
         # Start of protocol instructions #
         ##################################
 
-        # Add DNA to destination tubes
-        for i in range(len(destination_range)):
-            # extract liquid contents from list
-            contents = self.destination_contents[i]
-            contents_dna = contents[0] # DNA
-            contents_primer = contents[1] # primer
-            # get dna source well
-            dna_labware = DNA.get_liquid_labware(contents_dna)
-            dna_well = DNA.get_liquid_well(contents_dna)
-            dna_source = dna_labware.wells_by_name()[dna_well]
-            # get forward primer well
-            primer_labware = Primers.get_liquid_labware(contents_primer)
-            primer_well = Primers.get_liquid_well(contents_primer)
-            primer_source = primer_labware.wells_by_name()[primer_well]
-            # get destination well
-            destination = destination_range[i]
+        # User prompts to ensure deck is correctly set up
+        if not _OTProto.get_p20 == None:
+            self._protocol.pause("This protocol uses {} 20 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p20"], self.starting_tips["p20"])))
+        if not _OTProto.get_p300 == None:
+            self._protocol.pause("This protocol uses {} 300 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p300"], self.starting_tips["p300"])))
+        if not _OTProto.get_p1000 == None:
+            self._protocol.pause("This protocol uses {} 1000 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p1000"], self.starting_tips["p1000"])))
 
-            # transfer 5uL of DNA to each tube
-            p20.transfer(5, dna_source, destination)
-            # transfer 5uL of primer to each tube
-            p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
+        for dna, dna_well in zip(self.dna, self.dna_source_wells):
+            self._protocol.pause("Ensure DNA {} is loaded in slot {} of labware {} on slot {}".format(dna, dna_well, dna_labware.name, dna_labware.parent))
+
+        for primer, primer_well in zip(self.primers, self.primer_source_wells):
+            self._protocol.pause("Ensure Primer {} is loaded in slot {} of labware {} on slot {}".format(primer, primer_well, primer_labware.name, primer_labware.parent))
+
+        self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(Water_Locations), self.water_aliquot_volume, Water_Locations))
+
+        ######################################
+        # Transfer water into required wells #
+        ######################################
+
+        _OTProto.dispense_from_aliquots(
+                            Protocol = self._protocol,
+                            Transfer_Volumes = Water_Transfers,
+                            Aliquot_Source_Locations = Water_Locations,
+                            Destinations = destination_locations,
+                            Aliquot_Volumes = self.water_aliquot_volume,
+                            new_tip = False
+        )
+
+        ####################################
+        # Transfer DNA into required wells #
+        ####################################
+
+        ## Get transfer locations for each of the DNA samples required
+        dna_wells = []
+        for mixture in self.dna_primer_mixtures:
+            dna_name = mixture[0]
+            dna_wells.append(dna_layout.get_wells_containing_liquid(dna_name)[0])
+
+        DNA_Transfer_Source_Locations = _OTProto.get_locations(
+                                                Labware = dna_labware,
+                                                Wells = dna_wells
+        )
+
+        _OTProto.transfer_liquids(
+                            Protocol = self._protocol,
+                            Transfer_Volumes = DNA_Transfers,
+                            Source_Locations = DNA_Transfer_Source_Locations,
+                            Destination_Locations = destination_locations,
+                            new_tip = True,
+                            mix_before = (3, "transfer_volume"),
+                            mix_after = (3, "transfer_volume")
+        )
+
+        ########################################
+        # Transfer primers into required wells #
+        ########################################
+
+        ## Get transfer locations for each of the primers required
+        primer_wells = []
+        primer_destination_locations = [] # Multiple primers may go into the same destination, so need a new list to store these
+        for mixture, destination_location in zip(self.dna_primer_mixtures, destination_locations):
+            primers = mixture[1:]
+            for primer_name in primers:
+                primer_wells.append(primer_layout.get_wells_containing_liquid(primer_name)[0])
+                primer_destination_locations.append(destination_location)
+
+        Primer_Transfer_Source_Locations = _OTProto.get_locations(
+                                                Labware = primer_labware,
+                                                Wells = primer_wells
+        )
+
+        _OTProto.transfer_liquids(
+                            Protocol = self._protocol,
+                            Transfer_Volumes = Primer_Transfers,
+                            Source_Locations = Primer_Transfer_Source_Locations,
+                            Destination_Locations = primer_destination_locations,
+                            new_tip = True,
+                            mix_before = (3, "transfer_volume"),
+                            mix_after = (3, "transfer_volume")
+        )
+
+        #END#
 
 class Monarch_Miniprep:
     def __init__(self,
@@ -2336,3 +2445,162 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
         Destination_Prep_Protocol.run_as_module(self)
 
         # END #
+
+
+
+# class Primer_Mixing_LightRun:
+#     def __init__(self, Protocol, Name, Metadata, DNA, DNA_Source_Wells, Primers, Primer_Source_Wells,
+#     Destination_Contents, primer_plate_is_DNA_plate = False,
+#     DNA_Source_Type = "labcyte384pp_384_wellplate_65ul", Primer_Source_Type = "labcyte384pp_384_wellplate_65ul", Destination_Type = "3dprinted_24_tuberack_1500ul",
+#     Starting_20uL_Tip = "A1", API = "2.10", Simulate = False):
+#
+#         #####################
+#         # Protocol Metadata #
+#         #####################
+#         self._protocol = Protocol
+#         self.Name = Name
+#         self.Metadata = Metadata
+#         self._simulate = Simulate
+#         self.custom_labware_dir = "../Custom_Labware/"
+#
+#         if not Simulate == "deprecated":
+#             print("Simulate no longer needs to be specified and will soon be removed.")
+#
+#         ########################################
+#         # User defined aspects of the protocol #
+#         ########################################
+#         self.primer_plate_is_dna_plate = primer_plate_is_DNA_plate
+#
+#         ####################
+#         # Source materials #
+#         ####################
+#         ## Pipette Tips ##
+#         self._20uL_tip_type = "opentrons_96_tiprack_20ul"
+#         self.starting_20uL_tip = Starting_20uL_Tip
+#         ## DNA samples ##
+#         self.dna = DNA
+#         self.dna_source_wells = DNA_Source_Wells
+#         self.dna_source_type = DNA_Source_Type
+#         ## Primer samples ##
+#         self.primers = Primers
+#         self.primer_source_wells = Primer_Source_Wells
+#         self.primer_source_type = Primer_Source_Type
+#
+#         #######################
+#         # Destination Labware #
+#         #######################
+#         self.destination_type = Destination_Type
+#         self.destination_contents = Destination_Contents
+#
+#         ###############
+#         # Robot Setup #
+#         ###############
+#         self._p20_type = "p20_single_gen2"
+#         self._p20_position = "left"
+#
+#     def run(self):
+#         # Determine how many tips will be needed
+#         # this will be twice the length of destination contents
+#         # one tip for DNA, one tip for primer - per destination
+#         tips_needed_20uL = 2 * len(self.destination_contents)
+#         # Calculate number of racks needed - account for the first rack missing some tips
+#         racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
+#         # Load tip racks
+#         tip_racks_20uL = []
+#         for rack20 in range(0, racks_needed_20uL):
+#             tip_racks_20uL.append(self._protocol.load_labware(self._20uL_tip_type, _OTProto.next_empty_slot(self._protocol)))
+#         # Set up pipettes
+#         p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
+#         p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
+#
+#         # User prompts for number of tip boxes required, and locations of the tip boxes
+#         self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+#         for tip_box_index in range(0, len(tip_racks_20uL)):
+#             self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+#
+#         # Load all other labware
+#         if not self.primer_plate_is_dna_plate:
+#             ## Find the next empty deck slot
+#             dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
+#             ## Load the DNA labware
+#             dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA Plate")
+#
+#             ## Find the next empty deck slot
+#             primer_labware_slot = _OTProto.next_empty_slot(self._protocol)
+#             ## Load the primer labware
+#             primer_labware = _OTProto.load_labware(self._protocol, self.primer_source_type, primer_labware_slot, self.custom_labware_dir, label = "Primer Plate")
+#         else:
+#             ## Find the next empty deck slot
+#             dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
+#             ## Load the DNA labware
+#             dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir, label = "DNA and Primer Plate")
+#             primer_labware = dna_labware
+#
+#         destination_labware_slot = _OTProto.next_empty_slot(self._protocol)
+#         destination_labware = _OTProto.load_labware(self._protocol, self.destination_type, destination_labware_slot, self.custom_labware_dir, label = "Tube Rack")
+#
+#         # Store DNA locations
+#         DNA = _BMS.Liquids()
+#         for d,w in zip(self.dna, self.dna_source_wells):
+#             DNA.add_liquid(d, dna_labware, w)
+#         # Store primer locations
+#         Primers = _BMS.Liquids()
+#         for p,w in zip(self.primers, self.primer_source_wells):
+#             Primers.add_liquid(p, primer_labware, w)
+#
+#         # specify wells to be used for LightRun tubes
+#         destination_plate_wells_by_row = []
+#         for r in destination_labware.rows():
+#             for w in r:
+#                 destination_plate_wells_by_row.append(w)
+#         destination_range = destination_plate_wells_by_row[0:len(self.destination_contents)]
+#
+#         # User prompts for number of tip boxes required, and locations of the tip boxes
+#         self._protocol.pause("This protocol needs {} 20 uL tip racks".format(racks_needed_20uL))
+#         for tip_box_index in range(0, len(tip_racks_20uL)):
+#             self._protocol.pause("Place 20 uL tip rack {} at deck position {}".format((tip_box_index + 1), tip_racks_20uL[tip_box_index].parent))
+#
+#         # Prompt user to check all liquids are correctly placed
+#         self._protocol.pause("This protocol needs {} 1.5mL tubes".format(len(destination_range)))
+#         # one tube rack has been loaded for the destination plate, maximum number of samples is 24
+#         if len(destination_range) > 24:
+#             self._protocol.pause("This protocol requires more than 24 tubes. Please limit the protocol to 24 tubes only.")
+#
+#         # Prompt user to load DNA
+#         for l in DNA.get_all_liquids():
+#             liquid_name = l
+#             liquid_labware = DNA.get_liquid_labware(liquid_name)
+#             liquid_well = DNA.get_liquid_well(liquid_name)
+#             self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+#         # Prompt user to load Primers
+#         for l in Primers.get_all_liquids():
+#             liquid_name = l
+#             liquid_labware = Primers.get_liquid_labware(liquid_name)
+#             liquid_well = Primers.get_liquid_well(liquid_name)
+#             self._protocol.pause('Place {} in well {} at deck position {}'.format(liquid_name, liquid_well, liquid_labware.parent))
+#
+#         ##################################
+#         # Start of protocol instructions #
+#         ##################################
+#
+#         # Add DNA to destination tubes
+#         for i in range(len(destination_range)):
+#             # extract liquid contents from list
+#             contents = self.destination_contents[i]
+#             contents_dna = contents[0] # DNA
+#             contents_primer = contents[1] # primer
+#             # get dna source well
+#             dna_labware = DNA.get_liquid_labware(contents_dna)
+#             dna_well = DNA.get_liquid_well(contents_dna)
+#             dna_source = dna_labware.wells_by_name()[dna_well]
+#             # get forward primer well
+#             primer_labware = Primers.get_liquid_labware(contents_primer)
+#             primer_well = Primers.get_liquid_well(contents_primer)
+#             primer_source = primer_labware.wells_by_name()[primer_well]
+#             # get destination well
+#             destination = destination_range[i]
+#
+#             # transfer 5uL of DNA to each tube
+#             p20.transfer(5, dna_source, destination)
+#             # transfer 5uL of primer to each tube
+#             # p20.transfer(5, primer_source, destination, mix_after = (5, 5)) # mix after 5 times with 5uL
