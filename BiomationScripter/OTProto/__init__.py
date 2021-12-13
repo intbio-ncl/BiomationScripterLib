@@ -236,7 +236,14 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
     if not len(Transfer_Volumes) == len(Source_Locations) or not len(Transfer_Volumes) == len(Destination_Locations):
         raise ValueError("The number of transfer volumes, source locations, and destination locations are not the same.")
 
-    min_transfer = min(Transfer_Volumes)
+    # Get the smallest non-zero volume to transfer
+    if Transfer_Volumes.count(0) == 0:
+        min_transfer = min(Transfer_Volumes)
+    else:
+        temp_Transfer_Volumes = [tv for tv in Transfer_Volumes if not tv == 0]
+        min_transfer = min(temp_Transfer_Volumes)
+
+    # Get the largest volume to transfer
     max_transfer = max(Transfer_Volumes)
 
     # Check that the correct pipettes are available #
@@ -517,6 +524,9 @@ def calculate_tips_needed(protocol, transfers, new_tip = True):
     }
 
     for transfer in transfers:
+        # If transfer volume is 0 uL, skip it
+        if transfer == 0:
+            continue
         # Get the most appropriate pipette from those which are loaded
         pipette = select_pipette_by_volume(protocol, transfer)
         # Check how many trasfers will be needed to transfer the entire volume (e.g. if p300 is chosen for 400 uL, two transfers needed)
@@ -533,6 +543,8 @@ def calculate_tips_needed(protocol, transfers, new_tip = True):
     return(tips_needed["20uL"], tips_needed["300uL"], tips_needed["1000uL"])
 
 def tip_racks_needed(tips_needed, starting_tip_position = "A1"):
+    if tips_needed == 0:
+        return(0)
     tips_in_first_rack = len(_BMS.well_range("{}:H12".format(starting_tip_position), [8,12], "Vertical"))
     if tips_needed > tips_in_first_rack:
         extra_racks_required = math.ceil((tips_needed - tips_in_first_rack)/96)
