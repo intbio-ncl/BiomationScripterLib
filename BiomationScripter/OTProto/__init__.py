@@ -513,7 +513,7 @@ def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custo
 
     return(labware)
 
-def calculate_tips_needed(protocol, transfers, new_tip = True):
+def calculate_tips_needed(protocol, transfers, template = None, new_tip = True):
     if not type(transfers) == list:
         transfers = [transfers]
 
@@ -538,6 +538,12 @@ def calculate_tips_needed(protocol, transfers, new_tip = True):
         # For each transfer that is needed, add to the appropriate tips_needed counter
         for n in range(0, transfers_needed):
             tips_needed["{}uL".format(pipette.max_volume)] += 1
+
+    # If a template is specified, add the tips needed to the tips_needed attributes
+    if template:
+        template.tips_needed["p20"] += tips_needed["20uL"]
+        template.tips_needed["p300"] += tips_needed["300uL"]
+        template.tips_needed["p1000"] += tips_needed["1000uL"]
 
     # Return a list of all tips needed
     return(tips_needed["20uL"], tips_needed["300uL"], tips_needed["1000uL"])
