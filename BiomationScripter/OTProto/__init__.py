@@ -475,7 +475,7 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
 
     return(labware)
 
-def calculate_and_load_labware(protocol, labware_api_name, wells_required, custom_labware_dir = None):
+def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells_available = "all", custom_labware_dir = None):
     # Determine amount of labware required #
     labware = []
     ## Load first labware to get format - assume always at least one required
@@ -483,7 +483,10 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, custo
     loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir)
     labware.append(loaded_labware)
     ## Determine space in labware
-    wells_in_labware = len(labware[0].wells())
+    if wells_available == "all":
+        wells_in_labware = len(labware[0].wells())
+    else:
+        wells_in_labware = wells_available
     ## Determine total amount of dilution labware required
     n_labware = math.ceil(wells_required/wells_in_labware)
     ## Load more labware if required
