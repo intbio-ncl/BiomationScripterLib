@@ -634,6 +634,16 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Tru
                     if well == last_well:
                         return(wells)
 
+def Group_Locations(Locations, Group_Populations):
+    Grouped_Locations = []
+    start_index = 0
+    end_index = 0
+    for group_pop in Group_Population:
+        end_index += group_pop
+        Grouped_Locations.append(Locations[start_index:end_index])
+        start_index += group_pop
+    return(Grouped_Locations)
+
 ## Private ##
 def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
