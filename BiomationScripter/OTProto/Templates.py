@@ -719,13 +719,14 @@ class Primer_Mixing(_OTProto.OTProto_Template):
         Primers,
         Primer_Source_Wells,
         Primer_Source_Type,
-        Water_Source_Type,
-        Water_Aliquot_Volume,
         DNA_Primer_Mixtures,
-        Destination_Type,
-        DNA_Volume,
-        Primer_Volume,
-        Final_Volume,
+        # Defaults for LightRun Tubes
+        Destination_Type = "3dprinted_24_tuberack_1500ul",
+        DNA_Volume = 5,
+        Primer_Volume = 5,
+        Final_Volume = 10,
+        Water_Source_Type = None,
+        Water_Aliquot_Volume = 0,
         DNA_Primers_Same_Source = False,
         **kwargs
     ):
@@ -805,19 +806,22 @@ class Primer_Mixing(_OTProto.OTProto_Template):
         # Load source labware #
         #######################
         # Calculate how many water aliquots are required
-        number_water_aliquots = _BMS.aliquot_calculator(
-                                            Volume_Required = sum(Water_Transfers),
-                                            Volume_Per_Aliquot = self.water_aliquot_volume,
-                                            Dead_Volume = self.water_aliquot_volume * 0.01
-         )
+        if self.water_aliquot_volume == 0:
+            number_water_aliquots = 0
+        else:
+            number_water_aliquots = _BMS.aliquot_calculator(
+                                                Volume_Required = sum(Water_Transfers),
+                                                Volume_Per_Aliquot = self.water_aliquot_volume,
+                                                Dead_Volume = self.water_aliquot_volume * 0.01
+            )
 
-        # Load the required number of water labware
-        Water_Labware, Water_Locations = _OTProto.calculate_and_load_labware(
-                                                    protocol = self._protocol,
-                                                    labware_api_name = self.water_source_type,
-                                                    wells_required = number_water_aliquots,
-                                                    custom_labware_dir = self.custom_labware_dir
-        )
+            # Load the required number of water labware
+            Water_Labware, Water_Locations = _OTProto.calculate_and_load_labware(
+                                                        protocol = self._protocol,
+                                                        labware_api_name = self.water_source_type,
+                                                        wells_required = number_water_aliquots,
+                                                        custom_labware_dir = self.custom_labware_dir
+            )
 
         #########################################
         # Create labware layout for DNA labware #
@@ -912,15 +916,15 @@ class Primer_Mixing(_OTProto.OTProto_Template):
         ######################################
         # Transfer water into required wells #
         ######################################
-
-        _OTProto.dispense_from_aliquots(
-                            Protocol = self._protocol,
-                            Transfer_Volumes = Water_Transfers,
-                            Aliquot_Source_Locations = Water_Locations,
-                            Destinations = destination_locations,
-                            Aliquot_Volumes = self.water_aliquot_volume,
-                            new_tip = False
-        )
+        if number_water_aliquots > 0:
+            _OTProto.dispense_from_aliquots(
+                                Protocol = self._protocol,
+                                Transfer_Volumes = Water_Transfers,
+                                Aliquot_Source_Locations = Water_Locations,
+                                Destinations = destination_locations,
+                                Aliquot_Volumes = self.water_aliquot_volume,
+                                new_tip = False
+            )
 
         ####################################
         # Transfer DNA into required wells #
