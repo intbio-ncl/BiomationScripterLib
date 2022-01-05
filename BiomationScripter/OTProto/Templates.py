@@ -720,8 +720,8 @@ class Primer_Mixing(_OTProto.OTProto_Template):
         Primer_Source_Wells,
         Primer_Source_Type,
         DNA_Primer_Mixtures,
+        Destination_Type,
         # Defaults for LightRun Tubes
-        Destination_Type = "3dprinted_24_tuberack_1500ul",
         DNA_Volume = 5,
         Primer_Volume = 5,
         Final_Volume = 10,
@@ -911,12 +911,12 @@ class Primer_Mixing(_OTProto.OTProto_Template):
         for primer, primer_well in zip(self.primers, self.primer_source_wells):
             self._protocol.pause("Ensure Primer {} is loaded in slot {} of labware {} on slot {}".format(primer, primer_well, primer_labware.name, primer_labware.parent))
 
-        self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(Water_Locations), self.water_aliquot_volume, Water_Locations))
-
-        ######################################
-        # Transfer water into required wells #
-        ######################################
         if number_water_aliquots > 0:
+            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(Water_Locations), self.water_aliquot_volume, Water_Locations))
+
+            ######################################
+            # Transfer water into required wells #
+            ######################################
             _OTProto.dispense_from_aliquots(
                                 Protocol = self._protocol,
                                 Transfer_Volumes = Water_Transfers,
