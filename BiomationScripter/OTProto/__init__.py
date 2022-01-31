@@ -1,7 +1,7 @@
 import json
 import BiomationScripter as _BMS
 import math
-from opentrons import simulate as OT2
+from opentrons import protocol_api
 import warnings
 
 ########################
@@ -428,7 +428,7 @@ def next_empty_slot(protocol):
 def get_labware_format(labware_api_name, custom_labware_dir = None):
     # If try code block fails, labware may be custom, so treat it as such
     try:
-        labware_definition = OT2.protocol_api.labware.get_labware_definition(labware_api_name)
+        labware_definition = protocol_api.labware.get_labware_definition(labware_api_name)
         n_cols = len(labware_definition["ordering"])
         n_rows = len(labware_definition["ordering"][0])
         return(n_rows, n_cols)
@@ -444,7 +444,7 @@ def get_labware_format(labware_api_name, custom_labware_dir = None):
 def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
     # If try code block fails, labware may be custom, so treat it as such
     try:
-        labware_definition = OT2.protocol_api.labware.get_labware_definition(labware_api_name)
+        labware_definition = protocol_api.labware.get_labware_definition(labware_api_name)
         # Check the capacity of all wells in the labware and add to a set
         capacities = set()
         for well in labware_definition["wells"]:
@@ -477,7 +477,7 @@ def load_custom_labware(parent, file, deck_position = None, label = None):
         labware_file = json.load(labware_file)
 
     # Check if `parent` is the deck or a hardware module, and treat it acordingly
-    if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+    if parent.__class__ == protocol_api.protocol_context.ProtocolContext:
         # If no deck position, get the next empty slot
         if not deck_position:
             deck_position = next_empty_slot(parent)
@@ -493,7 +493,7 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
     # Try and load not as custom
     try:
         # Check if `parent` is the deck or a hardware module, and treat it acordingly
-        if parent.__class__ == OT2.protocol_api.protocol_context.ProtocolContext:
+        if parent.__class__ == protocol_api.protocol_context.ProtocolContext:
             # If no deck position, get the next empty slot
             if not deck_position:
                 deck_position = next_empty_slot(parent)
