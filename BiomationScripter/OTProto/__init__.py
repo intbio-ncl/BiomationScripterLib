@@ -225,7 +225,6 @@ def select_pipette_by_volume(Protocol, Volume):
     else:
         raise _BMS.RobotConfigurationError("A suitable pipette is not loaded to transfer {} uL.\n Currently loaded pipettes:\n{}".format(Volume, Protocol._instruments))
 
-def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
 def set_location_offset_top(Locations, Offset):
     # Check if a list of locations is given. If only one location is provided in non-list format, put it into a list
     if not type(Locations) == list:
@@ -249,6 +248,19 @@ def set_location_offset_bottom(Locations, Offset):
         Offset_Locations.append(location.bottom(Offset))
 
     return(Offset_Locations)
+
+def transfer_liquids(
+                Protocol,
+                Transfer_Volumes,
+                Source_Locations,
+                Destination_Locations,
+                new_tip = True,
+                mix_after = None,
+                mix_before = None
+):
+
+
+
     if not type(Transfer_Volumes) == list:
         Transfer_Volumes = [Transfer_Volumes]
     if not type(Source_Locations) == list:
