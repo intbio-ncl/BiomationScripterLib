@@ -262,8 +262,8 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
     if not type(Destination_Locations) == list:
         Destination_Locations = [Destination_Locations]
 
-    if not len(Transfer_Volumes) == len(Source_Locations) or not len(Transfer_Volumes) == len(Destination_Locations):
-        raise ValueError("The number of transfer volumes, source locations, and destination locations are not the same.")
+    # if not len(Transfer_Volumes) == len(Source_Locations) or not len(Transfer_Volumes) == len(Destination_Locations):
+    #     raise ValueError("The number of transfer volumes, source locations, and destination locations are not the same.")
 
     # Get the smallest non-zero volume to transfer
     if Transfer_Volumes.count(0) == 0:
