@@ -2025,6 +2025,8 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
         Intermediate_Prep_Protocol.custom_labware_dir = self.custom_labware_dir
         Intermediate_Prep_Protocol.run()
 
+        self._protocol.pause("Re-load the deck as stated below, and then click continue")
+
         # Create protocol to generate destination plate
         source_layouts = []
         destination_layouts = []
