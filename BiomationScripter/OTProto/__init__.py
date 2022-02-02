@@ -4,7 +4,7 @@ import math
 from opentrons import protocol_api
 import warnings
 
-BiomationScripter_Install_Dir = "/"
+BiomationScripter_Install_Dir = "/var/lib/jupyter/notebooks/Packages/BiomationScripterLib/BiomationScripter/OTProto/"
 Pre_Loaded_Custom_Labware_Dir = BiomationScripter_Install_Dir + "Opentrons_Custom_Labware_Definitions/"
 
 ########################
@@ -445,7 +445,7 @@ def get_labware_format(labware_api_name, custom_labware_dir = None):
                 n_rows = len(data["ordering"][0])
                 return(n_rows, n_cols)
         except FileNotFoundError:
-            definition_file_location = "{}/{}.json".format(BiomationScripter_OT2_Location, labware_api_name)
+            definition_file_location = "{}/{}.json".format(Pre_Loaded_Custom_Labware_Dir, labware_api_name)
             with open(definition_file_location) as labware_definition:
                 data = json.load(labware_definition)
                 n_cols = len(data["ordering"])
