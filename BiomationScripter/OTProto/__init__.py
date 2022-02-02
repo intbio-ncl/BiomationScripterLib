@@ -4,6 +4,9 @@ import math
 from opentrons import protocol_api
 import warnings
 
+BiomationScripter_Install_Dir = "/"
+Pre_Loaded_Custom_Labware_Dir = BiomationScripter_Install_Dir + "Opentrons_Custom_Labware_Definitions/"
+
 ########################
 
 class OTProto_Template:
@@ -434,12 +437,20 @@ def get_labware_format(labware_api_name, custom_labware_dir = None):
         return(n_rows, n_cols)
 
     except FileNotFoundError:
-        definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
-        with open(definition_file_location) as labware_definition:
-            data = json.load(labware_definition)
-            n_cols = len(data["ordering"])
-            n_rows = len(data["ordering"][0])
-            return(n_rows, n_cols)
+        try:
+            definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
+            with open(definition_file_location) as labware_definition:
+                data = json.load(labware_definition)
+                n_cols = len(data["ordering"])
+                n_rows = len(data["ordering"][0])
+                return(n_rows, n_cols)
+        except FileNotFoundError:
+            definition_file_location = "{}/{}.json".format(BiomationScripter_OT2_Location, labware_api_name)
+            with open(definition_file_location) as labware_definition:
+                data = json.load(labware_definition)
+                n_cols = len(data["ordering"])
+                n_rows = len(data["ordering"][0])
+                return(n_rows, n_cols)
 
 def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
     # If try code block fails, labware may be custom, so treat it as such
