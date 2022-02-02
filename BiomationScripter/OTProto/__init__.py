@@ -249,16 +249,7 @@ def set_location_offset_bottom(Locations, Offset):
 
     return(Offset_Locations)
 
-def transfer_liquids(
-                Protocol,
-                Transfer_Volumes,
-                Source_Locations,
-                Destination_Locations,
-                new_tip = True,
-                mix_after = None,
-                mix_before = None
-):
-
+def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
 
 
     if not type(Transfer_Volumes) == list:
