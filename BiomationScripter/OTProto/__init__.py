@@ -459,33 +459,34 @@ def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
         return(capacity)
 
     except FileNotFoundError:
-        definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
-        with open(definition_file_location) as labware_definition:
-            data = json.load(labware_definition)
-            # Check the capacity of all wells in the labware and add to a set
-            capacities = set()
-            for well in data["wells"]:
-                capacities.add(data["wells"][well]["totalLiquidVolume"])
-            # Check if the capacities set has more than one volume
-            ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
-            if not len(capacities) == 1:
-                raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
-            capacity = capacities.pop()
-            return(capacity)
-            except FileNotFoundError:
-                definition_file_location = "{}/{}.json".format(Pre_Loaded_Custom_Labware_Dir, labware_api_name)
-                with open(definition_file_location) as labware_definition:
-                    data = json.load(labware_definition)
-                    # Check the capacity of all wells in the labware and add to a set
-                    capacities = set()
-                    for well in data["wells"]:
-                        capacities.add(data["wells"][well]["totalLiquidVolume"])
-                    # Check if the capacities set has more than one volume
-                    ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
-                    if not len(capacities) == 1:
-                        raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
-                    capacity = capacities.pop()
-                    return(capacity)
+        try:
+            definition_file_location = "{}/{}.json".format(custom_labware_dir, labware_api_name)
+            with open(definition_file_location) as labware_definition:
+                data = json.load(labware_definition)
+                # Check the capacity of all wells in the labware and add to a set
+                capacities = set()
+                for well in data["wells"]:
+                    capacities.add(data["wells"][well]["totalLiquidVolume"])
+                # Check if the capacities set has more than one volume
+                ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
+                if not len(capacities) == 1:
+                    raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
+                capacity = capacities.pop()
+                return(capacity)
+        except FileNotFoundError:
+            definition_file_location = "{}/{}.json".format(Pre_Loaded_Custom_Labware_Dir, labware_api_name)
+            with open(definition_file_location) as labware_definition:
+                data = json.load(labware_definition)
+                # Check the capacity of all wells in the labware and add to a set
+                capacities = set()
+                for well in data["wells"]:
+                    capacities.add(data["wells"][well]["totalLiquidVolume"])
+                # Check if the capacities set has more than one volume
+                ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
+                if not len(capacities) == 1:
+                    raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
+                capacity = capacities.pop()
+                return(capacity)
 
 def load_custom_labware(parent, file, deck_position = None, label = None):
     # Open the labware json file
