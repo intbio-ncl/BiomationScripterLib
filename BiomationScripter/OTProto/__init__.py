@@ -130,7 +130,7 @@ class OTProto_Template:
             if pipette:
                 last_tip_rack = pipette.tip_racks[-1]
                 next_tip_in_rack = last_tip_rack.next_tip().well_name
-                self.starting_tip_position(pipette_type, next_tip_in_rack)
+                self.starting_tips[pipette_type] = next_tip_in_rack
 
         ############################
         # Clear deck and tip racks #
@@ -143,6 +143,13 @@ class OTProto_Template:
                 continue
             del self._protocol.deck[position]
 
+        # Clear the tip racks stored on each loaded pipette
+        # This stops tip racks from being duplicated
+        # Duplicated tip racks can cause the OT2 to try and use now-empty racks
+        for pipette_type in self.tip_types:
+            pipette = get_pipette(self._protocol, pipette_type)
+            if pipette:
+                pipette.tip_racks = []
 
         self.run()
 
