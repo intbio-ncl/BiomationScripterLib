@@ -136,6 +136,11 @@ class OTProto_Template:
         # Clear deck and tip racks #
         ############################
         for position in self._protocol.deck:
+            if position == 12:
+                # This is needed to stop the OT2 from deleting the waste bin
+                # If the waste bin is deleted, there is a chance the tip will crash into
+                # the side of it...
+                continue
             del self._protocol.deck[position]
 
 
