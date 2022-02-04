@@ -1992,6 +1992,8 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
                 aliquot_volume = self.source_materials[source_material][1]
                 slots_required = math.ceil(source_id_volume_required/aliquot_volume)
 
+                print("Requires {} uL of {} total - {} aliquots".format(source_id_volume_required, source_id, slots_required))
+
                 for slot in range(0, slots_required):
                     source_material_layout.add_content(source_material_well_range[well_index], source_id, aliquot_volume)
                     well_index += 1
