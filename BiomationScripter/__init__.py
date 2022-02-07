@@ -281,6 +281,12 @@ class Labware_Layout:
         for well in self.well_labels:
             if self.well_labels[well] == Label:
                 return(self.content[well])
+
+    def get_well_location_by_label(self, Label: str):
+        for well in self.well_labels:
+            if self.well_labels[well] == Label:
+                return(well)
+
     def get_content(self):
         return(self.content)
 
