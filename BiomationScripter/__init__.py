@@ -192,6 +192,7 @@ class Labware_Layout:
         self.columns = None
         self.content = {}
         self.available_wells = None
+        self.well_labels = {}
 
     def define_format(self, Rows, Columns):
         self.rows = Rows
@@ -270,6 +271,22 @@ class Labware_Layout:
         else:
             self.content[Well] = [ [Reagent,float(Volume), Liquid_Class] ]
 
+    def add_well_label(self, Well: str, Label: str):
+        for well in self.well_labels:
+            if self.well_labels[well] == Label:
+                raise ValueError('Label "{}" is already used as a label in {}'.format(Label, well))
+        self.well_labels[Well] = Label
+
+    def get_well_content_by_label(self, Label: str):
+        for well in self.well_labels:
+            if self.well_labels[well] == Label:
+                return(self.content[well])
+
+    def get_well_location_by_label(self, Label: str):
+        for well in self.well_labels:
+            if self.well_labels[well] == Label:
+                return(well)
+
     def get_content(self):
         return(self.content)
 
@@ -332,7 +349,6 @@ class Labware_Layout:
                 content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
                 print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
         return(content_return)
-
 
     # create a dummy PlateLayout object before running this method
     def import_plate(self, filename, path="~", ext=".xlsx"):
