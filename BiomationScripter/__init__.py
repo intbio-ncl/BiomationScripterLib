@@ -276,6 +276,11 @@ class Labware_Layout:
             if self.well_labels[well] == Label:
                 raise ValueError('Label "{}" is already used as a label in {}'.format(Label, well))
         self.well_labels[Well] = Label
+
+    def get_well_content_by_label(self, Label: str):
+        for well in self.well_labels:
+            if self.well_labels[well] == Label:
+                return(self.content[well])
     def get_content(self):
         return(self.content)
 
