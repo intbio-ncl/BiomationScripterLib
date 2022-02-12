@@ -289,23 +289,23 @@ The `custom_labware_dir` and `labware_api_name` arguments are passed directly to
 
 
 ### Function: [`load_labware_from_layout`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
-Generates an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object from a [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) object
+Generates an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object from a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) object
 
 **Usage:**\
-`OTProto.load_labware_from_layout(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Plate_Layout: BiomationScripter.PlateLayout, deck_position: int = None, custom_labware_dir: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
+`OTProto.load_labware_from_layout(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Plate_Layout: BiomationScripter.Labware_Layout, deck_position: int = None, custom_labware_dir: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
 **Arguments:**
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
-* `Plate_Layout` | [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout): The Layout object to be used as the template for generating the [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object
+* `Plate_Layout` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The Layout object to be used as the template for generating the [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object
 * `deck_position` | `int = None`: An integer (from 1-11) stating which deck position the labware should be loaded on to - if no value is specified, the labware will be loaded onto the next available deck slot
 * `custom_labware_dir` | `str = None`: Location of a directory where any custom labware definition files are stored - if not specified then `../custom_labware` will be used if custom labware is being used
 
 **Behaviour:**\
-This function generates and loads an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware), which can be used in Opentrons protocols, using a [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) as the template. Any content stored in the `PlateLayout.content` attribute will not be carried over to the `Labware` object.
+This function generates and loads an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware), which can be used in Opentrons protocols, using a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) as the template. Any content stored in the `Labware_Layout.content` attribute will not be carried over to the `Labware` object.
 
-For this function to work correctly, the `PlateLayout` `type` attribute (`PlateLayout.type`) MUST be the API name of the labware to be loaded. If the `type` attribute can not be found as a labware API name, an error will occur.
+For this function to work correctly, the `Labware_Layout` `type` attribute (`Labware_Layout.type`) MUST be the API name of the labware to be loaded. If the `type` attribute can not be found as a labware API name, an error will occur.
 
-The `PlateLayout.name` attribute is used as the label for the `Labware` object.
+The `Labware_Layout.name` attribute is used as the label for the `Labware` object.
 
 
 ### Function: [`calculate_tips_needed`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)

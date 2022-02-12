@@ -83,8 +83,8 @@ This class is used to store information about a protocol, and can be used to gen
 **Attributes:**
 
 * `title` | `str`: A title for the protocol
-* `source_plates` | `list[BiomationScripter.PlateLayout]`: A list of [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) objects which represent the source plates
-* `destination_plates` | `list[BiomationScripter.PlateLayout]`: A list of [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) objects which represent the source plates objects which represent the destination plates
+* `source_plates` | `list[BiomationScripter.Labware_Layout]`: A list of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects which represent the source plates
+* `destination_plates` | `list[BiomationScripter.Labware_Layout]`: A list of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects which represent the source plates objects which represent the destination plates
 * `transferlists` | `list[BiomationScripter.EchoProto.TransferList]`: A list of [`TransferList`](#class-transferlist) objects, which each represent a picklist
 
 **Methods:**
@@ -95,37 +95,37 @@ This class is used to store information about a protocol, and can be used to gen
    * `self.source_plates` is initiated as an empty `list[]`
    * `self.destination_plates` is initiated as an empty `list[]`
    * `self.transferlists` is initiated as an empty `list[]`
-* `add_source_plate(self, Plate: BiomationScripter.PlateLayout)` returns `None`
+* `add_source_plate(self, Plate: BiomationScripter.Labware_Layout)` returns `None`
    * Appends the specified `Plate` to `self.source_plates`
-* `add_source_plates(self, Plates: list[BiomationScripter.PlateLayout])` returns `None`
+* `add_source_plates(self, Plates: list[BiomationScripter.Labware_Layout])` returns `None`
    * Appends each of the plates specified in `Plates` to `self.source_plates`
-* `make_transfer_list(self, Source_Plate: BiomationScripter.PlateLayout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
+* `make_transfer_list(self, Source_Plate: BiomationScripter.Labware_Layout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
    * Creates a [`BiomationScripter.EchoProto.TransferList`](#class-transferlist) object and assigns the plate specified in `Source_Plate` to it
    * Appends the [`TransferList`](#class-transferlist) to `self.transferlists` and returns the object
-* `get_transfer_list(self, Source_Plate: BiomationScripter.PlateLayout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
+* `get_transfer_list(self, Source_Plate: BiomationScripter.Labware_Layout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
    * Returns the [`TransferList`](#class-transferlist) associated with the source plate specified by `Source_Plate`
-* `add_destination_plate(self, Plate: BiomationScripter.PlateLayout, Use_Outer_Wells = True: bool)` returns `None`
+* `add_destination_plate(self, Plate: BiomationScripter.Labware_Layout, Use_Outer_Wells = True: bool)` returns `None`
    * Appends the specified `Plate` to `self.destination_plates`
    * `Use_Outer_Wells` specifies whether or not wells in the first row, last row, first column, and last column should be used
-* `add_destination_plates(self, Plates: list[BiomationScripter.PlateLayout], Use_Outer_Wells = True: bool)` returns `None`
+* `add_destination_plates(self, Plates: list[BiomationScripter.Labware_Layout], Use_Outer_Wells = True: bool)` returns `None`
    * Appends each of the plates specified in `Plates` to `self.destination_plates`
    * `Use_Outer_Wells` specifies whether or not wells in the first row, last row, first column, and last column should be used
-* `get_destination_plates(self)` returns `list[BiomationScripter.PlateLayout]`
-   * Returns a list of all [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) stored in `self.destination_plates`
-* `get_source_plates(self)` returns `list[BiomationScripter.PlateLayout]`
-   * Returns a list of all [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout) stored in `self.source_plates`
+* `get_destination_plates(self)` returns `list[BiomationScripter.Labware_Layout]`
+   * Returns a list of all [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) stored in `self.destination_plates`
+* `get_source_plates(self)` returns `list[BiomationScripter.Labware_Layout]`
+   * Returns a list of all [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) stored in `self.source_plates`
 
 ### Class: [`TransferList`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
-This class is used to group and store liquid transfer actions based on source plate, and acts as the basis for generating CSV picklist files. Each `TransferList` is associated with just one source plate, represented by a `BiomationScripter.PlateLayout` object.
+This class is used to group and store liquid transfer actions based on source plate, and acts as the basis for generating CSV picklist files. Each `TransferList` is associated with just one source plate, represented by a `BiomationScripter.Labware_Layout` object.
 
 **Usage:**
 
-`BMS.EchoProto.TransferList(Source_Plate: BiomationScripter.PlateLayout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
+`BMS.EchoProto.TransferList(Source_Plate: BiomationScripter.Labware_Layout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
 
 **Attributes:**
 
 * `title` | `str`: A title for the transfer list
-* `source_plate` | [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout): The source plate associated with the transfer list
+* `source_plate` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The source plate associated with the transfer list
 * `_actions` | `list[BiomationScripter.EchoProto.Action]`: A list of liquid transfer events, where each transfer event is represented by a [`BiomationScripter.EchoProto.Action`](#class-action) object
 * `__actionUIDs` | `list[int]`: A list of unique ids for each [`BiomationScripter.EchoProto.Action`](#class-action) in `_actions`
 * `_source_plate_type` | `str`: The plate type for the associated source plate
@@ -134,8 +134,8 @@ This class is used to group and store liquid transfer actions based on source pl
 
 **Methods:**
 
-* `__init__(self, Source_Plate: BiomationScripter.PlateLayout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
-   * Creates a [`BiomationScripter.EchoProto.TransferList`](#class-transferlist) object, which is associated with the source plate specified by `Source_Plate`, which is a [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout)
+* `__init__(self, Source_Plate: BiomationScripter.Labware_Layout)` returns [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
+   * Creates a [`BiomationScripter.EchoProto.TransferList`](#class-transferlist) object, which is associated with the source plate specified by `Source_Plate`, which is a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout)
    * `self.title` is initialised using the the name of the associated source plate (`Source_Plate.name`)
    * `self.source_plate` is initialised as `Source_Plate`
    * `self._actions` is initialised as an empty list (`list[]`)
@@ -171,7 +171,7 @@ This class is used to store information about a single liquid transfer event. Mu
 
 * `__uid` | `int`: A unique identifier for the liquid transfer event
 * `reagent` | `str`: Name of the liquid to be transferred
-* `source_plate` | [`BiomationScripter.PlateLayout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-platelayout): The source plate containing the reagent
+* `source_plate` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The source plate containing the reagent
 * `calibration` | `str`: Acoustic calibration the Echo525 will use during the liquid transfer event (e.g. "AQ_BP")
 * `source_well` | `str`: The well from which the reagent is transferred (e.g. "A1")
 * `destination_plate_name` | `str`: The name of the plate to which the reagent will be transferred
@@ -180,7 +180,7 @@ This class is used to store information about a single liquid transfer event. Mu
 * `_volume` | `int`: The amount of reagent, in nanolitres, which will be transferred
 
 **Methods:**
-* `__init__(self, UID: int, Reagent: str, Source_Plate: BiomationScripter.PlateLayout, Calibration: str, Source_Well: str, Destination_Plate_Name: str, Destination_Plate_Type: str, Destination_Well: str)` returns [`BiomationScripter.EchoProto.Action`](#class-action)
+* `__init__(self, UID: int, Reagent: str, Source_Plate: BiomationScripter.Labware_Layout, Calibration: str, Source_Well: str, Destination_Plate_Name: str, Destination_Plate_Type: str, Destination_Well: str)` returns [`BiomationScripter.EchoProto.Action`](#class-action)
    * Creates a [`BiomationScripter.EchoProto.Action`](#class-action) object
    * `UID` is stored as `self.__uid`
    * `Reagent` is stored as `self.reagent`
@@ -375,7 +375,7 @@ This example shows how the Loop Assembly template class can be used to generate 
 7. Create the source plates:
 
    ```python
-   DNA_Plate = BMS.PlateLayout(DNA_Plate_Name, DNA_Plate_Type)
+   DNA_Plate = BMS.Labware_Layout(DNA_Plate_Name, DNA_Plate_Type)
    DNA_Plate.define_format(DNA_Plate_Rows,DNA_Plate_Columns)
 
    content = []
@@ -389,7 +389,7 @@ This example shows how the Loop Assembly template class can be used to generate 
    ##############################################################################
    ##############################################################################
 
-   Reagent_Plate = BMS.PlateLayout(Reagent_Plate_Name, Reagent_Plate_Type)
+   Reagent_Plate = BMS.Labware_Layout(Reagent_Plate_Name, Reagent_Plate_Type)
    Reagent_Plate.define_format(Reagent_Plate_Rows, Reagent_Plate_Columns)
 
    content = []
@@ -402,7 +402,7 @@ This example shows how the Loop Assembly template class can be used to generate 
    ##############################################################################
    ##############################################################################
 
-   Water_Plate = BMS.PlateLayout(Water_Plate_Name, Water_Plate_Type)
+   Water_Plate = BMS.Labware_Layout(Water_Plate_Name, Water_Plate_Type)
    Water_Plate.define_format(Water_Plate_Rows,Water_Plate_Columns)
 
    content = []
@@ -416,7 +416,7 @@ This example shows how the Loop Assembly template class can be used to generate 
 8. Create the destination plate format. Note that if multiple destination plates are required, the `Loop_Assembly` class will create these; the destination plate format only needs to be defined once.
 
    ```python
-   Destination_Plate = BMS.PlateLayout(Destination_Plate_Name, Destination_Plate_Type)
+   Destination_Plate = BMS.Labware_Layout(Destination_Plate_Name, Destination_Plate_Type)
    Destination_Plate.define_format(Destination_Plate_Rows, Destination_Plate_Columns)
    ```
 
@@ -560,7 +560,7 @@ Destination_Plate_Use_Outer_Wells = False
 ########################
 # Create Source Plates #
 ########################
-DNA_Plate = BMS.PlateLayout(DNA_Plate_Name, DNA_Plate_Type)
+DNA_Plate = BMS.Labware_Layout(DNA_Plate_Name, DNA_Plate_Type)
 DNA_Plate.define_format(DNA_Plate_Rows,DNA_Plate_Columns)
 
 content = []
@@ -574,7 +574,7 @@ for c in content:
 ##############################################################################
 ##############################################################################
 
-Reagent_Plate = BMS.PlateLayout(Reagent_Plate_Name, Reagent_Plate_Type)
+Reagent_Plate = BMS.Labware_Layout(Reagent_Plate_Name, Reagent_Plate_Type)
 Reagent_Plate.define_format(Reagent_Plate_Rows, Reagent_Plate_Columns)
 
 content = []
@@ -587,7 +587,7 @@ for c in content:
 ##############################################################################
 ##############################################################################
 
-Water_Plate = BMS.PlateLayout(Water_Plate_Name, Water_Plate_Type)
+Water_Plate = BMS.Labware_Layout(Water_Plate_Name, Water_Plate_Type)
 Water_Plate.define_format(Water_Plate_Rows,Water_Plate_Columns)
 
 content = []
@@ -600,7 +600,7 @@ for c in content:
 ##############################################################################
 ##############################################################################
 
-Destination_Plate = BMS.PlateLayout(Destination_Plate_Name, Destination_Plate_Type)
+Destination_Plate = BMS.Labware_Layout(Destination_Plate_Name, Destination_Plate_Type)
 Destination_Plate.define_format(Destination_Plate_Rows, Destination_Plate_Columns)
 
 ##############################################
