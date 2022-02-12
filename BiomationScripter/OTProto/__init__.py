@@ -220,7 +220,7 @@ def select_pipette_by_volume(Protocol, Volume):
     p1000 = get_p1000(Protocol)
 
     if Volume < 1:
-        raise _BMS.RobotConfigurationError("Cannot transfer less than 1 uL.")
+        raise _BMS.RobotConfigurationError("A volume of {} was specified. Cannot transfer less than 1 uL.".format(Volume))
     elif Volume < 20 and p20:
         return(p20)
     elif Volume == 20 and p20:
