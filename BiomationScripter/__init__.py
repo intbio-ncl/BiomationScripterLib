@@ -207,20 +207,23 @@ class Labware_Layout:
     def get_available_wells(self):
         return(self.available_wells)
 
-    def get_well_range(self, Well_Range=None, Use_Outer_Wells = True):
+    def get_well_range(self, Well_Range=None, Use_Outer_Wells = True, Direction = "Horizontal", Box = False):
+        if not Direction == "Horizontal" and not Direction == "Vertical":
+            raise ValueError("`Direction` must be either 'Horizontal' or 'Vertical'")
+
         n_rows = self.rows
         n_cols = self.columns
         if Well_Range == None:
             Well_Range = "A1:{}{}".format(chr(64+n_rows),n_cols)
 
-        plate_first_row = "A"
-        plate_last_row = chr(64+n_rows)
-        plate_first_col = 1
-        plate_last_col = n_cols
-
-        wells = well_range(Well_Range)
+        wells = well_range(Well_Range, Labware_Format = self, Direction = Direction, Box = Box)
 
         if not Use_Outer_Wells:
+            plate_first_row = "A"
+            plate_last_row = chr(64+n_rows)
+            plate_first_col = 1
+            plate_last_col = n_cols
+
             temp_wells = []
             for w in wells:
                 if (plate_first_row in w) or (plate_last_row in w) or (str(plate_first_col) == w[1:]) or (str(plate_last_col) == w[1:]):
@@ -545,10 +548,13 @@ def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_N
 
     return(Intermediate_Types)
 
+def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
+    labware_layout = Labware_Layout("name", "type")
+    labware_layout.import_labware(Filename, path = path, ext = ext)
+    return(labware_layout)
+
 def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
-    plate_layout = PlateLayout("name", "type")
-    plate_layout.import_plate(Filename, path = path, ext = ext)
-    return(plate_layout)
+    return(Import_Labware_Layout(Filename, path = path, ext = ext))
 
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
@@ -567,6 +573,7 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
         Plates.append(Plate_Format.clone_format(Plate_Name))
     return(Plates)
 
+
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = True):
     if not Direction == "Horizontal" and not Direction == "Vertical":
         raise ValueError("`Direction` must be either 'Horizontal' or 'Vertical'")
@@ -574,7 +581,7 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Tru
     if not Labware_Format and not Box:
         raise LabwareError("`Box` can only be `False` when `Labware_Format` is specified")
 
-    if not Labware_Format:
+    if not Labware_Format or Box:
         Well = Wells
         first, last = Well.split(":")
         firstL = first[0]
@@ -617,6 +624,7 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Tru
             raise ValueError("Wells are not in range of specified format")
 
         wells = []
+
 
         if Direction == "Horizontal":
             rows = []
