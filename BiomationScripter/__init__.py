@@ -200,8 +200,8 @@ class Labware_Layout:
     def get_format(self):
         return(self.rows, self.columns)
 
-    def set_available_wells(self, Well_Range = None, Use_Outer_Wells = True):
-        self.available_wells = self.get_well_range(Well_Range, Use_Outer_Wells)
+    def set_available_wells(self, Well_Range = None, Use_Outer_Wells = True, Direction = "Horizontal", Box = False):
+        self.available_wells = self.get_well_range(Well_Range, Use_Outer_Wells, Direction, Box)
 
     def get_available_wells(self):
         return(self.available_wells)
