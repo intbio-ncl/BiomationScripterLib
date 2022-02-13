@@ -326,8 +326,8 @@ class Labware_Layout:
         del self.content[Well]
 
     def get_volume_of_liquid_in_well(self, Liquid, Well):
-        if not Well in self.get_occupied_wells():
-            raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
+        # if not Well in self.get_occupied_wells():
+        #     raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
         well_content = self.get_content()[Well]
         for content in well_content:
             if content[0] == Liquid:
