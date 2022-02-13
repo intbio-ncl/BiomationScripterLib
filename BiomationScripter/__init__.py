@@ -255,7 +255,7 @@ class Labware_Layout:
         plate_copy.define_format(rows, columns)
         return(plate_copy)
 
-    def add_content(self, Well, Reagent, Volume, Liquid_Class = False):
+    def add_content(self, Well, Reagent, Volume, Liquid_Class = None):
         # TODO: * Check if Well exists in the plate
         #       * Allow well ranges to span multiple columns
         #       * Don't overwrite current content if a well range is specified
@@ -263,7 +263,7 @@ class Labware_Layout:
             raise NegativeVolumeError
 
         # Volume should always be uL
-        if Liquid_Class == False:
+        if Liquid_Class == None:
             Liquid_Class = "Unknown"
         if ":" in Well:
             for w in well_range(Well):
