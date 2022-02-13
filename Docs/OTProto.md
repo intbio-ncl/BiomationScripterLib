@@ -255,6 +255,8 @@ Loads labware (either custom or default) based on an API name
 **Usage:**\
 `OTProto.load_labware(parent: opentrons.protocol_api.contexts.ProtocolContext/opentrons.protocol_api.contexts.TemperatureModuleContext/opentrons.protocol_api.contexts.ThermocyclerContext/https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext, labware_api_name: str, deck_position: int = None, custom_labware_dir label: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
+See the [code snippet examples](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Example_Code_Snippets/OTProto/OTProto-load_labware-Function.ipynb) for example usage.
+
 **Behaviour:**\
 The `load_labware` function firstly determines whether the labware type specified by `labware_api_name` is in the default list of labware, or if it is custom labware. If it is custom, then the [`load_custom_labware`](#function-load_custom_labware) function is called and used to load the labware. The `custom_labware_dir` argument is used to find the custom file location, and if it isn't specified then an error will be raised.
 

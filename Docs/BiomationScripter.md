@@ -27,7 +27,7 @@ This class is used to store information, such as number of wells and content, ab
 **Usage:**\
 `BMSLabware_Layout(name: str, type: str)` returns `BiomationScripter.Labware_Layout` object
 
-[See examples of this class in use here.](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Example_Code_Snippets/BMS-Labware_Layout-Class.ipynb)
+[See examples of this class in use here.](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Example_Code_Snippets/BMS/BMS-Labware_Layout-Class.ipynb)
 
 **Attributes:**
 * `name` | `str`: A readable name for the plate/labware.
