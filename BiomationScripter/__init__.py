@@ -268,6 +268,9 @@ class Labware_Layout:
         if ":" in Well:
             for w in well_range(Well):
                 self.add_content(w, Reagent, Volume, Liquid_Class)
+        elif type(Well) == list:
+            for well in Well:
+                self.add_content(well, Reagent, Volume, Liquid_Class)
         elif Well in self.content:
             self.content[Well].append([Reagent,float(Volume), Liquid_Class])
         else:
