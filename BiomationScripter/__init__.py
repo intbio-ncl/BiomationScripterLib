@@ -577,7 +577,7 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
     return(Plates)
 
 
-def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = True):
+def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = False):
     if not Direction == "Horizontal" and not Direction == "Vertical":
         raise ValueError("`Direction` must be either 'Horizontal' or 'Vertical'")
 
