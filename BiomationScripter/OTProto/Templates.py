@@ -167,10 +167,10 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
         DNA_Concentration,
         DNA_Length,
         DNA_Source_Type,
-        DNA_Source_Wells,
         Keep_In_Current_Wells,
         Water_Source_Labware_Type,
         Water_Per_Well,
+        DNA_Source_Wells = None,
         Final_Volume = None,
         Current_Volume = None,
         Destination_Labware_Type = None,
@@ -221,13 +221,15 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
         #################################################
         dna_current_fmol = []
         dna_dilution_factor = []
-        for dna_starting_concentration, dna_length in zip(self.dna_starting_concentration, self.dna_length):
+        for dna_name, dna_starting_concentration, dna_length in zip(self.dna, self.dna_starting_concentration, self.dna_length):
             mass_g = dna_starting_concentration * 1e-9
             length = dna_length
             fmol = (mass_g/((length * 617.96) + 36.04)) * 1e15
             dna_current_fmol.append(fmol)
             dilution_factor = self.final_fmol/fmol
             dna_dilution_factor.append(dilution_factor)
+            if dilution_factor > 1:
+                raise _BMS.NegativeVolumeError("DNA sample {} is too dilute and is already below {} fmol/uL".format(dna_name, self.final_fmol))
 
         ####################################################################
         # Determine if DNA will be diluted in current wells or transferred #
@@ -254,6 +256,14 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             ## DNA source labware is also the destination labware in this case
             ## But get DNA locations
             DNA_Locations = []
+            # If DNA source wells were not specified, then choose wells to use
+            if self.dna_source_wells == None:
+                if len(DNA_labware.wells_by_name()) < len(self.dna):
+                    raise _BMS.BMSTemplateError("Cannot currently use two source labware.")
+                self.dna_source_wells = []
+                for dna, source_well in zip(self.dna, DNA_labware.wells_by_name()):
+                    self.dna_source_wells.append(source_well)
+
             for dna_well in self.dna_source_wells:
                 DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
 
@@ -293,6 +303,14 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             ## Load DNA Source Labware and get locations
             DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
             DNA_Locations = []
+            # If DNA source wells were not specified, then choose wells to use
+            if self.dna_source_wells == None:
+                if len(DNA_labware.wells_by_name()) < len(self.dna):
+                    raise _BMS.BMSTemplateError("Cannot currently use two source labware.")
+                self.dna_source_wells = []
+                for dna, source_well in zip(self.dna, DNA_labware.wells_by_name()):
+                    self.dna_source_wells.append(source_well)
+
             for dna_well in self.dna_source_wells:
                 DNA_Locations.append(DNA_labware.wells_by_name()[dna_well])
 
