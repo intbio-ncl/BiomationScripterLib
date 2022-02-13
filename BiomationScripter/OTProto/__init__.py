@@ -156,19 +156,26 @@ class OTProto_Template:
 
 ########################
 
-def get_locations(Labware, Wells, Direction = None):
+def get_locations(Labware, Wells, Direction = "Horizontal", Box = False):
     # Argument Direction is ignored is Wells is a list of wells
     ## It is only used if Wells is a well range (e.g. A1:H4)
     if not type(Wells) == list:
-        if not Direction == "Horizontal" and not Direction == "Vertical":
-            raise ValueError("When using OTProto.get_locations with a well range, `Direction` must be either 'Horizontal' or 'Vertical'.")
-        n_labware_rows = len(Labware.rows())
-        n_labware_cols = len(Labware.columns())
-        Wells = _BMS.well_range(Wells, [n_labware_rows, n_labware_cols], Direction = Direction)
+        if not ":" in Wells:
+            Wells = [Wells]
+        else:
+            Wells = _BMS.well_range(
+                        Wells = Wells,
+                        Labware_Format = [len(Labware.rows()), len(Labware.columns())],
+                        Direction = Direction,
+                        Box = Box
+            )
 
     Locations = []
     for well in Wells:
         Locations.append(Labware.wells_by_name()[well])
+
+    if len(Locations) == 1:
+        Locations = Locations[0]
 
     return(Locations)
 
