@@ -17,12 +17,17 @@ Begin by importing the BiomatonScripter package:\
 
 ### Classes
 ### Class: [`Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
-This class is used to store information, such as number of wells and content, about plates or other labware which can later be retrieved.
 
 *NOTE: this class can also be called using `PlateLayout`. The name `PlateLayout` will be removed in version 0.2.0.dev, but can still be used for now.*
 
+This class is used to store information, such as number of wells and content, about plates or other labware which can later be retrieved. The `BMS.Labware_Layout` class is also intended to be universal within BiomationScripter, and not specific to any particular automation equipment.
+
+ `Labware_Layout` objects are separate from, but sometimes related to, any object which is meant to represent a physical instance of a piece of labware. The `Labware_Layout` class captures information about a piece of labware, such as its content. Within BiomationScripter you may come across other classes which are used to represent labware, such as ['opentrons.protocol_api.labware.Labware'](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) from the [Opentrons Python API](https://docs.opentrons.com/v2/index.html). The ['opentrons.protocol_api.labware.Labware'](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) class is distinct from the `BMS.Labware_Layout` class as the Opentrons class represents the physical instance of the labware and is specific to the Opentrons liquid handling system, whereas `BMS.Labware_Layout` can capture additional metadata and can be utilised by multiple automation equipment within the BiomationScripter context.
+
 **Usage:**\
-`BMSLabware_Layout(name, type)` returns `BiomationScripter.Labware_Layout` object
+`BMSLabware_Layout(name: str, type: str)` returns `BiomationScripter.Labware_Layout` object
+
+[See examples of this class in use here.](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Example_Code_Snippets/BMS-Labware_Layout-Class.ipynb)
 
 **Attributes:**
 * `name` | `str`: A readable name for the plate/labware.
@@ -108,6 +113,7 @@ This class is used to store information, such as number of wells and content, ab
   * Returns a `str` with the same content which is printed
 * `import_plate(self, filename: str, path: str = "~", ext: str = ".xlsx")` returns `None`
   *
+
 
 ### Class: [`Liquids`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
 This class is used to store information about liquids and where they are stored.
