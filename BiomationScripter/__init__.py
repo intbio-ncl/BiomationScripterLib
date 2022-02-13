@@ -6,7 +6,6 @@ from BiomationScripter import OTProto
 # from BiomationScripter import ClarioProto
 
 import math
-import pandas as pd
 
 # Exception classes #
 
@@ -355,6 +354,7 @@ class Labware_Layout:
 
     # create a dummy PlateLayout object before running this method
     def import_plate(self, filename, path="~", ext=".xlsx"):
+        import pandas as pd
         # check if filename contains the extension
         # NOTE: this only checks for a "." so could easily throw errors if given atypical input
         if "." in filename:
