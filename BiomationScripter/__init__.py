@@ -355,6 +355,11 @@ class Labware_Layout:
                 print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
         return(content_return)
 
+
+    def import_labware(self, filename, path="~", ext=".xlsx"):
+        return(self.import_plate(filename, path, ext))
+
+
     # create a dummy PlateLayout object before running this method
     def import_plate(self, filename, path="~", ext=".xlsx"):
         import pandas as pd
