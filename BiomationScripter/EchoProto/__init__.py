@@ -135,8 +135,12 @@ def Generate_Actions(Protocol):
                 dead_volume = 0
                 print("Can't seem to find source plate type for {} so dead volume set to 0, and no max transfer volume or max storage volume specified.".format(plate.name))
 
-            available_volume += total_source_volume - dead_volume
-
+            if total_source_volume - dead_volume < 0:
+                # If the available volume is below the dead volume, add nothing rather than adding a negative volume
+                continue
+            else:
+                available_volume += total_source_volume - dead_volume
+                
         if available_volume < required_volume:
             Exceptions.append([required_reagent, required_volume-available_volume])
 
