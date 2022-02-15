@@ -649,7 +649,18 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
         tip_rack = load_labware(Protocol, Tip_Type, tip_rack_deck_slot)
         tip_racks.append(tip_rack)
 
-    pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
+    # Check if pipette is already loaded
+    # if something is loaded but it isn't the same type as the one being loaded raise an error
+    # if something is loaded and it is the same type as the one beign loaded, pass
+    # if something isn't loaded, then load it
+    if Pipette_Position in Protocol.loaded_instruments.keys():
+        if Protocol.loaded_instruments[Pipette_Position].name == Pipette_Type:
+            pipette = loaded_instruments[Pipette_Position]
+        else:
+            raise _BMS.RobotConfigurationError("A pipette is already loaded, check the protocol for errors.")
+    else:
+        pipette = Protocol.load_instrument(Pipette_Type, Pipette_Position, tip_racks)
+
     pipette.starting_tip = tip_racks[0].well(Starting_Tip)
 
     return(pipette, tip_racks)
