@@ -345,19 +345,21 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             # Choose best pipette to use
             pipette = select_pipette_by_volume(Protocol, transfer_volume)
 
+            Mix_Before = None
+            Mix_After = None
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
-                mix_before = (mix_before[0], transfer_volume)
+                Mix_Before = (mix_before[0], transfer_volume)
             if mix_after and mix_after[1] == "transfer_volume":
-                mix_after = (mix_after[0], transfer_volume)
+                Mix_After = (mix_after[0], transfer_volume)
 
             # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
-            if mix_before and mix_before[1] > pipette.max_volume:
-                mix_before[1] = pipette.max_volume
-            if mix_after and mix_after[1] > pipette.max_volume:
-                mix_after[1] = pipette.max_volume
+            if Mix_Before and Mix_Before[1] > pipette.max_volume:
+                Mix_Before = (Mix_Before[0], pipette.max_volume)
+            if Mix_After and Mix_After[1] > pipette.max_volume:
+                Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = mix_before, mix_after = mix_after)
+            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = Mix_Before, mix_after = Mix_After)
 
         if p20:
             if p20.has_tip:
@@ -373,28 +375,26 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
         for transfer_volume, source, destination in zip(Transfer_Volumes, Source_Locations, Destination_Locations):
             if transfer_volume == 0:
                 continue
-            # Deal with mix_before and mix_after
-            if mix_before and mix_before[1] == "transfer_volume":
-                mix_before = (mix_before[0], transfer_volume)
-            if mix_after and mix_after[1] == "transfer_volume":
-                mix_after = (mix_after[0], transfer_volume)
 
             # Choose best pipette to use
             pipette = select_pipette_by_volume(Protocol, transfer_volume)
 
+            Mix_Before = None
+            Mix_After = None
+
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
-                mix_before = (mix_before[0], transfer_volume)
+                Mix_Before = (mix_before[0], transfer_volume)
             if mix_after and mix_after[1] == "transfer_volume":
-                mix_after = (mix_after[0], transfer_volume)
+                Mix_After = (mix_after[0], transfer_volume)
 
             # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
-            if mix_before and mix_before[1] > pipette.max_volume:
-                mix_before = (mix_before[0], pipette.max_volume)
-            if mix_after and mix_after[1] > pipette.max_volume:
-                mix_after = (mix_after[0], pipette.max_volume)
+            if Mix_Before and Mix_Before[1] > pipette.max_volume:
+                Mix_Before = (Mix_Before[0], pipette.max_volume)
+            if Mix_After and Mix_After[1] > pipette.max_volume:
+                Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, mix_before = mix_before, mix_after = mix_after, new_tip = "always")
+            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always")
 
 def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None):
 
