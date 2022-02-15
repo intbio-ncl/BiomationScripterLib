@@ -267,6 +267,9 @@ class PCR(_EchoProto.EchoProto_Template):
                         current_destination_plate.add_content(current_destination_well, self.dNTPs, dNTPs_amount)
                         current_destination_plate.add_content(current_destination_well, self.buffer, buffer_amount)
                         current_destination_plate.add_content(current_destination_well, self.polymerase, polymerase_amount)
+
+                    # Label the well
+                    current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}".format(reaction[0], reaction[1], reaction[2]))
                 # Raise a more relevant error message if NegativeVolumeError occurs
                 except _BMS.NegativeVolumeError:
                     raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
