@@ -107,6 +107,8 @@ class OTProto_Template:
                     tip_box = load_labware(self._protocol, tip_type, tip_box_deck_slot)
                     pipette.tip_racks.append(tip_box)
 
+                pipette.starting_tip = pipette.tip_racks[0].well(self.starting_tips[pipette_type])
+
     def run(self):
         #################
         # Load pipettes #
