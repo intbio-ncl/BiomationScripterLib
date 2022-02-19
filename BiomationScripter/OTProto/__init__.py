@@ -110,7 +110,7 @@ class OTProto_Template:
                 pipette.starting_tip = pipette.tip_racks[0].well(self.starting_tips[pipette_type])
 
     def calculate_and_add_tips(self, Transfer_Volumes, New_Tip):
-        Tips_20uL, Tips_300uL, Tips_1000uL = calculate_tips_needed(self._protocol, Transfer_Volumes, New_Tip)
+        Tips_20uL, Tips_300uL, Tips_1000uL = calculate_tips_needed(self._protocol, Transfer_Volumes, self, New_Tip)
         self.tips_needed["p20"] += Tips_20uL
         self.tips_needed["p300"] += Tips_300uL
         self.tips_needed["p1000"] += Tips_1000uL
