@@ -118,11 +118,18 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                         current_destination_plate.add_content(current_destination_well, self.water, water_amount)
                         current_destination_plate.add_content(current_destination_well, self.ligase_buffer, ligase_buffer_amount)
                         current_destination_plate.add_content(current_destination_well, self.enzyme, enzyme_amount)
+                        current_destination_plate.add_content(current_destination_well, self.ligase, ligase_amount)
                         backbone_name = assembly[0]
+                        well_label = "{}: ".format(backbone_name)
                         current_destination_plate.add_content(current_destination_well, backbone_name, backbone_amount)
                         DNA_part_names = assembly[1]
                         for part_name in DNA_part_names:
                             current_destination_plate.add_content(current_destination_well, part_name, part_amount)
+                            well_label += "{} + ".format(part_name)
+
+                        well_label = "{}{}".format(well_label[:-2], ratio)
+
+                        current_destination_plate.add_well_label(current_destination_well, well_label)
                     # Raise a more relevant error message if NegativeVolumeError occurs
                     except _BMS.NegativeVolumeError:
                         raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
