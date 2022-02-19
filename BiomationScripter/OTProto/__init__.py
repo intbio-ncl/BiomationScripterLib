@@ -109,6 +109,20 @@ class OTProto_Template:
 
                 pipette.starting_tip = pipette.tip_racks[0].well(self.starting_tips[pipette_type])
 
+    def calculate_and_add_tips(self, Transfer_Volumes, New_Tip):
+        Tips_20uL, Tips_300uL, Tips_1000uL = calculate_tips_needed(self._protocol, Transfer_Volumes, New_Tip)
+        self.tips_needed["p20"] += Tips_20uL
+        self.tips_needed["p300"] += Tips_300uL
+        self.tips_needed["p1000"] += Tips_1000uL
+
+    def tip_racks_prompt(self):
+        if not get_p20(self._protocol) == None:
+            self._protocol.pause("This protocol uses {} 20 uL tip boxes".format(tip_racks_needed(self.tips_needed["p20"], self.starting_tips["p20"])))
+        if not get_p300(self._protocol) == None:
+            self._protocol.pause("This protocol uses {} 300 uL tip boxes".format(tip_racks_needed(self.tips_needed["p300"], self.starting_tips["p300"])))
+        if not get_p1000(self._protocol) == None:
+            self._protocol.pause("This protocol uses {} 1000 uL tip boxes".format(tip_racks_needed(self.tips_needed["p1000"], self.starting_tips["p1000"])))
+
     def run(self):
         #################
         # Load pipettes #
