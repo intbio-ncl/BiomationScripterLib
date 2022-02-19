@@ -287,7 +287,7 @@ def set_location_offset_bottom(Locations, Offset):
 
     return(Offset_Locations)
 
-def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None):
+def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
 
 
     if not type(Transfer_Volumes) == list:
@@ -373,7 +373,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if Mix_After and Mix_After[1] > pipette.max_volume:
                 Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = Mix_Before, mix_after = Mix_After)
+            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = Mix_Before, mix_after = Mix_After, touch_tip = False, blow_out = False, blowout_location = "destination well")
 
         if p20:
             if p20.has_tip:
@@ -408,9 +408,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if Mix_After and Mix_After[1] > pipette.max_volume:
                 Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always")
+            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = False, blow_out = False, blowout_location = "destination well")
 
-def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None):
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
 
     Initial_Source_Locations = Aliquot_Source_Locations.copy()
 
@@ -445,7 +445,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
         Aliquot_Index += 1
         if Aliquot_Index == len(Aliquot_Source_Locations):
             Aliquot_Index = 0
-    transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after)
+    transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
