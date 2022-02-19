@@ -1395,7 +1395,7 @@ class Spot_Plating:
                 self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[destination_labware_index].parent))
 
 class Heat_Shock_Transformation(_OTProto.OTProto_Template):
-    def __init__(
+    def __init__(self,
         DNA,
         DNA_Source_Wells,
         Competent_Cells_Source_Type,
@@ -1413,38 +1413,39 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         **kwargs
     ):
 
-    ########################################
-    # User defined aspects of the protocol #
-    ########################################
-    self.dna_per_transformation = DNA_Volume_Per_Transformation
-    self.cells_per_transformation = Competent_Cell_Volume_Per_Transformation
-    self.final_volume = Transformation_Final_Volume
-    self.heat_shock_time = Heat_Shock_Time # seconds
-    self.heat_shock_temp = Heat_Shock_Temp # celcius
-    self.wait_before_shock = Wait_Before_Shock # seconds
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.dna_per_transformation = DNA_Volume_Per_Transformation
+        self.cells_per_transformation = Competent_Cell_Volume_Per_Transformation
+        self.final_volume = Transformation_Final_Volume
+        self.heat_shock_time = Heat_Shock_Time # seconds
+        self.heat_shock_temp = Heat_Shock_Temp # celcius
+        self.wait_before_shock = Wait_Before_Shock # seconds
 
-    ####################
-    # Source materials #
-    ####################
-    self.dna = DNA
-    self.dna_source_type = DNA_Source_Type
-    self.dna_source_wells = DNA_Source_Wells
+        ####################
+        # Source materials #
+        ####################
+        self.dna = DNA
+        self.dna_source_type = DNA_Source_Type
+        self.dna_source_wells = DNA_Source_Wells
 
-    self.comp_cells_source_type = Competent_Cells_Source_Type
-    self.comp_cells_aliquot_volume = Competent_Cells_Aliquot_Volume
+        self.comp_cells_source_type = Competent_Cells_Source_Type
+        self.comp_cells_aliquot_volume = Competent_Cells_Aliquot_Volume
 
-    self.media_source_type = Media_Source_Type
-    self.media_aliquot_volume = Media_Aliquot_Volume
+        self.media_source_type = Media_Source_Type
+        self.media_aliquot_volume = Media_Aliquot_Volume
 
-    #######################
-    # Destination Labware #
-    #######################
-    self.destination_type = Transformation_Destination_Type
+        #######################
+        # Destination Labware #
+        #######################
+        self.destination_type = Transformation_Destination_Type
 
-    ##################################################
-    # Protocol Metadata and Instrument Configuration #
-    ##################################################
-    super().__init__(**kwargs)
+        ##################################################
+        # Protocol Metadata and Instrument Configuration #
+        ##################################################
+        self._temperature_module = "temperature module gen2"
+        super().__init__(**kwargs)
 
     def run(self):
         #################
@@ -1468,9 +1469,9 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         # Calculate the number of tips and tip racks required for this protocol #
         #########################################################################
 
-        self.calculate_and_add_tips(Cell_Transfer_Volumes, new_tip = False)
-        self.calculate_and_add_tips(DNA_Transfer_Volumes, new_tip = True)
-        self.calculate_and_add_tips(Media_Transfer_Volumes, new_tip = True)
+        self.calculate_and_add_tips(Cell_Transfer_Volumes, New_Tip = False)
+        self.calculate_and_add_tips(DNA_Transfer_Volumes, New_Tip = True)
+        self.calculate_and_add_tips(Media_Transfer_Volumes, New_Tip = True)
         self.add_tip_boxes_to_pipettes() # Starting tip(s) are defined here as well
 
         #######################
@@ -1482,7 +1483,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
 
         # DNA
         DNA_Source_Labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
-        DNA_Source_Locations = OTProto.get_locations(
+        DNA_Source_Locations = _OTProto.get_locations(
                         Labware = DNA_Source_Labware,
                         Wells = self.dna_source_wells
         )
@@ -1505,8 +1506,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         for dna_name, location in  zip(self.dna, DNA_Source_Locations):
             self._protocol.pause("Place DNA Sample {} at {}".format(dna_name, location))
 
-        self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, Media_Source_Locations))
-        self._protocol.pause("This protocol uses {} aliquots of {} uL competent cells, located at {}".format(Cell_Aliquots_Required, Cell_Source_Locations))
+        self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, self.media_aliquot_volume, Media_Source_Locations))
+        self._protocol.pause("This protocol uses {} aliquots of {} uL competent cells, located at {}".format(Cell_Aliquots_Required, self.comp_cells_aliquot_volume, Cell_Source_Locations))
 
         ##########################
         # Liquid handling begins #
