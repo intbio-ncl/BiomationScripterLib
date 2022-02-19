@@ -1394,6 +1394,151 @@ class Spot_Plating:
                 plating_index = 0
                 self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[destination_labware_index].parent))
 
+class Heat_Shock_Transformation(_OTProto.OTProto_Template):
+    def __init__(
+        DNA,
+        DNA_Source_Wells,
+        Competent_Cells_Source_Type,
+        Transformation_Destination_Type,
+        DNA_Source_Type,
+        Media_Source_Type,
+        DNA_Volume_Per_Transformation,
+        Competent_Cell_Volume_Per_Transformation,
+        Transformation_Final_Volume,
+        Heat_Shock_Time,
+        Heat_Shock_Temp,
+        Media_Aliquot_Volume,
+        Competent_Cells_Aliquot_Volume,
+        Wait_Before_Shock,
+        **kwargs
+    ):
+
+    ########################################
+    # User defined aspects of the protocol #
+    ########################################
+    self.dna_per_transformation = DNA_Volume_Per_Transformation
+    self.cells_per_transformation = Competent_Cell_Volume_Per_Transformation
+    self.final_volume = Transformation_Final_Volume
+    self.heat_shock_time = Heat_Shock_Time # seconds
+    self.heat_shock_temp = Heat_Shock_Temp # celcius
+    self.wait_before_shock = Wait_Before_Shock # seconds
+
+    ####################
+    # Source materials #
+    ####################
+    self.dna = DNA
+    self.dna_source_type = DNA_Source_Type
+    self.dna_source_wells = DNA_Source_Wells
+
+    self.comp_cells_source_type = Competent_Cells_Source_Type
+    self.comp_cells_aliquot_volume = Competent_Cells_Aliquot_Volume
+
+    self.media_source_type = Media_Source_Type
+    self.media_aliquot_volume = Media_Aliquot_Volume
+
+    #######################
+    # Destination Labware #
+    #######################
+    self.destination_type = Transformation_Destination_Type
+
+    ##################################################
+    # Protocol Metadata and Instrument Configuration #
+    ##################################################
+    super().__init__(**kwargs)
+
+    def run(self):
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+        ###########################
+        # Load temperature_module #
+        ###########################
+        temperature_module = self._protocol.load_module(self._temperature_module, 4)
+
+        ################################
+        # Create transfer volume lists #
+        ################################
+        Cell_Transfer_Volumes = [self.cells_per_transformation] * len(self.dna)
+        DNA_Transfer_Volumes = [self.dna_per_transformation] * len(self.dna)
+        Media_Transfer_Volumes = [self.final_volume - self.dna_per_transformation - self.cells_per_transformation] * len(self.dna)
+
+        #########################################################################
+        # Calculate the number of tips and tip racks required for this protocol #
+        #########################################################################
+
+        self.calculate_and_add_tips(Cell_Transfer_Volumes, new_tip = False)
+        self.calculate_and_add_tips(DNA_Transfer_Volumes, new_tip = True)
+        self.calculate_and_add_tips(Media_Transfer_Volumes, new_tip = True)
+        self.add_tip_boxes_to_pipettes() # Starting tip(s) are defined here as well
+
+        #######################
+        # Load Source Labware #
+        #######################
+        # Competent Cells
+        Cell_Aliquots_Required = math.ceil(sum(Cell_Transfer_Volumes)/self.comp_cells_aliquot_volume)
+        Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+
+        # DNA
+        DNA_Source_Labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
+        DNA_Source_Locations = OTProto.get_locations(
+                        Labware = DNA_Source_Labware,
+                        Wells = self.dna_source_wells
+        )
+
+        # Media
+        Media_Aliquots_Required = math.ceil(sum(Media_Transfer_Volumes)/self.media_aliquot_volume)
+        Media_Source_Labware, Media_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.media_source_type, Media_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+
+        ############################
+        # Load Destination Labware #
+        ############################
+        Destination_Labware = _OTProto.load_labware(self._protocol, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
+        Destination_Locations = Destination_Labware.wells()[:len(self.dna)]
+
+        ######################
+        # User Setup Prompts #
+        ######################
+        self.tip_racks_prompt()
+
+        for dna_name, location in  zip(self.dna, DNA_Source_Locations):
+            self._protocol.pause("Place DNA Sample {} at {}".format(dna_name, location))
+
+        self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, Media_Source_Locations))
+        self._protocol.pause("This protocol uses {} aliquots of {} uL competent cells, located at {}".format(Cell_Aliquots_Required, Cell_Source_Locations))
+
+        ##########################
+        # Liquid handling begins #
+        ##########################
+
+        # Set temperature to 4C and wait until temp is reached
+        temperature_module.set_temperature(4)
+
+        # Add comp cells
+        _OTProto.dispense_from_aliquots(self._protocol, Cell_Transfer_Volumes, Cell_Source_Locations, Destination_Locations, new_tip = False, mix_before = (5,"transfer_volume"), touch_tip = True, blow_out = True, blowout_location = "destination well")
+
+        # Add DNA
+        _OTProto.transfer_liquids(self._protocol, DNA_Transfer_Volumes, DNA_Source_Locations, Destination_Locations, new_tip = True, mix_after = (5,"transfer_volume"), touch_tip = True, blow_out = True, blowout_location = "destination well")
+
+        # Heat shock
+
+        # Wait for a bit
+        self._protocol.delay(seconds = self.wait_before_shock)
+        # Set the temp to heat shock
+        temperature_module.set_temperature(self.heat_shock_temp)
+        # Wait for a bit
+        self._protocol.delay(seconds = self.heat_shock_time)
+        # Cool back to 4 - protocol won't continue until this is back at 4...
+        temperature_module.set_temperature(4)
+
+        # Add media
+        # Prompt user to open LB tubes
+        self._protocol.pause("Open up LB tubes")
+
+        _OTProto.dispense_from_aliquots(self._protocol, Media_Transfer_Volumes, Media_Source_Locations, Destination_Locations, new_tip = False, blow_out = True, blowout_location = "destination well")
+
+
 class Transformation:
     def __init__(self,
         Protocol,
