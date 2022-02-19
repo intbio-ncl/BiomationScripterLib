@@ -1614,6 +1614,9 @@ class Transformation:
         self._temperature_module = "temperature module gen2"
 
     def run(self):
+        print("This protocol will be deprecated with version 0.1.0. Please switch to `OTProto.Heat_Shock_Transformation` instead.")
+        self._protocol.pause("This protocol will be deprecated with version 0.1.0. Please switch to `OTProto.Heat_Shock_Transformation` instead.")
+
         ###########################
         # Load temperature_module #
         ###########################
