@@ -169,7 +169,6 @@ class OTProto_Template:
 
         self.run()
 
-
 ########################
 
 def get_locations(Labware, Wells, Direction = "Horizontal", Box = False):
@@ -204,36 +203,6 @@ def get_pipette(Protocol, Pipette):
         return(get_p1000(Protocol))
     else:
         raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
-
-def get_p20(protocol):
-    pipettes = protocol.loaded_instruments
-    for position in pipettes.keys():
-        min_volume = pipettes[position].min_volume
-        max_volume = pipettes[position].max_volume
-        channels = pipettes[position].channels
-        if (min_volume == 1) and (max_volume == 20) and (channels == 1):
-            return(pipettes[position])
-    return(None)
-
-def get_p300(protocol):
-    pipettes = protocol.loaded_instruments
-    for position in pipettes.keys():
-        min_volume = pipettes[position].min_volume
-        max_volume = pipettes[position].max_volume
-        channels = pipettes[position].channels
-        if (min_volume == 20) and (max_volume == 300) and (channels == 1):
-            return(pipettes[position])
-    return(None)
-
-def get_p1000(protocol):
-    pipettes = protocol.loaded_instruments
-    for position in pipettes.keys():
-        min_volume = pipettes[position].min_volume
-        max_volume = pipettes[position].max_volume
-        channels = pipettes[position].channels
-        if (min_volume == 100) and (max_volume == 1000) and (channels == 1):
-            return(pipettes[position])
-    return(None)
 
 def select_pipette_by_volume(Protocol, Volume):
 
@@ -287,7 +256,7 @@ def set_location_offset_bottom(Locations, Offset):
 
     return(Offset_Locations)
 
-def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
+def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well", move_after_dispense = None):
 
 
     if not type(Transfer_Volumes) == list:
@@ -523,22 +492,6 @@ def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
                 capacity = capacities.pop()
                 return(capacity)
 
-def load_custom_labware(parent, file, deck_position = None, label = None):
-    # Open the labware json file
-    with open(file) as labware_file:
-        labware_file = json.load(labware_file)
-
-    # Check if `parent` is the deck or a hardware module, and treat it acordingly
-    if parent.__class__ == protocol_api.protocol_context.ProtocolContext:
-        # If no deck position, get the next empty slot
-        if not deck_position:
-            deck_position = next_empty_slot(parent)
-        labware = parent.load_labware_from_definition(labware_file, deck_position, label)
-    else:
-        labware = parent.load_labware_from_definition(labware_file, label)
-
-    return(labware)
-
 def load_labware(parent, labware_api_name, deck_position = None, custom_labware_dir = None, label = None):
     labware = None
 
@@ -678,3 +631,51 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
     pipette.starting_tip = tip_racks[0].well(Starting_Tip)
 
     return(pipette, tip_racks)
+
+# Functions less likely to be useful to users
+
+def get_p20(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 1) and (max_volume == 20) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+def get_p300(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 20) and (max_volume == 300) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+def get_p1000(protocol):
+    pipettes = protocol.loaded_instruments
+    for position in pipettes.keys():
+        min_volume = pipettes[position].min_volume
+        max_volume = pipettes[position].max_volume
+        channels = pipettes[position].channels
+        if (min_volume == 100) and (max_volume == 1000) and (channels == 1):
+            return(pipettes[position])
+    return(None)
+
+def load_custom_labware(parent, file, deck_position = None, label = None):
+    # Open the labware json file
+    with open(file) as labware_file:
+        labware_file = json.load(labware_file)
+
+    # Check if `parent` is the deck or a hardware module, and treat it acordingly
+    if parent.__class__ == protocol_api.protocol_context.ProtocolContext:
+        # If no deck position, get the next empty slot
+        if not deck_position:
+            deck_position = next_empty_slot(parent)
+        labware = parent.load_labware_from_definition(labware_file, deck_position, label)
+    else:
+        labware = parent.load_labware_from_definition(labware_file, label)
+
+    return(labware)
