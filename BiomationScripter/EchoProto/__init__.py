@@ -140,7 +140,6 @@ def Generate_Actions(Protocol):
                 continue
             else:
                 available_volume += total_source_volume - dead_volume
-                
         if available_volume < required_volume:
             Exceptions.append([required_reagent, required_volume-available_volume])
 
