@@ -110,7 +110,7 @@ class OTProto_Template:
                 pipette.starting_tip = pipette.tip_racks[0].well(self.starting_tips[pipette_type])
 
     def calculate_and_add_tips(self, Transfer_Volumes, New_Tip):
-        Tips_20uL, Tips_300uL, Tips_1000uL = calculate_tips_needed(self._protocol, Transfer_Volumes, self, New_Tip)
+        Tips_20uL, Tips_300uL, Tips_1000uL = calculate_tips_needed(self._protocol, Transfer_Volumes, new_tip = New_Tip)
         self.tips_needed["p20"] += Tips_20uL
         self.tips_needed["p300"] += Tips_300uL
         self.tips_needed["p1000"] += Tips_1000uL
@@ -576,11 +576,17 @@ def calculate_tips_needed(protocol, transfers, template = None, new_tip = True):
         ## This can be ignored if new_tip == False (i.e. one tip will be used no matter hwhat)
         if new_tip:
             transfers_needed = math.ceil(transfer/pipette.max_volume)
+            # For each transfer that is needed, add to the appropriate tips_needed counter
+            for n in range(0, transfers_needed):
+                tips_needed["{}uL".format(pipette.max_volume)] += 1
         else:
-            transfers_needed = 1
-        # For each transfer that is needed, add to the appropriate tips_needed counter
-        for n in range(0, transfers_needed):
-            tips_needed["{}uL".format(pipette.max_volume)] += 1
+            # Check if a new tip needs to be added
+            ## A new tip won't be needed if an appropriate sized tip has already been added and new_tip is False
+            if tips_needed["{}uL".format(pipette.max_volume)] > 0:
+                continue
+            else:
+                tips_needed["{}uL".format(pipette.max_volume)] += 1
+
 
     # If a template is specified, add the tips needed to the tips_needed attributes
     if template:
