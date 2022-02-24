@@ -676,6 +676,33 @@ def Group_Locations(Locations, Group_Populations):
         start_index += group_pop
     return(Grouped_Locations)
 
+def serial_dilution_volumes(dilution_factors, total_volume):
+    # Note that total volume is the amount the dilution will be made up to
+    ## The total volume of all dilutions other than the final will be lower than this
+    sample_volumes = []
+    solution_volumes = []
+
+    # This the the dilution factor of the source material for the first serial dilution
+    ## This is always 1, as the initial sample is assumed to be undiluted
+    source_dilution_factor = 1
+
+    for df in dilution_factors:
+        # Get the dilution factor of the current serial dilution being performed
+        destination_dilution_factor = df
+
+        # Calculate the volume, in uL, of sample and solution required for each dilution factor
+        sample_volume = total_volume * (source_dilution_factor/destination_dilution_factor)
+        solution_volume = total_volume - sample_volume
+
+        # Store the volumes required for later use
+        sample_volumes.append(sample_volume)
+        solution_volumes.append(solution_volume)
+
+        # Set the current dilution as the source for the next serial dilution
+        source_dilution_factor = df
+
+    return(sample_volumes, solution_volumes)
+
 ## Private ##
 def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
