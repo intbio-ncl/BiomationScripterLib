@@ -333,8 +333,12 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
                 Mix_Before = (mix_before[0], transfer_volume)
+            elif mix_before:
+                Mix_Before = mix_before
             if mix_after and mix_after[1] == "transfer_volume":
                 Mix_After = (mix_after[0], transfer_volume)
+            elif mix_after:
+                Mix_After = mix_after
 
             # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
             if Mix_Before and Mix_Before[1] > pipette.max_volume:
@@ -368,8 +372,12 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             # Deal with mix_before and mix_after
             if mix_before and mix_before[1] == "transfer_volume":
                 Mix_Before = (mix_before[0], transfer_volume)
+            elif mix_before:
+                Mix_Before = mix_before
             if mix_after and mix_after[1] == "transfer_volume":
                 Mix_After = (mix_after[0], transfer_volume)
+            elif mix_after:
+                Mix_After = mix_after
 
             # If trying to mix with a volume larger than the pipette and deal with, set mix volume to the max
             if Mix_Before and Mix_Before[1] > pipette.max_volume:
@@ -628,7 +636,9 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
     # if something isn't loaded, then load it
     if Pipette_Position in Protocol.loaded_instruments.keys():
         if Protocol.loaded_instruments[Pipette_Position].name == Pipette_Type:
-            pipette = loaded_instruments[Pipette_Position]
+            pipette = Protocol.loaded_instruments[Pipette_Position]
+            for tip_rack in tip_racks:
+                pipette.tip_racks.append(tip_rack)
         else:
             raise _BMS.RobotConfigurationError("A pipette is already loaded, check the protocol for errors.")
     else:
