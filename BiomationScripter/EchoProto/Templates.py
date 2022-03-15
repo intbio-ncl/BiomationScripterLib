@@ -131,7 +131,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                             current_destination_plate.add_content(current_destination_well, part_name, part_amount)
                             well_label += "{} + ".format(part_name)
 
-                        well_label = "{}{}".format(well_label[:-2], ratio)
+                        well_label = "{}{}{}".format(well_label[:-2], ratio,rep)
 
                         current_destination_plate.add_well_label(current_destination_well, well_label)
                     # Raise a more relevant error message if NegativeVolumeError occurs
