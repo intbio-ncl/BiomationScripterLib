@@ -2141,6 +2141,7 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
         # Destination Information #
         ###########################
         self.destination_content = Destination_Content
+        self.destination_layout = None
 
         ###########
         # Labware #
@@ -2240,12 +2241,12 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
                     for content_info in self.destination_content[sample_type]:
                         content = run.get_value_by_name(content_info[0])
                         content_volume = content_info[1]
-
                         Destination_Layout.add_content(destination_well, content, content_volume)
                     well_index += 1
 
         print("\n")
         Destination_Layout.print()
+        self.destination_layout = Destination_Layout
 
         #################################
         # Set up intermediate layout(s) #
