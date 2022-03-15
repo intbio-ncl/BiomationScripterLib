@@ -27,6 +27,9 @@ class OutOFSourceMaterial(Exception):
 class DoEError(Exception):
     pass
 
+class TransferError(Exception):
+    pass
+
 #####################
 # Classes
 
