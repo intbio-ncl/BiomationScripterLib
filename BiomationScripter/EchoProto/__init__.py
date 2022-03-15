@@ -105,11 +105,12 @@ def Generate_Actions(Protocol):
     Missing_Reagents = Required_Reagents.difference(Available_Reagents)
 
     if len(Missing_Reagents) > 0:
-        raise ValueError("Cannot find the following reagents in a source plate: {}".format(Missing_Reagents))
+        raise _BMS.OutOFSourceMaterial("Cannot find the following reagents in a source plate: {}".format(Missing_Reagents))
 
     # Check if there is enough volume for each of the required reagents present in the source plates
     ## Also check that the storage volume is not above the maximum amount
     Exceptions = []
+    Wells_Below_Dead_Volume = {}
     for required_reagent in Required_Reagents:
         required_volume = 0
         required_reagent_locations = Protocol.get_reagent_destination_locations(required_reagent)
@@ -137,17 +138,32 @@ def Generate_Actions(Protocol):
 
             if total_source_volume - dead_volume < 0:
                 # If the available volume is below the dead volume, add nothing rather than adding a negative volume
-                continue
+                Wells_Below_Dead_Volume[well] = [plate.name, required_reagent, dead_volume-total_source_volume]
             else:
                 available_volume += total_source_volume - dead_volume
         if available_volume < required_volume:
-            Exceptions.append([required_reagent, required_volume-available_volume])
+            extra_reagent_volume = required_volume-available_volume
+            Exceptions.append([required_reagent, extra_reagent_volume, well, plate.name])
+
+    for well in Wells_Below_Dead_Volume:
+        plate_name = Wells_Below_Dead_Volume[well][0]
+        reagent_name = Wells_Below_Dead_Volume[well][1]
+        volume_below_dead = Wells_Below_Dead_Volume[well][2]
+        print("Well {} of plate {} containing {} is {} uL below the dead volume.".format(well, plate_name, reagent_name, volume_below_dead))
 
     if len(Exceptions) > 0:
-        error_text = ""
+        error_text = "\n"
+        error_csv_text = "\nName,Well,Plate,Volume Needed\n"
         for e in Exceptions:
-            error_text += "Source plates do not contain enough volume of {}. {} uL more is required.\n".format(e[0], e[1])
-        raise ValueError(error_text)
+            extra_volume_to_add = e[1]
+            below_dead_volume_text = ".\n"
+            if e[2] in Wells_Below_Dead_Volume.keys():
+                if e[3] == Wells_Below_Dead_Volume[e[2]][0]:
+                    below_dead_volume_text = ". This well is also {} uL below the dead volume.\n".format(Wells_Below_Dead_Volume[e[2]][2])
+                    extra_volume_to_add = e[1] + Wells_Below_Dead_Volume[e[2]][2]
+            error_text += "Not enough volume of {}. {} uL more is required. Last well checked was {} of {}{}\n".format(e[0], e[1], e[2], e[3], below_dead_volume_text)
+            error_csv_text += "{},{},{},{}\n".format(e[0], e[2], e[3], extra_volume_to_add)
+        raise _BMS.OutOFSourceMaterial(error_text + error_csv_text)
 
     ###########################
     # Generate transfer lists #
@@ -239,9 +255,9 @@ def Generate_Actions(Protocol):
                             source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - available_volume, reagent, source_well)
                             source_index += 1
                         else:
-                            raise ValueError("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
+                            raise _BMS.OutOFSourceMaterial("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
                         if source_index == len(source_wells):
-                            raise ValueError("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
+                            raise _BMS.OutOFSourceMaterial("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
 
 #################################
 
@@ -416,11 +432,11 @@ class Action:
         if isinstance(Volume, float):
             raise TypeError("Transfer Volume must be an integer")
         elif int(Volume) < 25:
-            raise ValueError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
         elif source_plate_type == "384PP" and int(Volume) > 2000:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
         elif source_plate_type == "384LDV" and int(Volume) > 500:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
         self._volume = int(Volume)
 
     def get_volume(self):
