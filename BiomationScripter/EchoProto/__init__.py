@@ -33,9 +33,9 @@ class EchoProto_Template:
         self.source_plate_layouts = []
         self.destination_plate_layouts = []
 
-    def create_picklists(self):
+    def create_picklists(self, Merge):
         _BMS.EchoProto.Generate_Actions(self._protocol)
-        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir)
+        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir, Merge = Merge)
 
     def add_source_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
@@ -71,21 +71,31 @@ def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
 
     return(plates)
 
-def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
-    for tl in Protocol.transfer_lists:
-        TL = tl[0]
-        Title = TL.title
-        SPType = TL.source_plate.type
+def Write_Picklists(Protocol, Save_Location, Merge = False): # Writes a Picklist to a csv pick list - argument is a Picklist Class
+    if Merge:
+        # Group transfer lists by source plate type
+        Transfer_Lists = []
+        for source_plate_type in Source_Plate_Types.keys():
+            Transfer_Lists.append([TL[0] for TL in Protocol.transfer_lists if TL[0].source_plate.type == source_plate_type])
+    else:
+        Transfer_Lists = [[TL[0]] for TL in Protocol.transfer_lists]
 
-        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title), "w")
+    for transfer_lists_for_picklist in Transfer_Lists:
+        Source_Plate_Names_Str = ""
+        for transfer_list in transfer_lists_for_picklist:
+            Source_Plate_Names_Str += "-({})".format(transfer_list.title)
+        Picklist_Title = "{}{}".format(transfer_lists_for_picklist[0].source_plate.type, Source_Plate_Names_Str)
+
+        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title), "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
-        for action in TL.get_actions():
-            UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
-            SPT = SPType + "_" + Cali
-            line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
-            PickList.write(line)
+        for transfer_list in transfer_lists_for_picklist:
+            for action in transfer_list.get_actions():
+                UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
+                SPT = transfer_list.source_plate.type + "_" + Cali
+                line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
+                PickList.write(line)
         PickList.close()
-        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title))
+        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title))
 
 def Generate_Actions(Protocol):
     Exceptions = []
