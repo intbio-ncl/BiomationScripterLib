@@ -13,6 +13,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         Assemblies,
         Backbone_to_Part = ["1:1"],
         Repeats = 1,
+        Merge = False,
         **kwargs
     ):
 
@@ -26,6 +27,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         self.repeats = Repeats
         self.enzyme = Enzyme
         self.assemblies = Assemblies # [ [Backbone, [Part1, ... Partn]] ]
+        self.merge = Merge
 
         ###########
         # Labware #
@@ -147,7 +149,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                         destination_well_index = 0
 
         # Generate the picklists
-        self.create_picklists()
+        self.create_picklists(self.merge)
 
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
@@ -159,6 +161,7 @@ class PCR(_EchoProto.EchoProto_Template):
         Reactions,
         Master_Mix = False,
         Repeats = 1,
+        Merge = False,
         **kwargs
     ):
 
@@ -173,6 +176,7 @@ class PCR(_EchoProto.EchoProto_Template):
         self.polymerase = Polymerase
         self.buffer = Polymerase_Buffer
         self.master_mix = Master_Mix
+        self.merge = Merge
 
         ###########
         # Labware #
@@ -294,4 +298,4 @@ class PCR(_EchoProto.EchoProto_Template):
                     destination_well_index = 0
 
         # Generate the picklists
-        self.create_picklists()
+        self.create_picklists(self.merge)
