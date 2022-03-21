@@ -559,6 +559,33 @@ def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_N
 
     return(Intermediate_Types)
 
+def Reagent_Finder(Reagents, Directories):
+    import os
+    # Get all labware layouts in the specified directories
+    Files = []
+    for directory in Directories:
+        Files.append([file for file in os.listdir(directory+"/") if os.path.isfile(os.path.join(directory+"/", file)) and not "~$" in file])
+
+    Layouts = []
+    for files, directory in zip(Files, Directories):
+        for file in files:
+            try:
+                Layouts.append(
+                    Import_Labware_Layout(
+                        Filename = file,
+                        path = directory+"/"
+                    )
+                )
+            except:
+                continue
+
+    # Check if each reagent is in a labware file
+    for reagent in Reagents:
+        print("\n{}:".format(reagent))
+        for layout in Layouts:
+            if len(layout.get_wells_containing_liquid(reagent)) > 0:
+                print("> {}: {}".format(layout.name, layout.get_wells_containing_liquid(reagent)))
+
 def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
     labware_layout = Labware_Layout("name", "type")
     labware_layout.import_labware(Filename, path = path, ext = ext)
