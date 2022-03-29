@@ -1828,7 +1828,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         _OTProto.dispense_from_aliquots(self._protocol, Media_Transfer_Volumes, Media_Source_Locations, Destination_Locations, new_tip = False, blow_out = True, blowout_location = "destination well")
 
 
-class Transformation:
+# class Transformation:
     def __init__(self,
         Protocol,
         Name,
