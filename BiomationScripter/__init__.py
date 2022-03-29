@@ -194,6 +194,7 @@ class Labware_Layout:
         self.columns = None
         self.content = {}
         self.available_wells = None
+        self.empty_wells = None
         self.well_labels = {}
 
     def define_format(self, Rows, Columns):
@@ -205,6 +206,7 @@ class Labware_Layout:
 
     def set_available_wells(self, Well_Range = None, Use_Outer_Wells = True, Direction = "Horizontal", Box = False):
         self.available_wells = self.get_well_range(Well_Range, Use_Outer_Wells, Direction, Box)
+        self.empty_wells = self.available_wells.copy()
 
     def get_available_wells(self):
         return(self.available_wells)
@@ -265,6 +267,10 @@ class Labware_Layout:
         if Volume < 0:
             raise NegativeVolumeError
 
+        if self.available_wells and not ":" in Well:
+            if not Well in self.available_wells:
+                raise LabwareError("Available wells are specified, but well {} is not defined as available.\nCheck that the correct well has been specified. Available wells are:\n".format(Well, self.available_wells))
+
         # Volume should always be uL
         if Liquid_Class == None:
             Liquid_Class = "Unknown"
@@ -278,6 +284,9 @@ class Labware_Layout:
             self.content[Well].append([Reagent,float(Volume), Liquid_Class])
         else:
             self.content[Well] = [ [Reagent,float(Volume), Liquid_Class] ]
+
+        if self.empty_wells and Well in self.empty_wells:
+            self.empty_wells.remove(Well)
 
     def add_well_label(self, Well: str, Label: str):
         for well in self.well_labels:
@@ -324,10 +333,14 @@ class Labware_Layout:
 
     def clear_content(self):
         self.content = {}
+        if self.available_wells:
+            self.empty_wells = self.available_wells.copy()
 
     def clear_content_from_well(self, Well):
         del self.content[Well]
 
+        if self.empty_wells:
+            self.empty_wells.append(Well)
     def get_volume_of_liquid_in_well(self, Liquid, Well):
         # if not Well in self.get_occupied_wells():
         #     raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
