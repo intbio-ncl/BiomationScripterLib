@@ -341,6 +341,18 @@ class Labware_Layout:
 
         if self.empty_wells:
             self.empty_wells.append(Well)
+
+    def get_next_empty_well(self):
+        if not self.available_wells:
+            raise LabwareError("Available wells must be specified to get the next empty well. Specify the avilable wells for {} using `.set_available_wells`.".format(self.name))
+        if len(self.empty_wells) == 0:
+            return(None)
+        # Iterate through all available wells, and return the first one which also exists in the empty wells attribute
+        for well in self.available_wells:
+            if well in self.empty_wells:
+                return(well)
+
+
     def get_volume_of_liquid_in_well(self, Liquid, Well):
         # if not Well in self.get_occupied_wells():
         #     raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
