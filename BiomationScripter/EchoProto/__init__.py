@@ -14,9 +14,9 @@ Source_Plate_Types = {
 
 class EchoProto_Template:
     def __init__(self,
-        Name,
-        Picklist_Save_Directory = ".",
-        Metadata = None
+        Name: str,
+        Picklist_Save_Directory: str = ".",
+        Metadata: dict = None
     ):
 
         #####################

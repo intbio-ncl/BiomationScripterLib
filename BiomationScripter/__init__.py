@@ -1,11 +1,31 @@
 from BiomationScripter import EchoProto
 from BiomationScripter import OTProto
+from typing import List
 # from BiomationScripter import FeliXProto
 # from BiomationScripter import PIXLProto
 # from BiomationScripter import AttuneProto
 # from BiomationScripter import ClarioProto
 
-import math
+# Function to pass template modules
+def get_template_module(Module_Name):
+    if Module_Name == "OTProto":
+        import BiomationScripter.OTProto.Templates as OTProto_Templates
+        return(OTProto_Templates)
+
+    elif Module_Name == "EchoProto":
+        import BiomationScripter.EchoProto.Templates as EchoProto_Templates
+        return(EchoProto_Templates)
+
+
+class Assembly:
+    def __init__(self, Name: str, Backbone: str, Parts: str):
+        self.name = Name
+        self.backbone = Backbone
+        self.parts = Parts.replace(", ", ",").split(",")
+
+
+
+import math as _math
 
 # Exception classes #
 
@@ -626,7 +646,7 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
         else:
             raise ValueError("`N_Wells_Available` should either be an integer, or 'All'.")
 
-    N_Plates_Needed = math.ceil(N_Wells_Needed/N_Wells_Available)
+    N_Plates_Needed = _math.ceil(N_Wells_Needed/N_Wells_Available)
     if Return_Original_Layout == True:
         Plates = [Plate_Format]
     elif Return_Original_Layout == False:
@@ -772,4 +792,4 @@ def _Labware_Row_To_Index(row):
 
 def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume = 0):
     print("This will soon be deprecated")
-    return(math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))
+    return(_math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))

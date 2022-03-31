@@ -1,23 +1,35 @@
 import BiomationScripter as _BMS
 import BiomationScripter.EchoProto as _EchoProto
 import math
+from typing import List, NewType
 
 #### PROTOCOL TEMPLATES ####
 
 class Loop_Assembly(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Enzyme,
-        Source_Plates,
-        Destination_Plate_Layout,
-        Volume,
-        Assemblies,
-        Backbone_to_Part = ["1:1"],
-        Repeats = 1,
-        Merge = False,
+        Enzyme: str,
+        Source_Plates: List[_BMS.Labware_Layout],
+        Destination_Plate_Layout: _BMS.Labware_Layout,
+        Volume: float,
+        Assemblies: List[_BMS.Assembly],
+        Backbone_to_Part: List[str] = ["1:1"],
+        Repeats: int = 1,
+        Merge: bool = False,
         **kwargs
     ):
-
         super().__init__(**kwargs)
+
+        print([
+            Enzyme,
+            Source_Plates,
+            Destination_Plate_Layout,
+            Volume,
+            Assemblies,
+            Backbone_to_Part,
+            Repeats,
+            Merge,
+        ])
+
 
         ########################################
         # User defined aspects of the protocol #
@@ -26,7 +38,15 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         self.ratios = Backbone_to_Part
         self.repeats = Repeats
         self.enzyme = Enzyme
-        self.assemblies = Assemblies # [ [Backbone, [Part1, ... Partn]] ]
+
+        # Deal with assemblies as a list or a list of the new object
+        self.assemblies = []
+        for assembly in Assemblies:
+            if type(Assemblies[0]) == _BMS.Assembly:
+                self.assemblies.append([assembly.backbone, assembly.parts])
+            else:
+                self.assemblies.append(assembly)
+
         self.merge = Merge
 
         ###########
@@ -37,6 +57,9 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
             self.add_source_layout(source)
 
         # Add the destination layout (more may be created later if needed)
+        #NOTE - This might break some things or cause unexpected behaviour
+        if not Destination_Plate_Layout.get_available_wells():
+            Destination_Plate_Layout.set_available_wells()
         self.add_destination_layout(Destination_Plate_Layout)
 
         ##############################################
@@ -153,15 +176,15 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Polymerase,
-        Polymerase_Buffer,
-        Source_Plates,
-        Destination_Plate_Layout,
-        Volume,
-        Reactions,
-        Master_Mix = False,
-        Repeats = 1,
-        Merge = False,
+        Polymerase: str,
+        Polymerase_Buffer: str,
+        Source_Plates: List[_BMS.Labware_Layout],
+        Destination_Plate_Layout: _BMS.Labware_Layout,
+        Volume: float,
+        Reactions: List[str],
+        Master_Mix: bool = False,
+        Repeats: int = 1,
+        Merge: bool = False,
         **kwargs
     ):
 
