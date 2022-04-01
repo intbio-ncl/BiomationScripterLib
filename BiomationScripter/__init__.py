@@ -646,24 +646,24 @@ def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
 def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
     raise ValueError("`Import_Plate_Layout` has been replaced by `Import_Labware_Layout`.")
 
-def Create_Plates_Needed(Labware_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
+def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     return(Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available, Return_Original_Layout))
 
-def Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
+def Create_Labware_Needed(Labware_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
-            N_Wells_Available = Plate_Format.rows * Plate_Format.columns
+            N_Wells_Available = Labware_Format.rows * Labware_Format.columns
         else:
             raise ValueError("`N_Wells_Available` should either be an integer, or 'All'.")
 
     N_Plates_Needed = _math.ceil(N_Wells_Needed/N_Wells_Available)
     if Return_Original_Layout == True:
-        Plates = [Plate_Format]
+        Plates = [Labware_Format]
     elif Return_Original_Layout == False:
         Plates = []
     for plate_n in range(1, N_Plates_Needed):
-        Plate_Name = Plate_Format.name + str(plate_n)
-        Plates.append(Plate_Format.clone_format(Plate_Name))
+        Plate_Name = Labware_Format.name + str(plate_n)
+        Plates.append(Labware_Format.clone_format(Plate_Name))
     return(Plates)
 
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = False):
