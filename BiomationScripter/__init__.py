@@ -19,14 +19,6 @@ def get_template_module(Module_Name):
         return(EchoProto_Templates)
 
 
-class Assembly:
-    def __init__(self, Name: str, Backbone: str, Parts: str):
-        self.name = Name
-        self.backbone = Backbone
-        self.parts = Parts
-
-
-
 import math as _math
 
 # Exception classes #
@@ -214,6 +206,12 @@ class Labware_Content:
 
     def get_info(self):
         return([self.name, self.volume, self.liquid_class])
+
+class Assembly:
+    def __init__(self, Name: str, Backbone: str, Parts: List[str]):
+        self.name = Name
+        self.backbone = Backbone
+        self.parts = Parts
 
 
 class Labware_Layout:
@@ -648,7 +646,10 @@ def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
 def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
     raise ValueError("`Import_Plate_Layout` has been replaced by `Import_Labware_Layout`.")
 
-def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
+def Create_Plates_Needed(Labware_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
+    return(Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available, Return_Original_Layout))
+
+def Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
             N_Wells_Available = Plate_Format.rows * Plate_Format.columns
