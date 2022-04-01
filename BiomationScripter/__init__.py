@@ -23,7 +23,7 @@ class Assembly:
     def __init__(self, Name: str, Backbone: str, Parts: str):
         self.name = Name
         self.backbone = Backbone
-        self.parts = Parts.replace(", ", ",").split(",")
+        self.parts = Parts
 
 
 
@@ -286,7 +286,7 @@ class Labware_Layout:
         type = self.type
         rows = self.rows
         columns = self.columns
-        plate_copy = PlateLayout(name, type)
+        plate_copy = Labware_Layout(name, type)
         plate_copy.define_format(rows, columns)
         return(plate_copy)
 
@@ -695,7 +695,7 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Fal
         # Get the end row and end column number for the labware being used
         if type(Labware_Format) is list:
             if not len(Labware_Format) == 2:
-                raise ValueError("Labware_Format argument MUST either be a BiomationScripter.PlateLayout object, or a list specifying number of rows and number of columns (e.g. [8, 12]).")
+                raise ValueError("Labware_Format argument MUST either be a BiomationScripter.Labware_Layout object, or a list specifying number of rows and number of columns (e.g. [8, 12]).")
             end_row, end_col = Labware_Format
         else:
             Labware_Format = [Labware_Format.rows, Labware_Format.columns]

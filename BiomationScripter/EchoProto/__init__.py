@@ -39,22 +39,22 @@ class EchoProto_Template:
 
     def add_source_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+        if type(Layout) is _BMS.Labware_Layout or type(Layout):
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
-            Layout = _BMS.Import_Plate_Layout(Layout)
+            Layout = _BMS.Import_Labware_Layout(Layout)
 
         self.source_plate_layouts.append(Layout)
         self._protocol.add_source_plates([Layout])
 
     def add_destination_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+        if type(Layout) is _BMS.Labware_Layout or type(Layout):
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
-            Layout = _BMS.Import_Plate_Layout(Layout)
+            Layout = _BMS.Import_Labware_Layout(Layout)
 
 
         self.destination_plate_layouts.append(Layout)
