@@ -1,0 +1,7 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,DNA_Source_Plate,384PP_AQ_BP,A1,Destination Plate,Optical Amp Plate,B3,1000,Red
+1,DNA_Source_Plate,384PP_AQ_BP,A1,Destination Plate,Optical Amp Plate,B4,1000,Red
+2,DNA_Source_Plate,384PP_AQ_BP,A2,Destination Plate,Optical Amp Plate,B2,1000,Blue
+3,DNA_Source_Plate,384PP_AQ_BP,A2,Destination Plate,Optical Amp Plate,B3,1000,Blue
+4,DNA_Source_Plate,384PP_AQ_BP,A3,Destination Plate,Optical Amp Plate,B2,1000,Yellow
+5,DNA_Source_Plate,384PP_AQ_BP,A3,Destination Plate,Optical Amp Plate,B4,1000,Yellow
