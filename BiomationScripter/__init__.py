@@ -204,6 +204,14 @@ class DoE_Run_Data:
         else:
             return(Value)
 
+class Labware_Content:
+    def __init__(self, Name, Volume, Liquid_Class = None):
+        self.name = Name
+        self.volume = Volume
+        self.liquid_class = Liquid_Class
+
+    def get_info(self):
+        return([self.name, self.volume, self.liquid_class])
 
 
 class Labware_Layout:
