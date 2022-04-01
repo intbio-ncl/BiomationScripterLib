@@ -62,14 +62,14 @@ class EchoProto_Template:
 
 
 # This is redundant (BMS.Create_Plates_Needed seems to do the same thing)
-def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
-    plates_required = math.ceil(Wells_Required/Wells_Available)
-    plates = []
-    for plate_index in range(0, plates_required):
-        name = "{}_{}".format(Plate_Format.name, plate_index)
-        plates.append(Plate_Format.clone_format(name))
-
-    return(plates)
+# def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
+#     plates_required = math.ceil(Wells_Required/Wells_Available)
+#     plates = []
+#     for plate_index in range(0, plates_required):
+#         name = "{}_{}".format(Plate_Format.name, plate_index)
+#         plates.append(Plate_Format.clone_format(name))
+#
+#     return(plates)
 
 def Write_Picklists(Protocol, Save_Location, Merge = False): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     if Merge:
