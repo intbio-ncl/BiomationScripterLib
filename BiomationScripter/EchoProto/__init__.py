@@ -318,7 +318,7 @@ class Protocol:
         for plate in Destination_Plates:
             occupied_wells = plate.get_content().keys()
             for well in occupied_wells:
-                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                reagents_in_well = set( [reagent_info.name for reagent_info in plate.get_content()[well]] )
                 Required_Reagents = Required_Reagents.union(reagents_in_well)
 
         return(Required_Reagents)
@@ -333,7 +333,7 @@ class Protocol:
         for plate in Source_Plates:
             occupied_wells = plate.get_content().keys()
             for well in occupied_wells:
-                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                reagents_in_well = set( [reagent_info.name for reagent_info in plate.get_content()[well]] )
                 Available_Reagents = Available_Reagents.union(reagents_in_well)
 
         return(Available_Reagents)
@@ -344,16 +344,16 @@ class Protocol:
         except KeyError:
             raise KeyError("Well {} not found when searching for {} in plate {}.\nPlate Content:\n{}".format(Well, Reagent_Name, Plate.name, Plate.get_content()))
         for reagent_info in Reagents:
-            if reagent_info[0] == Reagent_Name:
-                return(reagent_info[1])
+            if reagent_info.name == Reagent_Name:
+                return(reagent_info.volume)
 
         return(None)
 
     def get_reagent_info(self, Reagent_Name, Plate, Well):
         Reagents = Plate.get_content()[Well]
         for reagent_info in Reagents:
-            if reagent_info[0] == Reagent_Name:
-                return(reagent_info[1:])
+            if reagent_info.name == Reagent_Name:
+                return(reagent_info.get_info()[1:])
 
         return(None)
 
@@ -364,7 +364,7 @@ class Protocol:
             occupied_wells = plate.get_occupied_wells()
             for well in occupied_wells:
                 for reagent in plate.get_content()[well]:
-                    if reagent[0] == Reagent_Name:
+                    if reagent.name == Reagent_Name:
                         Locations.append([plate, well])
 
         if len(Locations) > 0:
@@ -379,7 +379,7 @@ class Protocol:
             occupied_wells = plate.get_occupied_wells()
             for well in occupied_wells:
                 for reagent in plate.get_content()[well]:
-                    if reagent[0] == Reagent_Name:
+                    if reagent.name == Reagent_Name:
                         Locations.append([plate, well])
 
         if len(Locations) > 0:
