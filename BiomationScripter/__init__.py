@@ -1,6 +1,8 @@
 from BiomationScripter import EchoProto
 from BiomationScripter import OTProto
 from typing import List
+from typing import Dict
+from typing import Union
 # from BiomationScripter import FeliXProto
 # from BiomationScripter import PIXLProto
 # from BiomationScripter import AttuneProto
@@ -216,16 +218,16 @@ class Labware_Content:
 
 class Labware_Layout:
     def __init__(self, Name, Type):
-        self.name = Name
-        self.type = Type
-        self.rows = None
-        self.columns = None
-        self.content = {}
-        self.available_wells = None
-        self.empty_wells = None
-        self.well_labels = {}
+        self.name: str = Name
+        self.type: str = Type
+        self.rows: int = None
+        self.columns: int = None
+        self.content: Dict[str, List[Labware_Content]] = {}
+        self.available_wells: List[str] = None
+        self.empty_wells: List[str] = None
+        self.well_labels: Dict[str, str] = {}
 
-    def define_format(self, Rows, Columns):
+    def define_format(self, Rows: int, Columns: int):
         self.rows = Rows
         self.columns = Columns
 
@@ -295,7 +297,7 @@ class Labware_Layout:
         if Volume < 0:
             raise NegativeVolumeError
 
-        if self.available_wells and not ":" in Well:
+        if self.available_wells and not ":" in Well and not type(Well) == list:
             if not Well in self.available_wells:
                 raise LabwareError("Available wells are specified, but well {} is not defined as available.\nCheck that the correct well has been specified. Available wells are:\n".format(Well, self.available_wells))
 
@@ -303,15 +305,15 @@ class Labware_Layout:
         if Liquid_Class == None:
             Liquid_Class = "Unknown"
         if ":" in Well:
-            for w in well_range(Well):
+            for w in well_range(Well, Labware_Format = self):
                 self.add_content(w, Reagent, Volume, Liquid_Class)
         elif type(Well) == list:
             for well in Well:
                 self.add_content(well, Reagent, Volume, Liquid_Class)
         elif Well in self.content:
-            self.content[Well].append([Reagent,float(Volume), Liquid_Class])
+            self.content[Well].append(Labware_Content(Reagent, float(Volume), Liquid_Class))
         else:
-            self.content[Well] = [ [Reagent,float(Volume), Liquid_Class] ]
+            self.content[Well] = [ Labware_Content(Reagent, float(Volume), Liquid_Class) ]
 
         if self.empty_wells and Well in self.empty_wells:
             self.empty_wells.remove(Well)
@@ -345,7 +347,7 @@ class Labware_Layout:
         liquids_in_well = []
         content_in_well = self.content[Well]
         for content in content_in_well:
-            liquids_in_well.append(content[0])
+            liquids_in_well.append(content.name)
 
         return(liquids_in_well)
 
@@ -355,7 +357,7 @@ class Labware_Layout:
         wells = self.get_occupied_wells()
         for well in wells:
             for liquid in content[well]:
-                if liquid[0] == Liquid_Name:
+                if liquid.name == Liquid_Name:
                     wells_to_return.append(well)
         return(wells_to_return)
 
@@ -386,8 +388,8 @@ class Labware_Layout:
         #     raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
         well_content = self.get_content()[Well]
         for content in well_content:
-            if content[0] == Liquid:
-                return(content[1])
+            if content.name == Liquid:
+                return(content.volume)
 
         return(0.0)
 
@@ -396,8 +398,8 @@ class Labware_Layout:
             raise LabwareError("{} has not been previously defined. Add content to this well using the `add_content` method.".format(Well))
         well_content = self.get_content()[Well]
         for content in well_content:
-            if content[0] == Reagent:
-                content[1] = float(Volume)
+            if content.name == Reagent:
+                content.volume = float(Volume)
 
     def print(self):
         print("Information for " + self.name)
@@ -407,8 +409,8 @@ class Labware_Layout:
         content_return = ""
         for well in content:
             for c in content[well]:
-                content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
-                print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
+                content_return += (well+"\t"+str(c.volume)+"\t\t"+c.liquid_class+"\t\t"+c.name+ "\n")
+                print(well+"\t"+str(c.volume)+"\t\t"+c.liquid_class+"\t\t"+c.name)
         return(content_return)
 
 
@@ -453,10 +455,9 @@ class Labware_Layout:
             self.add_content(row[0], row[1], row[2], row[3])
         return(self)
 
-
 class PlateLayout(Labware_Layout):
-    pass
-
+    def __init__(self, Name, Type):
+        raise ValueError("`PlateLayout` has been replaced by `Labware_Layout`")
 
 class Liquids:
     def __init__(self):
@@ -645,7 +646,7 @@ def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
     return(labware_layout)
 
 def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
-    return(Import_Labware_Layout(Filename, path = path, ext = ext))
+    raise ValueError("`Import_Plate_Layout` has been replaced by `Import_Labware_Layout`.")
 
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
@@ -663,7 +664,6 @@ def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All"
         Plate_Name = Plate_Format.name + str(plate_n)
         Plates.append(Plate_Format.clone_format(Plate_Name))
     return(Plates)
-
 
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = False):
     if not Direction == "Horizontal" and not Direction == "Vertical":
