@@ -8,16 +8,16 @@ To install the package, first, clone the repository on to your working area. Run
 `pip install git+https://github.com/intbio-ncl/BiomationScripter.git`
 
 ## Getting Started
-https://github.com/intbio-ncl/BiomationScripterLib/wiki/Getting-Started
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Getting-Started.md
 
 ## BiomationScripter - Generic Tools
-https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/BiomationScripter.md
 
 ## EchoProto
-https://github.com/intbio-ncl/BiomationScripter/wiki/EchoProto
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/EchoProto.md
 
 ## OTProto
-https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/OTProto.md
 
 ## FelixProto
 Coming soon.
