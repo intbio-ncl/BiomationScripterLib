@@ -16,6 +16,8 @@ Source_Plate_Types = {
 class EchoProto_Template:
     def __init__(self,
         Name: str,
+        Source_Plates: List[_BMS.Labware_Layout],
+        Destination_Plate_Layout: _BMS.Labware_Layout,
         Picklist_Save_Directory: str = ".",
         Metadata: dict = None
     ):
@@ -33,6 +35,17 @@ class EchoProto_Template:
         #################
         self.source_plate_layouts = []
         self.destination_plate_layouts = []
+
+        # Add source layouts to self.source_plate_layouts
+        for source in Source_Plates:
+            self.add_source_layout(source)
+
+        # Add the destination layout (more may be created later if needed)
+        #NOTE - This might break some things or cause unexpected behaviour
+        if not Destination_Plate_Layout.get_available_wells():
+            Destination_Plate_Layout.set_available_wells()
+        Destination_Plate_Layout.clear_content()
+        self.add_destination_layout(Destination_Plate_Layout)
 
     def create_picklists(self, Merge):
         _BMS.EchoProto.Generate_Actions(self._protocol)

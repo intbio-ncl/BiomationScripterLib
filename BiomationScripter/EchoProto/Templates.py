@@ -8,8 +8,6 @@ from typing import List, NewType, Dict
 class Loop_Assembly(_EchoProto.EchoProto_Template):
     def __init__(self,
         Enzyme: str,
-        Source_Plates: List[_BMS.Labware_Layout],
-        Destination_Plate_Layout: _BMS.Labware_Layout,
         Volume: float,
         Assemblies: List[_BMS.Assembly],
         Backbone_to_Part: List[str] = ["1:1"],
@@ -37,19 +35,6 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                 self.assemblies.append(assembly)
 
         self.merge = Merge
-
-        ###########
-        # Labware #
-        ###########
-        # Add source layouts to self.source_plate_layouts
-        for source in Source_Plates:
-            self.add_source_layout(source)
-
-        # Add the destination layout (more may be created later if needed)
-        #NOTE - This might break some things or cause unexpected behaviour
-        if not Destination_Plate_Layout.get_available_wells():
-            Destination_Plate_Layout.set_available_wells()
-        self.add_destination_layout(Destination_Plate_Layout)
 
         ##############################################
         # Default reagent amounts for 5 uL reactions #
@@ -167,8 +152,6 @@ class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
         Polymerase: str,
         Polymerase_Buffer: str,
-        Source_Plates: List[_BMS.Labware_Layout],
-        Destination_Plate_Layout: _BMS.Labware_Layout,
         Volume: float,
         Reactions: List[str],
         Master_Mix: bool = False,
@@ -189,16 +172,6 @@ class PCR(_EchoProto.EchoProto_Template):
         self.buffer = Polymerase_Buffer
         self.master_mix = Master_Mix
         self.merge = Merge
-
-        ###########
-        # Labware #
-        ###########
-        # Add source layouts to self.source_plate_layouts
-        for source in Source_Plates:
-            self.add_source_layout(source)
-
-        # Add the destination layout (more may be created later if needed)
-        self.add_destination_layout(Destination_Plate_Layout)
 
         ###########################
         # Default reagent amounts #
