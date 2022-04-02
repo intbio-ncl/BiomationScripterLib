@@ -170,7 +170,7 @@ class PCR(_EchoProto.EchoProto_Template):
         Source_Plates: List[_BMS.Labware_Layout],
         Destination_Plate_Layout: _BMS.Labware_Layout,
         Volume: float,
-        Reactions: Dict[str, List[str]],
+        Reactions: List[str],
         Master_Mix: bool = False,
         Repeats: int = 1,
         Merge: bool = False,
@@ -275,7 +275,7 @@ class PCR(_EchoProto.EchoProto_Template):
         destination_well_index = 0
 
         # For every reaction
-        for reaction_template in self.reactions:
+        for reaction in self.reactions:
             for rep in range(0, self.repeats):
                 # Get the current destination plate and well
                 current_destination_plate = self.destination_plate_layouts[destination_plate_index]
@@ -284,9 +284,9 @@ class PCR(_EchoProto.EchoProto_Template):
                 # Add the reagents, water, and DNA to the destinaton plate
                 try:
                     current_destination_plate.add_content(current_destination_well, self.water, water_amount)
-                    current_destination_plate.add_content(current_destination_well, reaction_template, dna_amount)
-                    current_destination_plate.add_content(current_destination_well, self.reactions[reaction_template][0], primer_amount)
-                    current_destination_plate.add_content(current_destination_well, self.reactions[reaction_template][1], primer_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[0], dna_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[1], primer_amount)
+                    current_destination_plate.add_content(current_destination_well, reaction[2], primer_amount)
 
                     if self.master_mix:
                         current_destination_plate.add_content(current_destination_well, self.master_mix, master_mix_amount)
@@ -296,7 +296,7 @@ class PCR(_EchoProto.EchoProto_Template):
                         current_destination_plate.add_content(current_destination_well, self.polymerase, polymerase_amount)
 
                     # Label the well
-                    current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}-{}".format(reaction_template, self.reactions[reaction_template][0], self.reactions[reaction_template][1], rep))
+                    current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}-{}".format(reaction[0], reaction[1], reaction[2], rep))
                 # Raise a more relevant error message if NegativeVolumeError occurs
                 except _BMS.NegativeVolumeError:
                     raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
