@@ -1,5 +1,6 @@
 import BiomationScripter as _BMS
 import math
+from typing import List, Dict
 
 ########################
 
@@ -39,7 +40,7 @@ class EchoProto_Template:
 
     def add_source_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout):
+        if type(Layout) is _BMS.Labware_Layout:
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
@@ -50,7 +51,7 @@ class EchoProto_Template:
 
     def add_destination_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout):
+        if type(Layout) is _BMS.Labware_Layout:
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
@@ -77,6 +78,9 @@ def Write_Picklists(Protocol, Save_Location, Merge = False): # Writes a Picklist
         Transfer_Lists = []
         for source_plate_type in Source_Plate_Types.keys():
             Transfer_Lists.append([TL[0] for TL in Protocol.transfer_lists if TL[0].source_plate.type == source_plate_type])
+
+        while [] in Transfer_Lists:
+            Transfer_Lists.remove([])
     else:
         Transfer_Lists = [[TL[0]] for TL in Protocol.transfer_lists]
 

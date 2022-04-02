@@ -1,5 +1,5 @@
-from BiomationScripter import EchoProto
-from BiomationScripter import OTProto
+# from BiomationScripter import EchoProto
+# from BiomationScripter import OTProto
 from typing import List
 from typing import Dict
 from typing import Union
@@ -212,7 +212,6 @@ class Assembly:
         self.name = Name
         self.backbone = Backbone
         self.parts = Parts
-
 
 class Labware_Layout:
     def __init__(self, Name, Type):

@@ -1,7 +1,7 @@
 import BiomationScripter as _BMS
 import BiomationScripter.EchoProto as _EchoProto
 import math
-from typing import List, NewType
+from typing import List, NewType, Dict
 
 #### PROTOCOL TEMPLATES ####
 
@@ -18,17 +18,6 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         **kwargs
     ):
         super().__init__(**kwargs)
-
-        print([
-            Enzyme,
-            Source_Plates,
-            Destination_Plate_Layout,
-            Volume,
-            Assemblies,
-            Backbone_to_Part,
-            Repeats,
-            Merge,
-        ])
 
 
         ########################################
