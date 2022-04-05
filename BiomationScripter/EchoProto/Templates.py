@@ -183,9 +183,9 @@ class PCR(_EchoProto.EchoProto_Template):
         # Default DNA and primer amounts #
         ##################################
         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
-        self._dna_amount = 1
+        self.dna_amount = 1
         # Default primer amounts in uL for 5 uL reactions, and 10 μM stock concentration
-        self._primer_amount = 0.25
+        self.primer_amount = 0.25
 
         #########################
         # Default reagent names #
@@ -220,8 +220,8 @@ class PCR(_EchoProto.EchoProto_Template):
         volume_factor = self.volume/self.__default_volume
 
         # Use the volume factor to calculate the reagent volumes
-        dna_amount = self._dNTPs_amount * volume_factor
-        primer_amount = self._primer_amount * volume_factor
+        dna_amount = self.dna_amount * volume_factor
+        primer_amount = self.primer_amount * volume_factor
 
         # Determine if a mastermix is being used
         if self.master_mix:
