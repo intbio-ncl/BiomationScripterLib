@@ -19,7 +19,8 @@ class EchoProto_Template:
         Source_Plates: List[_BMS.Labware_Layout],
         Destination_Plate_Layout: _BMS.Labware_Layout,
         Picklist_Save_Directory: str = ".",
-        Metadata: dict = None
+        Metadata: dict = None,
+        Merge: bool = False
     ):
 
         #####################
@@ -29,6 +30,7 @@ class EchoProto_Template:
         self.metadata = Metadata
         self.save_dir = Picklist_Save_Directory
         self._protocol = _BMS.EchoProto.Protocol(Name)
+        self.merge = Merge
 
         #################
         # Plate Layouts #
@@ -47,9 +49,9 @@ class EchoProto_Template:
         Destination_Plate_Layout.clear_content()
         self.add_destination_layout(Destination_Plate_Layout)
 
-    def create_picklists(self, Merge):
+    def create_picklists(self):
         _BMS.EchoProto.Generate_Actions(self._protocol)
-        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir, Merge = Merge)
+        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir, Merge = self.merge)
 
     def add_source_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location

@@ -8,11 +8,11 @@ from typing import List, NewType, Dict
 class Loop_Assembly(_EchoProto.EchoProto_Template):
     def __init__(self,
         Enzyme: str,
+        Buffer: str,
         Volume: float,
         Assemblies: List[_BMS.Assembly],
         Backbone_to_Part: List[str] = ["1:1"],
         Repeats: int = 1,
-        Merge: bool = False,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -25,6 +25,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         self.ratios = Backbone_to_Part
         self.repeats = Repeats
         self.enzyme = Enzyme
+        self.buffer = Buffer
 
         # Deal with assemblies as a list or a list of the new object
         self.assemblies = []
@@ -33,8 +34,6 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                 self.assemblies.append([assembly.backbone, assembly.parts])
             else:
                 self.assemblies.append(assembly)
-
-        self.merge = Merge
 
         ##############################################
         # Default reagent amounts for 5 uL reactions #
@@ -54,11 +53,8 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         #########################
         # Default reagent names #
         #########################
-        self.buffer = "T4 Ligase Buffer"
         self.ligase = "T4 Ligase"
         self.water = "Water"
-
-        self.assembly_locations = []
 
     def run(self):
 
@@ -146,7 +142,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                         destination_well_index = 0
 
         # Generate the picklists
-        self.create_picklists(self.merge)
+        self.create_picklists()
 
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
@@ -283,16 +279,16 @@ class PCR(_EchoProto.EchoProto_Template):
                     destination_well_index = 0
 
         # Generate the picklists
-        self.create_picklists(self.merge)
+        self.create_picklists()
 
 class Colour_Mixing(_EchoProto.EchoProto_Template):
     def __init__(
         self,
-        Source_Colours,
-        Final_Volume,
-        Mixing_Ratios,
-        Permutations = False,
-        Merge = True,
+        Source_Colours: List[str],
+        Final_Volume: float,
+        Mixing_Ratios: List[str],
+        Permutations: bool = False,
+        Merge: bool = True,
         **kwargs # This will make the superclass arguments available to `Colour_Mixing` as keyword arguments
     ):
         super().__init__(**kwargs) # This passes the keyword arguments to the superclass
@@ -387,4 +383,4 @@ class Colour_Mixing(_EchoProto.EchoProto_Template):
                     Volume = colour_2_volume
                 )
 
-        self.create_picklists(self.merge)
+        self.create_picklists()
