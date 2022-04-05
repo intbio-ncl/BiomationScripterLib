@@ -40,7 +40,7 @@ See the options below for more information about how BiomationScripter Templates
 
 **For Echo Liquid Handler**
 
-*Coming Soon*
+The [EchoProto Templates documentation page](EchoProto_Templates.md) has explanations of the existing EchoProto Templates, along with links to walkthroughs showing how each Template can be used. If you're not sure where to start, try [this walkthough](Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 **For Opentrons Liquid Handler**
 
@@ -52,7 +52,7 @@ Whilst BiomationScripter contains ready-made Templates for common protocols, the
 
 **For Echo Liquid Handler**
 
-Check out the example walkthrough [here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
+Check out the example walkthrough [here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb), and the full documentation [here](EchoProto_Templates.md#superclass-echoproto_template).
 
 **For Opentrons Liquid Handler**
 
@@ -64,7 +64,7 @@ There are some experiments/protocols you may wish to automate which will not be 
 
 **For Echo Liquid Handler**
 
-*Coming Soon*
+Full documentation can be found [here](EchoProto.md).
 
 **For Opentrons Liquid Handler**
 
