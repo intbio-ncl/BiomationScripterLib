@@ -1,0 +1,481 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A1,125,BsaI
+1,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A2,125,BsaI
+2,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A3,125,BsaI
+3,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A4,125,BsaI
+4,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A5,125,BsaI
+5,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A6,125,BsaI
+6,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A7,125,BsaI
+7,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A8,125,BsaI
+8,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A9,125,BsaI
+9,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A10,125,BsaI
+10,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A11,125,BsaI
+11,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A12,125,BsaI
+12,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A13,125,BsaI
+13,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A14,125,BsaI
+14,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A15,125,BsaI
+15,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A16,125,BsaI
+16,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A17,125,BsaI
+17,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A18,125,BsaI
+18,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A19,125,BsaI
+19,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A20,125,BsaI
+20,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A21,125,BsaI
+21,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A22,125,BsaI
+22,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A23,125,BsaI
+23,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,A24,125,BsaI
+24,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B1,125,BsaI
+25,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B2,125,BsaI
+26,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B3,125,BsaI
+27,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B4,125,BsaI
+28,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B5,125,BsaI
+29,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B6,125,BsaI
+30,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B7,125,BsaI
+31,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B8,125,BsaI
+32,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B9,125,BsaI
+33,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B10,125,BsaI
+34,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B11,125,BsaI
+35,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B12,125,BsaI
+36,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B13,125,BsaI
+37,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B14,125,BsaI
+38,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B15,125,BsaI
+39,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B16,125,BsaI
+40,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B17,125,BsaI
+41,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B18,125,BsaI
+42,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B19,125,BsaI
+43,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B20,125,BsaI
+44,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B21,125,BsaI
+45,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B22,125,BsaI
+46,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B23,125,BsaI
+47,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,B24,125,BsaI
+48,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C1,125,BsaI
+49,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C2,125,BsaI
+50,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C3,125,BsaI
+51,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C4,125,BsaI
+52,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C5,125,BsaI
+53,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C6,125,BsaI
+54,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C7,125,BsaI
+55,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C8,125,BsaI
+56,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C9,125,BsaI
+57,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C10,125,BsaI
+58,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C11,125,BsaI
+59,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C12,125,BsaI
+60,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C13,125,BsaI
+61,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C14,125,BsaI
+62,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C15,125,BsaI
+63,Reagents,384LDV_AQ_SP,E1,Assembly Plate,384 OptiAmp Plate,C16,125,BsaI
+64,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C17,125,BsaI
+65,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C18,125,BsaI
+66,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C19,125,BsaI
+67,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C20,125,BsaI
+68,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C21,125,BsaI
+69,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C22,125,BsaI
+70,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C23,125,BsaI
+71,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,C24,125,BsaI
+72,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D1,125,BsaI
+73,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D2,125,BsaI
+74,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D3,125,BsaI
+75,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D4,125,BsaI
+76,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D5,125,BsaI
+77,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D6,125,BsaI
+78,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D7,125,BsaI
+79,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D8,125,BsaI
+80,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D9,125,BsaI
+81,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D10,125,BsaI
+82,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D11,125,BsaI
+83,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D12,125,BsaI
+84,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D13,125,BsaI
+85,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D14,125,BsaI
+86,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D15,125,BsaI
+87,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D16,125,BsaI
+88,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D17,125,BsaI
+89,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D18,125,BsaI
+90,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D19,125,BsaI
+91,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D20,125,BsaI
+92,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D21,125,BsaI
+93,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D22,125,BsaI
+94,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D23,125,BsaI
+95,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,D24,125,BsaI
+96,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E1,125,BsaI
+97,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E2,125,BsaI
+98,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E3,125,BsaI
+99,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E4,125,BsaI
+100,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E5,125,BsaI
+101,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E6,125,BsaI
+102,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E7,125,BsaI
+103,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E8,125,BsaI
+104,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E9,125,BsaI
+105,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E10,125,BsaI
+106,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E11,125,BsaI
+107,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E12,125,BsaI
+108,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E13,125,BsaI
+109,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E14,125,BsaI
+110,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E15,125,BsaI
+111,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E16,125,BsaI
+112,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E17,125,BsaI
+113,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E18,125,BsaI
+114,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E19,125,BsaI
+115,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E20,125,BsaI
+116,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E21,125,BsaI
+117,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E22,125,BsaI
+118,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E23,125,BsaI
+119,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,E24,125,BsaI
+120,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F1,125,BsaI
+121,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F2,125,BsaI
+122,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F3,125,BsaI
+123,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F4,125,BsaI
+124,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F5,125,BsaI
+125,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F6,125,BsaI
+126,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F7,125,BsaI
+127,Reagents,384LDV_AQ_SP,E2,Assembly Plate,384 OptiAmp Plate,F8,125,BsaI
+128,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F9,125,BsaI
+129,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F10,125,BsaI
+130,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F11,125,BsaI
+131,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F12,125,BsaI
+132,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F13,125,BsaI
+133,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F14,125,BsaI
+134,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F15,125,BsaI
+135,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F16,125,BsaI
+136,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F17,125,BsaI
+137,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F18,125,BsaI
+138,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F19,125,BsaI
+139,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F20,125,BsaI
+140,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F21,125,BsaI
+141,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F22,125,BsaI
+142,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F23,125,BsaI
+143,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,F24,125,BsaI
+144,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G1,125,BsaI
+145,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G2,125,BsaI
+146,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G3,125,BsaI
+147,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G4,125,BsaI
+148,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G5,125,BsaI
+149,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G6,125,BsaI
+150,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G7,125,BsaI
+151,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G8,125,BsaI
+152,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G9,125,BsaI
+153,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G10,125,BsaI
+154,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G11,125,BsaI
+155,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G12,125,BsaI
+156,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G13,125,BsaI
+157,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G14,125,BsaI
+158,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G15,125,BsaI
+159,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G16,125,BsaI
+160,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G17,125,BsaI
+161,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G18,125,BsaI
+162,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G19,125,BsaI
+163,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G20,125,BsaI
+164,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G21,125,BsaI
+165,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G22,125,BsaI
+166,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G23,125,BsaI
+167,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,G24,125,BsaI
+168,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H1,125,BsaI
+169,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H2,125,BsaI
+170,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H3,125,BsaI
+171,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H4,125,BsaI
+172,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H5,125,BsaI
+173,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H6,125,BsaI
+174,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H7,125,BsaI
+175,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H8,125,BsaI
+176,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H9,125,BsaI
+177,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H10,125,BsaI
+178,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H11,125,BsaI
+179,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H12,125,BsaI
+180,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H13,125,BsaI
+181,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H14,125,BsaI
+182,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H15,125,BsaI
+183,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H16,125,BsaI
+184,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H17,125,BsaI
+185,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H18,125,BsaI
+186,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H19,125,BsaI
+187,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H20,125,BsaI
+188,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H21,125,BsaI
+189,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H22,125,BsaI
+190,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H23,125,BsaI
+191,Reagents,384LDV_AQ_SP,E3,Assembly Plate,384 OptiAmp Plate,H24,125,BsaI
+192,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I1,125,BsaI
+193,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I2,125,BsaI
+194,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I3,125,BsaI
+195,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I4,125,BsaI
+196,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I5,125,BsaI
+197,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I6,125,BsaI
+198,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I7,125,BsaI
+199,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I8,125,BsaI
+200,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I9,125,BsaI
+201,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I10,125,BsaI
+202,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I11,125,BsaI
+203,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I12,125,BsaI
+204,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I13,125,BsaI
+205,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I14,125,BsaI
+206,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I15,125,BsaI
+207,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I16,125,BsaI
+208,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I17,125,BsaI
+209,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I18,125,BsaI
+210,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I19,125,BsaI
+211,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I20,125,BsaI
+212,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I21,125,BsaI
+213,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I22,125,BsaI
+214,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I23,125,BsaI
+215,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,I24,125,BsaI
+216,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J1,125,BsaI
+217,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J2,125,BsaI
+218,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J3,125,BsaI
+219,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J4,125,BsaI
+220,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J5,125,BsaI
+221,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J6,125,BsaI
+222,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J7,125,BsaI
+223,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J8,125,BsaI
+224,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J9,125,BsaI
+225,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J10,125,BsaI
+226,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J11,125,BsaI
+227,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J12,125,BsaI
+228,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J13,125,BsaI
+229,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J14,125,BsaI
+230,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J15,125,BsaI
+231,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J16,125,BsaI
+232,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J17,125,BsaI
+233,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J18,125,BsaI
+234,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J19,125,BsaI
+235,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J20,125,BsaI
+236,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J21,125,BsaI
+237,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J22,125,BsaI
+238,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J23,125,BsaI
+239,Reagents,384LDV_AQ_SP,E4,Assembly Plate,384 OptiAmp Plate,J24,125,BsaI
+240,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A1,125,T4 Ligase
+241,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A2,125,T4 Ligase
+242,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A3,125,T4 Ligase
+243,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A4,125,T4 Ligase
+244,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A5,125,T4 Ligase
+245,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A6,125,T4 Ligase
+246,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A7,125,T4 Ligase
+247,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A8,125,T4 Ligase
+248,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A9,125,T4 Ligase
+249,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A10,125,T4 Ligase
+250,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A11,125,T4 Ligase
+251,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A12,125,T4 Ligase
+252,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A13,125,T4 Ligase
+253,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A14,125,T4 Ligase
+254,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A15,125,T4 Ligase
+255,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A16,125,T4 Ligase
+256,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A17,125,T4 Ligase
+257,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A18,125,T4 Ligase
+258,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A19,125,T4 Ligase
+259,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A20,125,T4 Ligase
+260,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A21,125,T4 Ligase
+261,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A22,125,T4 Ligase
+262,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A23,125,T4 Ligase
+263,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,A24,125,T4 Ligase
+264,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B1,125,T4 Ligase
+265,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B2,125,T4 Ligase
+266,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B3,125,T4 Ligase
+267,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B4,125,T4 Ligase
+268,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B5,125,T4 Ligase
+269,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B6,125,T4 Ligase
+270,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B7,125,T4 Ligase
+271,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B8,125,T4 Ligase
+272,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B9,125,T4 Ligase
+273,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B10,125,T4 Ligase
+274,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B11,125,T4 Ligase
+275,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B12,125,T4 Ligase
+276,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B13,125,T4 Ligase
+277,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B14,125,T4 Ligase
+278,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B15,125,T4 Ligase
+279,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B16,125,T4 Ligase
+280,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B17,125,T4 Ligase
+281,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B18,125,T4 Ligase
+282,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B19,125,T4 Ligase
+283,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B20,125,T4 Ligase
+284,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B21,125,T4 Ligase
+285,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B22,125,T4 Ligase
+286,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B23,125,T4 Ligase
+287,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,B24,125,T4 Ligase
+288,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C1,125,T4 Ligase
+289,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C2,125,T4 Ligase
+290,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C3,125,T4 Ligase
+291,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C4,125,T4 Ligase
+292,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C5,125,T4 Ligase
+293,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C6,125,T4 Ligase
+294,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C7,125,T4 Ligase
+295,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C8,125,T4 Ligase
+296,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C9,125,T4 Ligase
+297,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C10,125,T4 Ligase
+298,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C11,125,T4 Ligase
+299,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C12,125,T4 Ligase
+300,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C13,125,T4 Ligase
+301,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C14,125,T4 Ligase
+302,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C15,125,T4 Ligase
+303,Reagents,384LDV_AQ_SP,C1,Assembly Plate,384 OptiAmp Plate,C16,125,T4 Ligase
+304,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C17,125,T4 Ligase
+305,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C18,125,T4 Ligase
+306,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C19,125,T4 Ligase
+307,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C20,125,T4 Ligase
+308,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C21,125,T4 Ligase
+309,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C22,125,T4 Ligase
+310,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C23,125,T4 Ligase
+311,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,C24,125,T4 Ligase
+312,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D1,125,T4 Ligase
+313,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D2,125,T4 Ligase
+314,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D3,125,T4 Ligase
+315,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D4,125,T4 Ligase
+316,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D5,125,T4 Ligase
+317,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D6,125,T4 Ligase
+318,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D7,125,T4 Ligase
+319,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D8,125,T4 Ligase
+320,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D9,125,T4 Ligase
+321,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D10,125,T4 Ligase
+322,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D11,125,T4 Ligase
+323,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D12,125,T4 Ligase
+324,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D13,125,T4 Ligase
+325,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D14,125,T4 Ligase
+326,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D15,125,T4 Ligase
+327,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D16,125,T4 Ligase
+328,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D17,125,T4 Ligase
+329,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D18,125,T4 Ligase
+330,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D19,125,T4 Ligase
+331,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D20,125,T4 Ligase
+332,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D21,125,T4 Ligase
+333,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D22,125,T4 Ligase
+334,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D23,125,T4 Ligase
+335,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,D24,125,T4 Ligase
+336,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E1,125,T4 Ligase
+337,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E2,125,T4 Ligase
+338,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E3,125,T4 Ligase
+339,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E4,125,T4 Ligase
+340,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E5,125,T4 Ligase
+341,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E6,125,T4 Ligase
+342,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E7,125,T4 Ligase
+343,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E8,125,T4 Ligase
+344,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E9,125,T4 Ligase
+345,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E10,125,T4 Ligase
+346,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E11,125,T4 Ligase
+347,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E12,125,T4 Ligase
+348,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E13,125,T4 Ligase
+349,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E14,125,T4 Ligase
+350,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E15,125,T4 Ligase
+351,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E16,125,T4 Ligase
+352,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E17,125,T4 Ligase
+353,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E18,125,T4 Ligase
+354,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E19,125,T4 Ligase
+355,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E20,125,T4 Ligase
+356,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E21,125,T4 Ligase
+357,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E22,125,T4 Ligase
+358,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E23,125,T4 Ligase
+359,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,E24,125,T4 Ligase
+360,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F1,125,T4 Ligase
+361,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F2,125,T4 Ligase
+362,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F3,125,T4 Ligase
+363,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F4,125,T4 Ligase
+364,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F5,125,T4 Ligase
+365,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F6,125,T4 Ligase
+366,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F7,125,T4 Ligase
+367,Reagents,384LDV_AQ_SP,C2,Assembly Plate,384 OptiAmp Plate,F8,125,T4 Ligase
+368,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F9,125,T4 Ligase
+369,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F10,125,T4 Ligase
+370,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F11,125,T4 Ligase
+371,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F12,125,T4 Ligase
+372,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F13,125,T4 Ligase
+373,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F14,125,T4 Ligase
+374,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F15,125,T4 Ligase
+375,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F16,125,T4 Ligase
+376,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F17,125,T4 Ligase
+377,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F18,125,T4 Ligase
+378,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F19,125,T4 Ligase
+379,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F20,125,T4 Ligase
+380,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F21,125,T4 Ligase
+381,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F22,125,T4 Ligase
+382,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F23,125,T4 Ligase
+383,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,F24,125,T4 Ligase
+384,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G1,125,T4 Ligase
+385,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G2,125,T4 Ligase
+386,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G3,125,T4 Ligase
+387,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G4,125,T4 Ligase
+388,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G5,125,T4 Ligase
+389,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G6,125,T4 Ligase
+390,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G7,125,T4 Ligase
+391,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G8,125,T4 Ligase
+392,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G9,125,T4 Ligase
+393,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G10,125,T4 Ligase
+394,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G11,125,T4 Ligase
+395,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G12,125,T4 Ligase
+396,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G13,125,T4 Ligase
+397,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G14,125,T4 Ligase
+398,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G15,125,T4 Ligase
+399,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G16,125,T4 Ligase
+400,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G17,125,T4 Ligase
+401,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G18,125,T4 Ligase
+402,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G19,125,T4 Ligase
+403,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G20,125,T4 Ligase
+404,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G21,125,T4 Ligase
+405,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G22,125,T4 Ligase
+406,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G23,125,T4 Ligase
+407,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,G24,125,T4 Ligase
+408,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H1,125,T4 Ligase
+409,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H2,125,T4 Ligase
+410,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H3,125,T4 Ligase
+411,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H4,125,T4 Ligase
+412,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H5,125,T4 Ligase
+413,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H6,125,T4 Ligase
+414,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H7,125,T4 Ligase
+415,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H8,125,T4 Ligase
+416,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H9,125,T4 Ligase
+417,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H10,125,T4 Ligase
+418,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H11,125,T4 Ligase
+419,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H12,125,T4 Ligase
+420,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H13,125,T4 Ligase
+421,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H14,125,T4 Ligase
+422,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H15,125,T4 Ligase
+423,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H16,125,T4 Ligase
+424,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H17,125,T4 Ligase
+425,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H18,125,T4 Ligase
+426,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H19,125,T4 Ligase
+427,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H20,125,T4 Ligase
+428,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H21,125,T4 Ligase
+429,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H22,125,T4 Ligase
+430,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H23,125,T4 Ligase
+431,Reagents,384LDV_AQ_SP,C3,Assembly Plate,384 OptiAmp Plate,H24,125,T4 Ligase
+432,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I1,125,T4 Ligase
+433,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I2,125,T4 Ligase
+434,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I3,125,T4 Ligase
+435,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I4,125,T4 Ligase
+436,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I5,125,T4 Ligase
+437,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I6,125,T4 Ligase
+438,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I7,125,T4 Ligase
+439,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I8,125,T4 Ligase
+440,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I9,125,T4 Ligase
+441,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I10,125,T4 Ligase
+442,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I11,125,T4 Ligase
+443,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I12,125,T4 Ligase
+444,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I13,125,T4 Ligase
+445,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I14,125,T4 Ligase
+446,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I15,125,T4 Ligase
+447,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I16,125,T4 Ligase
+448,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I17,125,T4 Ligase
+449,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I18,125,T4 Ligase
+450,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I19,125,T4 Ligase
+451,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I20,125,T4 Ligase
+452,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I21,125,T4 Ligase
+453,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I22,125,T4 Ligase
+454,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I23,125,T4 Ligase
+455,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,I24,125,T4 Ligase
+456,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J1,125,T4 Ligase
+457,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J2,125,T4 Ligase
+458,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J3,125,T4 Ligase
+459,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J4,125,T4 Ligase
+460,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J5,125,T4 Ligase
+461,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J6,125,T4 Ligase
+462,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J7,125,T4 Ligase
+463,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J8,125,T4 Ligase
+464,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J9,125,T4 Ligase
+465,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J10,125,T4 Ligase
+466,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J11,125,T4 Ligase
+467,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J12,125,T4 Ligase
+468,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J13,125,T4 Ligase
+469,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J14,125,T4 Ligase
+470,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J15,125,T4 Ligase
+471,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J16,125,T4 Ligase
+472,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J17,125,T4 Ligase
+473,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J18,125,T4 Ligase
+474,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J19,125,T4 Ligase
+475,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J20,125,T4 Ligase
+476,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J21,125,T4 Ligase
+477,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J22,125,T4 Ligase
+478,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J23,125,T4 Ligase
+479,Reagents,384LDV_AQ_SP,C4,Assembly Plate,384 OptiAmp Plate,J24,125,T4 Ligase

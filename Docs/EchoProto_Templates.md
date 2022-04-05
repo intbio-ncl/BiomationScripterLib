@@ -46,7 +46,7 @@ Following set up by the Echo, the destination plate(s) should be vortexed and br
 
 #### Usage
 
-See an example protocol using this template [here](../Resources/Examples/EchoProto/EchoProto-Templates-Loop_Assembly.ipynb).
+See an example protocol using this template [here](Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 The Template object is created using the following code:
 

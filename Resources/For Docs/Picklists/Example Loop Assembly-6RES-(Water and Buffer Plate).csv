@@ -1,0 +1,481 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A1,3000,Water
+1,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A2,1000,Water
+2,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A3,2750,Water
+3,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A4,3000,Water
+4,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A5,1000,Water
+5,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A6,2750,Water
+6,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A7,3000,Water
+7,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A8,1000,Water
+8,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A9,2750,Water
+9,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A10,3000,Water
+10,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A11,1000,Water
+11,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A12,2750,Water
+12,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A13,3000,Water
+13,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A14,1000,Water
+14,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A15,2750,Water
+15,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A16,3000,Water
+16,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A17,1000,Water
+17,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A18,2750,Water
+18,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A19,3000,Water
+19,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A20,1000,Water
+20,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A21,2750,Water
+21,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A22,3000,Water
+22,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A23,1000,Water
+23,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,A24,2750,Water
+24,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B1,3000,Water
+25,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B2,1000,Water
+26,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B3,2750,Water
+27,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B4,3000,Water
+28,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B5,1000,Water
+29,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B6,2750,Water
+30,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B7,3000,Water
+31,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B8,1000,Water
+32,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B9,2750,Water
+33,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B10,3000,Water
+34,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B11,1000,Water
+35,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B12,2750,Water
+36,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B13,3000,Water
+37,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B14,1000,Water
+38,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B15,2750,Water
+39,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B16,3000,Water
+40,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B17,1000,Water
+41,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B18,2750,Water
+42,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B19,3000,Water
+43,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B20,1000,Water
+44,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B21,2750,Water
+45,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B22,3000,Water
+46,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B23,1000,Water
+47,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,B24,2750,Water
+48,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C1,3000,Water
+49,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C2,1000,Water
+50,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C3,2750,Water
+51,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C4,3000,Water
+52,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C5,1000,Water
+53,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C6,2750,Water
+54,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C7,3000,Water
+55,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C8,1000,Water
+56,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C9,2750,Water
+57,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C10,3000,Water
+58,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C11,1000,Water
+59,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C12,2750,Water
+60,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C13,3000,Water
+61,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C14,1000,Water
+62,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C15,2750,Water
+63,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C16,3000,Water
+64,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C17,1000,Water
+65,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C18,2750,Water
+66,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C19,3000,Water
+67,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C20,1000,Water
+68,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C21,2750,Water
+69,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C22,3000,Water
+70,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C23,1000,Water
+71,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,C24,2750,Water
+72,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D1,3000,Water
+73,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D2,1000,Water
+74,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D3,2750,Water
+75,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D4,3000,Water
+76,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D5,1000,Water
+77,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D6,2750,Water
+78,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D7,3000,Water
+79,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D8,1000,Water
+80,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D9,2750,Water
+81,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D10,3000,Water
+82,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D11,1000,Water
+83,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D12,2750,Water
+84,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D13,3000,Water
+85,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D14,1000,Water
+86,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D15,2750,Water
+87,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D16,3000,Water
+88,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D17,1000,Water
+89,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D18,2750,Water
+90,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D19,3000,Water
+91,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D20,1000,Water
+92,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D21,2750,Water
+93,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D22,3000,Water
+94,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D23,1000,Water
+95,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,D24,2750,Water
+96,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E1,3000,Water
+97,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E2,1000,Water
+98,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E3,2750,Water
+99,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E4,3000,Water
+100,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E5,1000,Water
+101,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E6,2750,Water
+102,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E7,3000,Water
+103,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E8,1000,Water
+104,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E9,2750,Water
+105,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E10,3000,Water
+106,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E11,1000,Water
+107,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E12,2750,Water
+108,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E13,3000,Water
+109,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E14,1000,Water
+110,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E15,2750,Water
+111,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E16,3000,Water
+112,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E17,1000,Water
+113,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E18,2750,Water
+114,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E19,3000,Water
+115,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E20,1000,Water
+116,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E21,2750,Water
+117,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E22,3000,Water
+118,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E23,1000,Water
+119,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,E24,2750,Water
+120,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F1,3000,Water
+121,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F2,1000,Water
+122,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F3,2750,Water
+123,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F4,3000,Water
+124,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F5,1000,Water
+125,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F6,2750,Water
+126,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F7,3000,Water
+127,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F8,1000,Water
+128,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F9,2750,Water
+129,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F10,3000,Water
+130,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F11,1000,Water
+131,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F12,2750,Water
+132,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F13,3000,Water
+133,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F14,1000,Water
+134,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F15,2750,Water
+135,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F16,3000,Water
+136,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F17,1000,Water
+137,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F18,2750,Water
+138,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F19,3000,Water
+139,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F20,1000,Water
+140,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F21,2750,Water
+141,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F22,3000,Water
+142,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F23,1000,Water
+143,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,F24,2750,Water
+144,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G1,3000,Water
+145,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G2,1000,Water
+146,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G3,2750,Water
+147,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G4,3000,Water
+148,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G5,1000,Water
+149,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G6,2750,Water
+150,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G7,3000,Water
+151,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G8,1000,Water
+152,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G9,2750,Water
+153,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G10,3000,Water
+154,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G11,1000,Water
+155,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G12,2750,Water
+156,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G13,3000,Water
+157,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G14,1000,Water
+158,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G15,2750,Water
+159,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G16,3000,Water
+160,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G17,1000,Water
+161,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G18,2750,Water
+162,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G19,3000,Water
+163,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G20,1000,Water
+164,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G21,2750,Water
+165,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G22,3000,Water
+166,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G23,1000,Water
+167,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,G24,2750,Water
+168,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H1,3000,Water
+169,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H2,1000,Water
+170,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H3,2750,Water
+171,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H4,3000,Water
+172,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H5,1000,Water
+173,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H6,2750,Water
+174,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H7,3000,Water
+175,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H8,1000,Water
+176,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H9,2750,Water
+177,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H10,3000,Water
+178,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H11,1000,Water
+179,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H12,2750,Water
+180,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H13,3000,Water
+181,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H14,1000,Water
+182,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H15,2750,Water
+183,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H16,3000,Water
+184,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H17,1000,Water
+185,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H18,2750,Water
+186,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H19,3000,Water
+187,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H20,1000,Water
+188,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H21,2750,Water
+189,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H22,3000,Water
+190,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H23,1000,Water
+191,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,H24,2750,Water
+192,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I1,3000,Water
+193,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I2,1000,Water
+194,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I3,2750,Water
+195,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I4,3000,Water
+196,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I5,1000,Water
+197,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I6,2750,Water
+198,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I7,3000,Water
+199,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I8,1000,Water
+200,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I9,2750,Water
+201,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I10,3000,Water
+202,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I11,1000,Water
+203,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I12,2750,Water
+204,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I13,3000,Water
+205,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I14,1000,Water
+206,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I15,2750,Water
+207,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I16,3000,Water
+208,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I17,1000,Water
+209,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I18,2750,Water
+210,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I19,3000,Water
+211,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I20,1000,Water
+212,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I21,2750,Water
+213,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I22,3000,Water
+214,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I23,1000,Water
+215,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,I24,2750,Water
+216,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J1,3000,Water
+217,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J2,1000,Water
+218,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J3,2750,Water
+219,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J4,3000,Water
+220,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J5,1000,Water
+221,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J6,2750,Water
+222,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J7,3000,Water
+223,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J8,1000,Water
+224,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J9,2750,Water
+225,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J10,3000,Water
+226,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J11,1000,Water
+227,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J12,2750,Water
+228,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J13,3000,Water
+229,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J14,1000,Water
+230,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J15,2750,Water
+231,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J16,3000,Water
+232,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J17,1000,Water
+233,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J18,2750,Water
+234,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J19,3000,Water
+235,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J20,1000,Water
+236,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J21,2750,Water
+237,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J22,3000,Water
+238,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J23,1000,Water
+239,Water and Buffer Plate,6RES_AQ_BP,A1,Assembly Plate,384 OptiAmp Plate,J24,2750,Water
+240,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A1,500,T4 Ligase Buffer
+241,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A2,500,T4 Ligase Buffer
+242,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A3,500,T4 Ligase Buffer
+243,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A4,500,T4 Ligase Buffer
+244,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A5,500,T4 Ligase Buffer
+245,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A6,500,T4 Ligase Buffer
+246,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A7,500,T4 Ligase Buffer
+247,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A8,500,T4 Ligase Buffer
+248,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A9,500,T4 Ligase Buffer
+249,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A10,500,T4 Ligase Buffer
+250,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A11,500,T4 Ligase Buffer
+251,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A12,500,T4 Ligase Buffer
+252,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A13,500,T4 Ligase Buffer
+253,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A14,500,T4 Ligase Buffer
+254,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A15,500,T4 Ligase Buffer
+255,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A16,500,T4 Ligase Buffer
+256,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A17,500,T4 Ligase Buffer
+257,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A18,500,T4 Ligase Buffer
+258,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A19,500,T4 Ligase Buffer
+259,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A20,500,T4 Ligase Buffer
+260,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A21,500,T4 Ligase Buffer
+261,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A22,500,T4 Ligase Buffer
+262,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A23,500,T4 Ligase Buffer
+263,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,A24,500,T4 Ligase Buffer
+264,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B1,500,T4 Ligase Buffer
+265,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B2,500,T4 Ligase Buffer
+266,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B3,500,T4 Ligase Buffer
+267,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B4,500,T4 Ligase Buffer
+268,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B5,500,T4 Ligase Buffer
+269,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B6,500,T4 Ligase Buffer
+270,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B7,500,T4 Ligase Buffer
+271,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B8,500,T4 Ligase Buffer
+272,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B9,500,T4 Ligase Buffer
+273,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B10,500,T4 Ligase Buffer
+274,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B11,500,T4 Ligase Buffer
+275,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B12,500,T4 Ligase Buffer
+276,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B13,500,T4 Ligase Buffer
+277,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B14,500,T4 Ligase Buffer
+278,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B15,500,T4 Ligase Buffer
+279,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B16,500,T4 Ligase Buffer
+280,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B17,500,T4 Ligase Buffer
+281,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B18,500,T4 Ligase Buffer
+282,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B19,500,T4 Ligase Buffer
+283,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B20,500,T4 Ligase Buffer
+284,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B21,500,T4 Ligase Buffer
+285,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B22,500,T4 Ligase Buffer
+286,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B23,500,T4 Ligase Buffer
+287,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,B24,500,T4 Ligase Buffer
+288,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C1,500,T4 Ligase Buffer
+289,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C2,500,T4 Ligase Buffer
+290,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C3,500,T4 Ligase Buffer
+291,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C4,500,T4 Ligase Buffer
+292,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C5,500,T4 Ligase Buffer
+293,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C6,500,T4 Ligase Buffer
+294,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C7,500,T4 Ligase Buffer
+295,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C8,500,T4 Ligase Buffer
+296,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C9,500,T4 Ligase Buffer
+297,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C10,500,T4 Ligase Buffer
+298,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C11,500,T4 Ligase Buffer
+299,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C12,500,T4 Ligase Buffer
+300,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C13,500,T4 Ligase Buffer
+301,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C14,500,T4 Ligase Buffer
+302,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C15,500,T4 Ligase Buffer
+303,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C16,500,T4 Ligase Buffer
+304,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C17,500,T4 Ligase Buffer
+305,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C18,500,T4 Ligase Buffer
+306,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C19,500,T4 Ligase Buffer
+307,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C20,500,T4 Ligase Buffer
+308,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C21,500,T4 Ligase Buffer
+309,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C22,500,T4 Ligase Buffer
+310,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C23,500,T4 Ligase Buffer
+311,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,C24,500,T4 Ligase Buffer
+312,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D1,500,T4 Ligase Buffer
+313,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D2,500,T4 Ligase Buffer
+314,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D3,500,T4 Ligase Buffer
+315,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D4,500,T4 Ligase Buffer
+316,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D5,500,T4 Ligase Buffer
+317,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D6,500,T4 Ligase Buffer
+318,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D7,500,T4 Ligase Buffer
+319,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D8,500,T4 Ligase Buffer
+320,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D9,500,T4 Ligase Buffer
+321,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D10,500,T4 Ligase Buffer
+322,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D11,500,T4 Ligase Buffer
+323,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D12,500,T4 Ligase Buffer
+324,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D13,500,T4 Ligase Buffer
+325,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D14,500,T4 Ligase Buffer
+326,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D15,500,T4 Ligase Buffer
+327,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D16,500,T4 Ligase Buffer
+328,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D17,500,T4 Ligase Buffer
+329,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D18,500,T4 Ligase Buffer
+330,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D19,500,T4 Ligase Buffer
+331,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D20,500,T4 Ligase Buffer
+332,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D21,500,T4 Ligase Buffer
+333,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D22,500,T4 Ligase Buffer
+334,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D23,500,T4 Ligase Buffer
+335,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,D24,500,T4 Ligase Buffer
+336,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E1,500,T4 Ligase Buffer
+337,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E2,500,T4 Ligase Buffer
+338,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E3,500,T4 Ligase Buffer
+339,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E4,500,T4 Ligase Buffer
+340,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E5,500,T4 Ligase Buffer
+341,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E6,500,T4 Ligase Buffer
+342,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E7,500,T4 Ligase Buffer
+343,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E8,500,T4 Ligase Buffer
+344,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E9,500,T4 Ligase Buffer
+345,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E10,500,T4 Ligase Buffer
+346,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E11,500,T4 Ligase Buffer
+347,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E12,500,T4 Ligase Buffer
+348,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E13,500,T4 Ligase Buffer
+349,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E14,500,T4 Ligase Buffer
+350,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E15,500,T4 Ligase Buffer
+351,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E16,500,T4 Ligase Buffer
+352,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E17,500,T4 Ligase Buffer
+353,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E18,500,T4 Ligase Buffer
+354,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E19,500,T4 Ligase Buffer
+355,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E20,500,T4 Ligase Buffer
+356,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E21,500,T4 Ligase Buffer
+357,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E22,500,T4 Ligase Buffer
+358,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E23,500,T4 Ligase Buffer
+359,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,E24,500,T4 Ligase Buffer
+360,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F1,500,T4 Ligase Buffer
+361,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F2,500,T4 Ligase Buffer
+362,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F3,500,T4 Ligase Buffer
+363,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F4,500,T4 Ligase Buffer
+364,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F5,500,T4 Ligase Buffer
+365,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F6,500,T4 Ligase Buffer
+366,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F7,500,T4 Ligase Buffer
+367,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F8,500,T4 Ligase Buffer
+368,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F9,500,T4 Ligase Buffer
+369,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F10,500,T4 Ligase Buffer
+370,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F11,500,T4 Ligase Buffer
+371,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F12,500,T4 Ligase Buffer
+372,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F13,500,T4 Ligase Buffer
+373,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F14,500,T4 Ligase Buffer
+374,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F15,500,T4 Ligase Buffer
+375,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F16,500,T4 Ligase Buffer
+376,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F17,500,T4 Ligase Buffer
+377,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F18,500,T4 Ligase Buffer
+378,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F19,500,T4 Ligase Buffer
+379,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F20,500,T4 Ligase Buffer
+380,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F21,500,T4 Ligase Buffer
+381,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F22,500,T4 Ligase Buffer
+382,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F23,500,T4 Ligase Buffer
+383,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,F24,500,T4 Ligase Buffer
+384,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G1,500,T4 Ligase Buffer
+385,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G2,500,T4 Ligase Buffer
+386,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G3,500,T4 Ligase Buffer
+387,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G4,500,T4 Ligase Buffer
+388,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G5,500,T4 Ligase Buffer
+389,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G6,500,T4 Ligase Buffer
+390,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G7,500,T4 Ligase Buffer
+391,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G8,500,T4 Ligase Buffer
+392,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G9,500,T4 Ligase Buffer
+393,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G10,500,T4 Ligase Buffer
+394,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G11,500,T4 Ligase Buffer
+395,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G12,500,T4 Ligase Buffer
+396,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G13,500,T4 Ligase Buffer
+397,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G14,500,T4 Ligase Buffer
+398,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G15,500,T4 Ligase Buffer
+399,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G16,500,T4 Ligase Buffer
+400,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G17,500,T4 Ligase Buffer
+401,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G18,500,T4 Ligase Buffer
+402,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G19,500,T4 Ligase Buffer
+403,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G20,500,T4 Ligase Buffer
+404,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G21,500,T4 Ligase Buffer
+405,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G22,500,T4 Ligase Buffer
+406,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G23,500,T4 Ligase Buffer
+407,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,G24,500,T4 Ligase Buffer
+408,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H1,500,T4 Ligase Buffer
+409,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H2,500,T4 Ligase Buffer
+410,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H3,500,T4 Ligase Buffer
+411,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H4,500,T4 Ligase Buffer
+412,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H5,500,T4 Ligase Buffer
+413,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H6,500,T4 Ligase Buffer
+414,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H7,500,T4 Ligase Buffer
+415,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H8,500,T4 Ligase Buffer
+416,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H9,500,T4 Ligase Buffer
+417,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H10,500,T4 Ligase Buffer
+418,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H11,500,T4 Ligase Buffer
+419,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H12,500,T4 Ligase Buffer
+420,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H13,500,T4 Ligase Buffer
+421,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H14,500,T4 Ligase Buffer
+422,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H15,500,T4 Ligase Buffer
+423,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H16,500,T4 Ligase Buffer
+424,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H17,500,T4 Ligase Buffer
+425,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H18,500,T4 Ligase Buffer
+426,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H19,500,T4 Ligase Buffer
+427,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H20,500,T4 Ligase Buffer
+428,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H21,500,T4 Ligase Buffer
+429,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H22,500,T4 Ligase Buffer
+430,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H23,500,T4 Ligase Buffer
+431,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,H24,500,T4 Ligase Buffer
+432,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I1,500,T4 Ligase Buffer
+433,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I2,500,T4 Ligase Buffer
+434,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I3,500,T4 Ligase Buffer
+435,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I4,500,T4 Ligase Buffer
+436,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I5,500,T4 Ligase Buffer
+437,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I6,500,T4 Ligase Buffer
+438,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I7,500,T4 Ligase Buffer
+439,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I8,500,T4 Ligase Buffer
+440,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I9,500,T4 Ligase Buffer
+441,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I10,500,T4 Ligase Buffer
+442,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I11,500,T4 Ligase Buffer
+443,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I12,500,T4 Ligase Buffer
+444,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I13,500,T4 Ligase Buffer
+445,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I14,500,T4 Ligase Buffer
+446,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I15,500,T4 Ligase Buffer
+447,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I16,500,T4 Ligase Buffer
+448,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I17,500,T4 Ligase Buffer
+449,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I18,500,T4 Ligase Buffer
+450,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I19,500,T4 Ligase Buffer
+451,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I20,500,T4 Ligase Buffer
+452,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I21,500,T4 Ligase Buffer
+453,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I22,500,T4 Ligase Buffer
+454,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I23,500,T4 Ligase Buffer
+455,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,I24,500,T4 Ligase Buffer
+456,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J1,500,T4 Ligase Buffer
+457,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J2,500,T4 Ligase Buffer
+458,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J3,500,T4 Ligase Buffer
+459,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J4,500,T4 Ligase Buffer
+460,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J5,500,T4 Ligase Buffer
+461,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J6,500,T4 Ligase Buffer
+462,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J7,500,T4 Ligase Buffer
+463,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J8,500,T4 Ligase Buffer
+464,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J9,500,T4 Ligase Buffer
+465,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J10,500,T4 Ligase Buffer
+466,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J11,500,T4 Ligase Buffer
+467,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J12,500,T4 Ligase Buffer
+468,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J13,500,T4 Ligase Buffer
+469,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J14,500,T4 Ligase Buffer
+470,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J15,500,T4 Ligase Buffer
+471,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J16,500,T4 Ligase Buffer
+472,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J17,500,T4 Ligase Buffer
+473,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J18,500,T4 Ligase Buffer
+474,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J19,500,T4 Ligase Buffer
+475,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J20,500,T4 Ligase Buffer
+476,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J21,500,T4 Ligase Buffer
+477,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J22,500,T4 Ligase Buffer
+478,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J23,500,T4 Ligase Buffer
+479,Water and Buffer Plate,6RES_AQ_BP,A3,Assembly Plate,384 OptiAmp Plate,J24,500,T4 Ligase Buffer
