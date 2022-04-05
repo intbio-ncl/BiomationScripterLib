@@ -87,7 +87,7 @@ class EchoProto_Template:
 #
 #     return(plates)
 
-def Write_Picklists(Protocol, Save_Location, Merge = False): # Writes a Picklist to a csv pick list - argument is a Picklist Class
+def Write_Picklists(Protocol, Save_Location = ".", Merge = False): # Writes a Picklist to a csv pick list - argument is a Picklist Class
     if Merge:
         # Group transfer lists by source plate type
         Transfer_Lists = []
