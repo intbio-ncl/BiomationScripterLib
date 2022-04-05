@@ -12,7 +12,7 @@ EchoProto contains two submodules:
 * **EchoProto:** A set of functions and classes which are used to capture information about an Echo protocol, and convert this information into a set of picklists
 * **EchoProto.Templates:** A set of classes which generate picklists for common protocols, such as Loop assembly and Q5 PCR, based on user inputs
 
-If you are planning on using the Echo to automate common protocols, such as PCR, there may be a pre-written EchoProto template available. A list of currently available templates can be found [here](#template-classes).
+If you are planning on using the Echo to automate common protocols, such as PCR, there may be a pre-written EchoProto template available. A list of currently available templates can be found [here](EchoProto_Templates.md).
 
 If you are planning on automating a protocol which you will use many times, but with slightly different variations/inputs, it may be helpful to create your own EchoProto template. A walkthrough explaining how this can be done can be found here.
 
@@ -234,16 +234,6 @@ The [`Write_Picklists`](#function-write_picklists) function first gets all [`Bio
 
 ---
 
-
 ## Using EchoProto.Templates
 
----
-
-### Simulating Protocols
-
-
-
----
-
-
-### Template Classes
+See the fullow documentation [here](EchoProto_Templates.md)
