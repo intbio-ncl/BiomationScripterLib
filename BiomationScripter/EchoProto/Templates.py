@@ -74,6 +74,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 
         # Add any extra destination plates needed
         for layout in extra_destination_layouts:
+            layout.set_available_wells()
             self.add_destination_layout(layout)
 
         ######################################
@@ -148,11 +149,12 @@ class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
         Polymerase: str,
         Polymerase_Buffer: str,
+        Polymerase_Buffer_Stock_Conc: float,
         Volume: float,
         Reactions: List[str],
-        Master_Mix: bool = False,
+        Master_Mix: str = None,
+        Master_Mix_Stock_Conc = None,
         Repeats: int = 1,
-        Merge: bool = False,
         **kwargs
     ):
 
@@ -167,7 +169,9 @@ class PCR(_EchoProto.EchoProto_Template):
         self.polymerase = Polymerase
         self.buffer = Polymerase_Buffer
         self.master_mix = Master_Mix
+        self.master_mix_stock_conc = Master_Mix_Stock_Conc
         self.merge = Merge
+        self.buffer_stock_conc = Polymerase_Buffer_Stock_Conc
 
         ###########################
         # Default reagent amounts #
@@ -175,9 +179,15 @@ class PCR(_EchoProto.EchoProto_Template):
         self.__default_volume = 5
 
         self._dNTPs_amount = 0.1
-        self._buffer_amount = 1
+        self._buffer_amount = self.__default_volume / self.buffer_stock_conc
         self._polymerase_amount = 0.05
-        self._master_mix_amount = 2.5
+        if self.master_mix:
+            if not self.master_mix_stock_conc:
+                raise _BMS.BMSTemplateError("If master mix is specified, a stock concentration (e.g. 2x) must also be given.")
+            else:
+                self._master_mix_amount = self.__default_volume / self.master_mix_stock_conc
+        else:
+            self._master_mix_amount = None
 
         ##################################
         # Default DNA and primer amounts #
