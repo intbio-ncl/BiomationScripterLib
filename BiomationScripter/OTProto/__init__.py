@@ -384,9 +384,13 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
 
             pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = False, blow_out = False, blowout_location = "destination well")
 
-def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Min_Transfer = None, Calculate_Only = False, Dead_Volume_Proportion = 0.95, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
 
     Initial_Source_Locations = Aliquot_Source_Locations.copy()
+
+    # If no min transfer specified, then use the min volume of the smallest loaded pipette
+    if not Min_Transfer:
+        Min_Transfer = get_lowest_volume_pipette(Protocol).min_volume
 
     # Create list to store order of Aliquot Source Location usage
     Aliquot_Source_Order = []
@@ -396,16 +400,76 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
         if type(Aliquot_Volumes) == int or type(Aliquot_Volumes) == float:
             Aliquot_Volumes = [Aliquot_Volumes] * len(Aliquot_Source_Locations)
 
+    # Modify aliquot volumes to account for dead volumes
+    if Aliquot_Volumes:
+        Aliquot_Volumes = [vol*Dead_Volume_Proportion for vol in Aliquot_Volumes.copy()]
 
     Aliquot_Index = 0
+    event_index = 0
     for transfer_volume, destination in zip(Transfer_Volumes, Destinations):
         # Check if there is enough volume in the current aliquot
         if Aliquot_Volumes:
-            # If there is, then continue
+
             if Aliquot_Volumes[Aliquot_Index] >= transfer_volume:
-                Aliquot_Volumes[Aliquot_Index] -= transfer_volume
-            # If not, then remove the current aliquot from the list of those available
+                # Check that the vol being left behind isn't below the min transfer (unless this is the last transfer event)
+                if not event_index == len(Transfer_Volumes) - 1:
+                    if Aliquot_Volumes[Aliquot_Index] - transfer_volume >= Min_Transfer or not Aliquot_Volumes[Aliquot_Index] - transfer_volume == 0: # second condition ensures that an aliquot can still be depleted
+                        # print("Check", Aliquot_Volumes[Aliquot_Index] - transfer_volume, ">=", Min_Transfer)
+                        # If all is fine, then continue
+                        Aliquot_Volumes[Aliquot_Index] -= transfer_volume
+                    else:
+                        # Otherwise, leave enough behind that the aliquot can still be taken from (split the transfer)
+                        new_transfer_vol = transfer_volume - Min_Transfer
+                        # print("new transfer vol", new_transfer_vol)
+                        ## Add the current aliquot source location to the source order
+                        Aliquot_Source_Order.append(Aliquot_Source_Locations[Aliquot_Index])
+                        # update the amount of liquid left in the aliquot
+                        Aliquot_Volumes[Aliquot_Index] -= new_transfer_vol
+                        # Iterate to the next aliquot
+                        Aliquot_Index += 1
+                        if Aliquot_Index == len(Aliquot_Source_Locations):
+                            Aliquot_Index = 0
+                        ## Insert the transfer volume and destination
+                        Transfer_Volumes.insert(event_index, new_transfer_vol)
+                        Destinations.insert(event_index, destination)
+                        # Update the next transfer vol (i.e. the one that has just been split)
+                        Transfer_Volumes[event_index + 1] -= new_transfer_vol
+                        # Then move onto the next transfer action
+                        event_index += 1
+                        continue
+
+            # If not, then split the transfer action
             else:
+                # Transfer the rest of the current aliquot
+                transfer_rest_vol = Aliquot_Volumes[Aliquot_Index]
+                # print("To Transfer:", transfer_rest_vol, "<",  "Transfer Total", transfer_volume)
+
+                # Check if the remaining volume to transfer is below the min transfer volume
+                if transfer_volume - transfer_rest_vol < Min_Transfer:
+                    # Change how much is being transfered in this first event so that the next transfer is above the minimum transfer amount
+                    new_transfer_vol = transfer_volume - Min_Transfer
+                    # print("new transfer vol", new_transfer_vol)
+                    ## Add the current aliquot source location to the source order
+                    Aliquot_Source_Order.append(Aliquot_Source_Locations[Aliquot_Index])
+                    # update the amount of liquid left in the aliquot
+                    Aliquot_Volumes[Aliquot_Index] -= new_transfer_vol
+                    # Iterate to the next aliquot
+                    Aliquot_Index += 1
+                    if Aliquot_Index == len(Aliquot_Source_Locations):
+                        Aliquot_Index = 0
+                    ## Insert the transfer volume and destination
+                    Transfer_Volumes.insert(event_index, new_transfer_vol)
+                    Destinations.insert(event_index, destination)
+                    # Update the next transfer vol (i.e. the one that has just been split)
+                    Transfer_Volumes[event_index + 1] -= new_transfer_vol
+                    # Then move onto the next transfer action
+                    event_index += 1
+                    continue
+
+                # print("Left to transfer:", transfer_volume - transfer_rest_vol)
+                ## Add the current aliquot source location to the source order
+                Aliquot_Source_Order.append(Aliquot_Source_Locations[Aliquot_Index])
+                ## And then remove it from the available list
                 Aliquot_Volumes.remove(Aliquot_Volumes[Aliquot_Index])
                 Aliquot_Source_Locations.remove(Aliquot_Source_Locations[Aliquot_Index])
                 # If the aliquot removed was the last in the list, move back to the first aliquot
@@ -413,13 +477,34 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
                     Aliquot_Index = 0
                 # If there aren't any aliquots left, raise an error
                 if len(Aliquot_Source_Locations) == 0:
-                    raise _BMS.OutOFSourceMaterial("Ran out of source material when aliquoting into {}.\nSource Locations:\n{}".format(destination, Initial_Source_Locations))
+                    raise _BMS.OutOFSourceMaterial("Ran out of source material when aliquoting into {}.\nSource Locations:\n{}".format(destination, "\n".join(str(sl) for sl in Initial_Source_Locations)))
+
+                ## Insert the transfer volume and destination
+                Transfer_Volumes.insert(event_index, transfer_rest_vol)
+                Destinations.insert(event_index, destination)
+                # Update the next transfer vol (i.e. the one that has just been split)
+                Transfer_Volumes[event_index + 1] -= transfer_rest_vol
+                # print(Aliquot_Source_Locations[Aliquot_Index], destination, Transfer_Volumes[event_index + 1])
+                # Then move onto the next transfer action
+                event_index += 1
+                continue
 
         Aliquot_Source_Order.append(Aliquot_Source_Locations[Aliquot_Index])
         Aliquot_Index += 1
         if Aliquot_Index == len(Aliquot_Source_Locations):
             Aliquot_Index = 0
-    transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
+
+        event_index += 1
+
+    # Sanity check
+    if not len(Transfer_Volumes) == len(Aliquot_Source_Order) and len(Transfer_Volumes) == len(Destinations):
+        raise _BMS.TransferError("Internal error calculating dispense from aliquot transfer actions. Please report as an issue")
+
+    if Calculate_Only:
+        return(Transfer_Volumes, Aliquot_Source_Order, Destinations)
+    else:
+        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
+
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
