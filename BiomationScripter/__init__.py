@@ -298,7 +298,7 @@ class Labware_Layout:
 
         if self.available_wells and not ":" in Well and not type(Well) == list:
             if not Well in self.available_wells:
-                raise LabwareError("Available wells are specified, but well {} is not defined as available.\nCheck that the correct well has been specified. Available wells are:\n".format(Well, self.available_wells))
+                raise LabwareError("Available wells are specified, but well {} is not defined as available.\nCheck that the correct well has been specified. Available wells are:{}\n".format(Well, self.available_wells))
 
         # Volume should always be uL
         if Liquid_Class == None:
@@ -320,18 +320,21 @@ class Labware_Layout:
     def add_well_label(self, Well: str, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
-                raise ValueError('Label "{}" is already used as a label in {}'.format(Label, well))
+                raise LabwareError('Label "{}" is already used as a label in {}'.format(Label, well))
         self.well_labels[Well] = Label
 
     def get_well_content_by_label(self, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
                 return(self.content[well])
+        return(None)
 
     def get_well_location_by_label(self, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
                 return(well)
+
+        return(None)
 
     def get_content(self):
         return(self.content)

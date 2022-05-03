@@ -189,9 +189,6 @@ def get_locations(Labware, Wells, Direction = "Horizontal", Box = False):
     for well in Wells:
         Locations.append(Labware.wells_by_name()[well])
 
-    if len(Locations) == 1:
-        Locations = Locations[0]
-
     return(Locations)
 
 def get_pipette(Protocol, Pipette):

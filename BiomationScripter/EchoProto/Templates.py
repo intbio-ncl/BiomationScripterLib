@@ -173,6 +173,10 @@ class PCR(_EchoProto.EchoProto_Template):
         self.merge = Merge
         self.buffer_stock_conc = Polymerase_Buffer_Stock_Conc
 
+        if not self.master_mix:
+            if not self.polymerase or not self.buffer:
+                raise _BMS.BMSTemplateError("If mastermix is not specified, then the polymerase and buffer to use must be given.")
+
         ###########################
         # Default reagent amounts #
         ###########################
