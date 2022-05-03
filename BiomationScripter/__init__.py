@@ -285,6 +285,8 @@ class Labware_Layout:
         columns = self.columns
         plate_copy = Labware_Layout(name, type)
         plate_copy.define_format(rows, columns)
+        plate_copy.available_wells = self.available_wells.copy()
+        plate_copy.empty_wells = plate_copy.available_wells.copy()
         return(plate_copy)
 
     def add_content(self, Well, Reagent, Volume, Liquid_Class = None):
