@@ -1,6 +1,6 @@
 # BiomationScripter - OTProto
 ---
-[Overview](#feature-overview) | [Setting up the OT-2](#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](#using-otproto) | [Functions](#functions) | [Using OTProto Templates](#otprototemplates) | [All Templates](#templates) | [Simulating Protocols](#simulating-protocols)
+[Overview](#feature-overview) | [Setting up the OT-2](#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](#using-otproto) | [Functions](#functions) | [Simulating Protocols](#simulating-protocols) | [All Templates](#templates)
 
 ---
 ## Feature Overview
@@ -8,7 +8,7 @@ OTProto is a module within the BiomationScripter package which contains tools sp
 
 OTProto contains two submodules:
 * [**OTProto:**](#using-otproto) A set of functions and classes which abstract out some parts of the protocol writing, such as determining how many tips are required, and switching loading custom labware
-* [**OTProto.Templates:**](#using-otprototemplates) A set of classes which generate OT-2 instructions for common protocols, such as plasmid purification and transformation, based on user inputs
+* [**OTProto.Templates:**](#templates) A set of classes which generate OT-2 instructions for common protocols, such as plasmid purification and transformation, based on user inputs
 
 If you are planning on using the Opentrons to automate common protocols, such as transformation, there may be a pre-written OTProto template available. A list of currently available templates can be found [here](OTProto_Templates.md).
 

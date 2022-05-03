@@ -68,6 +68,6 @@ Full documentation can be found [here](EchoProto.md).
 
 **For Opentrons Liquid Handler**
 
-*Coming Soon*
+Full documentation can be found [here](OTProto.md).
 
 ---
