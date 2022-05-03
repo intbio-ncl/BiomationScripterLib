@@ -677,6 +677,16 @@ def get_p1000(protocol):
             return(pipettes[position])
     return(None)
 
+def get_lowest_volume_pipette(protocol):
+    if get_pipette(protocol, "p20"):
+        return(get_pipette(protocol, "p20"))
+    elif get_pipette(protocol, "p300"):
+        return(get_pipette(protocol, "p300"))
+    elif get_pipette(protocol, "p1000"):
+        return(get_pipette(protocol, "p1000"))
+
+    return(None)
+
 def load_custom_labware(parent, file, deck_position = None, label = None):
     # Open the labware json file
     with open(file) as labware_file:
