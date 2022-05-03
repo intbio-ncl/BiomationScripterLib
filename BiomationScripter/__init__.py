@@ -374,6 +374,17 @@ class Labware_Layout:
         if self.empty_wells:
             self.empty_wells.append(Well)
 
+    def clear_liquid_in_well(self, Well, Liquid):
+        well_contents = self.content[Well].copy()
+        for content in well_contents:
+            if Liquid == content.name:
+                self.content[Well].remove(content)
+
+        # Check if the well is now empty
+        if len(self.content[Well]) == 0:
+            # Clean up
+            self.clear_content_from_well(Well)
+
     def get_next_empty_well(self):
         if not self.available_wells:
             raise LabwareError("Available wells must be specified to get the next empty well. Specify the avilable wells for {} using `.set_available_wells`.".format(self.name))
@@ -404,7 +415,7 @@ class Labware_Layout:
                 content.volume = float(Volume)
 
     def print(self):
-        print("Information for " + self.name)
+        print("\033[1mInformation for " + self.name + "\033[0m")
         print("Plate Type: " + self.type)
         content = self.get_content()
         print("Well\tVolume(uL)\tLiquid Class\tReagent")
