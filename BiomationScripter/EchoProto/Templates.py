@@ -147,11 +147,11 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Polymerase: str,
-        Polymerase_Buffer: str,
-        Polymerase_Buffer_Stock_Conc: float,
         Volume: float,
         Reactions: List[str],
+        Polymerase: str = None,
+        Polymerase_Buffer: str = None,
+        Polymerase_Buffer_Stock_Conc: float = None,
         Master_Mix: str = None,
         Master_Mix_Stock_Conc = None,
         Repeats: int = 1,
@@ -170,7 +170,6 @@ class PCR(_EchoProto.EchoProto_Template):
         self.buffer = Polymerase_Buffer
         self.master_mix = Master_Mix
         self.master_mix_stock_conc = Master_Mix_Stock_Conc
-        self.merge = Merge
         self.buffer_stock_conc = Polymerase_Buffer_Stock_Conc
 
         if not self.master_mix:
@@ -183,7 +182,6 @@ class PCR(_EchoProto.EchoProto_Template):
         self.__default_volume = 5
 
         self._dNTPs_amount = 0.1
-        self._buffer_amount = self.__default_volume / self.buffer_stock_conc
         self._polymerase_amount = 0.05
         if self.master_mix:
             if not self.master_mix_stock_conc:
@@ -192,6 +190,7 @@ class PCR(_EchoProto.EchoProto_Template):
                 self._master_mix_amount = self.__default_volume / self.master_mix_stock_conc
         else:
             self._master_mix_amount = None
+            self._buffer_amount = self.__default_volume / self.buffer_stock_conc
 
         ##################################
         # Default DNA and primer amounts #
