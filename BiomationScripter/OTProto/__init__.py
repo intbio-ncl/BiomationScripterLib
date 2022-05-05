@@ -253,8 +253,7 @@ def set_location_offset_bottom(Locations, Offset):
 
     return(Offset_Locations)
 
-def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well", move_after_dispense = None):
-
+def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_Locations, new_tip = True, mix_after = None, mix_before = None, flow_rate_multiplier = None, touch_tip = False, blow_out = False, blowout_location = "destination well", move_after_dispense = None):
 
     if not type(Transfer_Volumes) == list:
         Transfer_Volumes = [Transfer_Volumes]
@@ -280,6 +279,14 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
     p20 = get_p20(Protocol)
     p300 = get_p300(Protocol)
     p1000 = get_p1000(Protocol)
+
+    # Modify the flow rate (if specified)
+    if flow_rate_multiplier:
+        for pipette in [p20, p300, p1000]:
+            if pipette:
+                pipette.flow_rate.aspirate *= flow_rate_multiplier
+                pipette.flow_rate.dispense *= flow_rate_multiplier
+                pipette.flow_rate.blow_out *= flow_rate_multiplier
 
     if not p20 and not p300 and not p1000:
         raise ValueError("No pipettes have been loaded")
@@ -404,7 +411,16 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
 
             pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = False, blow_out = False, blowout_location = "destination well")
 
-def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Min_Transfer = None, Calculate_Only = False, Dead_Volume_Proportion = 0.95, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
+    # Reset the flow rate (if specified)
+    if flow_rate_multiplier:
+        for pipette in [p20, p300, p1000]:
+            if pipette:
+                pipette.flow_rate.aspirate /= flow_rate_multiplier
+                pipette.flow_rate.dispense /= flow_rate_multiplier
+                pipette.flow_rate.blow_out /= flow_rate_multiplier
+
+
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Min_Transfer = None, Calculate_Only = False, Dead_Volume_Proportion = 0.95, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, flow_rate_multiplier = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
 
     Initial_Source_Locations = Aliquot_Source_Locations.copy()
 
@@ -523,7 +539,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
     if Calculate_Only:
         return(Transfer_Volumes, Aliquot_Source_Order, Destinations)
     else:
-        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
+        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, flow_rate_multiplier = flow_rate_multiplier, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
