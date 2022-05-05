@@ -95,6 +95,14 @@ BiomationScripter.EchoProto.Templates.Loop_Assembly(
 * `run(self)` returns `None`
     * Creates the Echo picklists for the protocol
 
+
+### Template: [`PCR`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/Templates.py)
+
+#### Overview:
+
+This Template is used to generate an Echo protocol for preparing PCR reactions. It is based upon the protocol described [here]().
+
+
 ---
 
 ## Superclass: [`EchoProto_Template`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
