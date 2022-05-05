@@ -306,6 +306,8 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             p300.pick_up_tip()
         elif min_transfer <= 300 and p300:
             p300.pick_up_tip()
+        elif min_transfer > 300 and not p1000:
+            p300.pick_up_tip()
         else:
             p1000.pick_up_tip()
 
@@ -316,6 +318,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
         elif max_transfer >= 100 and not p300 and p1000:
             if not p1000.has_tip:
                 p1000.pick_up_tip()
+        elif not p1000:
+            if not p300.has_tip:
+                p300.pick_up_tip()
 
 
         for transfer_volume, source, destination in zip(Transfer_Volumes, Source_Locations, Destination_Locations):
@@ -343,7 +348,22 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if Mix_After and Mix_After[1] > pipette.max_volume:
                 Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, new_tip = "never", mix_before = Mix_Before, mix_after = Mix_After, touch_tip = False, blow_out = False, blowout_location = "destination well")
+            # print("p20", p20.has_tip)
+            # print("p300", p300.has_tip)
+            # print(pipette)
+            # print(transfer_volume)
+
+            pipette.transfer(
+                transfer_volume,
+                source,
+                destination,
+                new_tip = "never",
+                mix_before = Mix_Before,
+                mix_after = Mix_After,
+                touch_tip = False,
+                blow_out = False,
+                blowout_location = "destination well"
+            )
 
         if p20:
             if p20.has_tip:
@@ -504,7 +524,6 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
         return(Transfer_Volumes, Aliquot_Source_Order, Destinations)
     else:
         transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
-
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
