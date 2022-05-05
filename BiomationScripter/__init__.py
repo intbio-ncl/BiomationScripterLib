@@ -812,13 +812,14 @@ def serial_dilution_volumes(dilution_factors, total_volume):
 def _get_well_layout_index(well):
     return(int(well.split("_")[0]))
 
-def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, Extra_Reactions, Excluded_Reagents = [], Excluded_Combinations = [], Preferential_Reagents = [], Seed = None):
+def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Maximum_Mastermix_Volume, Min_Transfer_Volume, Extra_Reactions, Excluded_Reagents = [], Excluded_Combinations = [], Preferential_Reagents = [], Seed = None):
 
     Solved = False # Check whether a solution has been found
 
     First_Attempt = True # Determine whether this is the first attempt to find a solution
 
     # Whilst there is no solution
+    print("\nDetermining mastermixes, this may take a while...\n")
     while not Solved:
 
         try:
@@ -857,7 +858,7 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                     else:
                         Wells_By_Reagent_ID[reagent_id] = set([well])
 
-            # Get a list of reagent IDs ordered by volume/well (ascending)
+
 
             # a set of all volume/well values
             vols_per_well = set()
@@ -871,6 +872,7 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
             vols_per_well = list(vols_per_well)
             vols_per_well.sort()
 
+            # Get a list of reagent IDs ordered by volume/well (ascending)
             Ordered_Reagent_IDs = []
             for volume in vols_per_well:
                 for reagent_id in reagent_id_keys:
@@ -908,6 +910,22 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                         for excluded_combo in Excluded_Combinations:
                             if candidate_reagent.split("_vol_")[0] in excluded_combo and reagent_id.split("_vol_")[0] in excluded_combo:
                                 linked_reagents.remove(candidate_reagent) # remove it if it is an excluded combo
+
+                # Reagent volumes will be scaled up to ensure that the mastermix can service the correct number of wells,
+                ## and to also ensure that the lowest volume reagent can be added with a transfer volume above the min transfer vol
+                # Check that this scale up will not put the total mastermix volume above the total well capacity if these linked reagents were used
+                lowest_vol_reag = [reag for reag in linked_reagents if _get_vol_per_well(reag) == min([_get_vol_per_well(reag) for reag in linked_reagents])][0]
+                if _get_vol_per_well(lowest_vol_reag) * (len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions) >= Min_Transfer_Volume:
+                    potential_mm_reaction_num = len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions
+                else:
+                    potential_mm_reaction_num = Min_Transfer_Volume/_get_vol_per_well(lowest_vol_reag)
+                # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed
+                ## then remove the highest vol reagent until the vol is below the max volume allowed
+                total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in linked_reagents])
+                while total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                    linked_reagents.remove([reag for reag in linked_reagents if _get_vol_per_well(reag) == max([_get_vol_per_well(reag) for reag in linked_reagents])][0])
+                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in linked_reagents])
+
                 # Check if the current reagent was linked with any other reagent(s)
                 if len(linked_reagents) == 1:
                     pass
@@ -953,10 +971,15 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                     ##########################################
                     for linked_reagents in Linked_Reagents:
                         if reagent_id in linked_reagents:
-                            # If there are any linked reagents, add them to the mastermix
+                            # For any linked reagents found...
                             for linked_reagent in linked_reagents:
-                                # Check that not adding a reagent to itself, and that the linked reagent hasn't already been used/dealt with
-                                if not linked_reagent == reagent_id and len(Wells_By_Reagent_ID[linked_reagent]) > 0:
+                                # Skip the current reagent in the list so it isn't added to itself
+                                if linked_reagent == reagent_id:
+                                    continue
+                                # Check that the linked reagent hasn't already been used up in other mastermixes
+                                elif len(Wells_By_Reagent_ID[linked_reagent]) == 0:
+                                    continue
+                                else:
                                     mastermix_reagents.append(linked_reagent)
                                     mastermix_per_well += _get_vol_per_well(linked_reagent)
                     # Check if the MM per well is above the threshold
@@ -967,7 +990,11 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                         mastermix_name = ":".join(mastermix_reagents)
                         # Check if any linked reagents have already been used
                         if False in [current_reagent_well_set == Wells_By_Reagent_ID[mm_reag] for mm_reag in mastermix_reagents]:
-                            # If the well sets are not equal, then just skip to the next code block (essentiall means that the simple solution failed...)
+                            # If the well sets are not equal, then just skip to the next code block (essentially means that the simple solution failed...)
+                            # Reset the variables first...
+                            mastermix_reagents = [reagent_id] # list to hold the mastermix components
+                            mastermix_per_well = _get_vol_per_well(reagent_id) # to track the volume of MM to add per well
+                            current_reagent_well_set = Wells_By_Reagent_ID[reagent_id].copy() # set of wells which need to be statisifed by the MMs
                             pass
                         else:
                             mastermix_well_set = current_reagent_well_set.copy()
@@ -978,6 +1005,7 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                                 Wells_By_Reagent_ID[used_reagent] -= mastermix_well_set
                                 # print("Updated {} well set: {}".format(used_reagent, Wells_By_Reagent_ID[used_reagent]))
                             # print("---")
+
                             # Then continue to the next reagent in need of a mastermix
                             continue
                     else:
@@ -1012,12 +1040,39 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                             if exclude:
                                 continue
 
+                            # Make sure that adding the reagent wouldn't put the mastermix volume over the max allowed
+                            # Reagent volumes will be scaled up to ensure that the mastermix can service the correct number of wells,
+                            ## and to also ensure that the lowest volume reagent can be added with a transfer volume above the min transfer vol
+                            # Check that this scale up will not put the total mastermix volume above the total well capacity if these linked reagents were used
+                            # Only bother checking if the candidate reagent shares wells with the current reagent
+                            if len(current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])) > 0:
+                                lowest_vol_reag = [reag for reag in mastermix_reagents + [candidate_reagent] if _get_vol_per_well(reag) == min([_get_vol_per_well(reag) for reag in mastermix_reagents + [candidate_reagent]])][0]
+                                if _get_vol_per_well(lowest_vol_reag) * (len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions) >= Min_Transfer_Volume:
+                                    potential_mm_reaction_num = len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions
+                                    # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed, then continue
+                                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in mastermix_reagents + [candidate_reagent]])
+                                    if total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                                        # print(total_potential_mastermix_volume, Maximum_Mastermix_Volume, reagent_id, candidate_reagent)
+                                        continue
+                                else:
+                                    potential_mm_reaction_num = Min_Transfer_Volume/_get_vol_per_well(lowest_vol_reag)
+                                    # before continuing, if the number of reactions required by the lowest vol reagent will always make the candidate reagent above the max
+                                    ## vol allowed, then mark the reagents as excluded combos to ensure that they don't keep getting checked
+                                    if _get_vol_per_well(candidate_reagent) * potential_mm_reaction_num > Maximum_Mastermix_Volume:
+                                        Excluded_Combinations.append([candidate_reagent, lowest_vol_reag])
+                                        continue
+                                    # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed, then continue
+                                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in mastermix_reagents + [candidate_reagent]])
+                                    if total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                                        continue
+
                             if candidate_reagent == reagent_id:
                                 # don't check reagents with theirselves
                                 continue
                             elif candidate_reagent in mastermix_reagents:
                                 # Don't add duplicate reagents
                                 continue
+
                             elif candidate_reagent.split("_vol_")[0] in Preferential_Reagents:
                                 preferential_selected = True
                                 # If the candidate is a preferential reagent, choose it over non-preferential reagents
@@ -1165,8 +1220,18 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
                     First_Attempt = False
             else:
                 # Iterate the seed number
-                # print(Seed)
                 Seed += 1
+                # To stop infinte loops
+                if not First_Attempt:
+                    if Seed > 1000:
+                        raise MastermixError(
+"""
+No solution could be found with these constraints. Try one of the following options:
+> Decrease the minimum transfer volume (if specified)
+> Decrease the stock concentration of highly concentrated source material
+> Use a mastermix labware with a higher well capacity (especially when there are a lot of samples)
+"""
+                        )
 
 
     # Remove any empty mastermixes
@@ -1188,7 +1253,7 @@ def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Min_Transfer_Volume, 
         Mastermix_Layouts[Mastermix_Layout_Index].add_well_label(well, mastermix.name)
 
         # Make sure that the transfer volume TO the mastermix is above the threshold for all reagents
-        ## If not, additional extra reactions will be added to the mastermix (but not all others, unless needed)
+        ## If not, additional extra reactions will be added to that mastermix
         extra_reactions = Extra_Reactions
         for reagent in mastermix.reagents:
             volume = (len(mastermix.wells) + extra_reactions) * (_get_vol_per_well(reagent))
