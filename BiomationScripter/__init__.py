@@ -1249,6 +1249,14 @@ No solution could be found with these constraints. Try one of the following opti
     Mastermix_Layout_Index = 0
 
     for mastermix in Mastermixes:
+
+        # Check if a new mastermix layout is needed
+        if Mastermix_Layouts[Mastermix_Layout_Index].get_next_empty_well() == None:
+
+            new_mastermix_layout_name = "{}_{}".format(Mastermix_Layout.name, Mastermix_Layout_Index + 1)
+            Mastermix_Layouts.append(Mastermix_Layout.clone_format(new_mastermix_layout_name))
+            Mastermix_Layout_Index += 1
+
         well = Mastermix_Layouts[Mastermix_Layout_Index].get_next_empty_well()
         Mastermix_Layouts[Mastermix_Layout_Index].add_well_label(well, mastermix.name)
 
@@ -1271,12 +1279,7 @@ No solution could be found with these constraints. Try one of the following opti
             )
 
 
-        # Check if a new mastermix layout is needed
-        if Mastermix_Layouts[Mastermix_Layout_Index].get_next_empty_well() == None:
 
-            new_mastermix_layout_name = "{}_{}".format(Mastermix_Layout.name, Mastermix_Layout_Index + 1)
-            Mastermix_Layouts.append(Mastermix_Layout.clone_format(new_mastermix_layout_name))
-            Mastermix_Layout_Index += 1
 
 
     # Modify the destination layout to now take mastermixes as reagents
