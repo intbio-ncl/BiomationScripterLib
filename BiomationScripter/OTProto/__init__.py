@@ -409,7 +409,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if Mix_After and Mix_After[1] > pipette.max_volume:
                 Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = False, blow_out = False, blowout_location = "destination well")
+            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location)
 
     # Reset the flow rate (if specified)
     if flow_rate_multiplier:
