@@ -367,9 +367,9 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
                 new_tip = "never",
                 mix_before = Mix_Before,
                 mix_after = Mix_After,
-                touch_tip = False,
-                blow_out = False,
-                blowout_location = "destination well"
+                touch_tip = touch_tip,
+                blow_out = blow_out,
+                blowout_location = blowout_location
             )
 
         if p20:
@@ -539,7 +539,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
     if Calculate_Only:
         return(Transfer_Volumes, Aliquot_Source_Order, Destinations)
     else:
-        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, flow_rate_multiplier = flow_rate_multiplier, mix_after = mix_after, touch_tip = False, blow_out = False, blowout_location = "destination well")
+        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, flow_rate_multiplier = flow_rate_multiplier, mix_after = mix_after, touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location)
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
