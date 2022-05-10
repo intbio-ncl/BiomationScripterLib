@@ -329,7 +329,6 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if not p300.has_tip:
                 p300.pick_up_tip()
 
-
         for transfer_volume, source, destination in zip(Transfer_Volumes, Source_Locations, Destination_Locations):
             if transfer_volume == 0:
                 continue
@@ -360,17 +359,105 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             # print(pipette)
             # print(transfer_volume)
 
-            pipette.transfer(
-                transfer_volume,
-                source,
-                destination,
-                new_tip = "never",
-                mix_before = Mix_Before,
-                mix_after = Mix_After,
-                touch_tip = touch_tip,
-                blow_out = blow_out,
-                blowout_location = blowout_location
-            )
+
+            volume_to_transfer = transfer_volume # track how much volume is left to transfer - important when need to transfer more than pipette max
+            while not volume_to_transfer == 0:
+                # Check if the transfer volume is more than the pipette's max volume
+                ## if so, split the transfer into multiple actions
+                ## This code block only deals with situations where the same tip is used for everything, so assume that situation
+                if volume_to_transfer > pipette.max_volume:
+                    current_transfer_volume = pipette.max_volume
+                else:
+                    current_transfer_volume = volume_to_transfer
+
+                # Move to the source location
+                pipette.move_to(source.top())
+
+                # Mix the source liquid (if required)
+                if Mix_Before:
+                    pipette.mix(
+                        repetitions = Mix_Before[0],
+                        volume = Mix_Before[1],
+                        location = source
+                    )
+
+                # Aspirate the liquid
+                pipette.aspirate(
+                    volume = current_transfer_volume,
+                    location = source
+                )
+
+                # knock the tip against the sides of the current well (if required)
+                if touch_tip:
+                    pipette.touch_tip()
+
+                # Move to the destination well
+                pipette.move_to(destination.top())
+
+                # Dispense the liquid
+                pipette.dispense(
+                    volume = current_transfer_volume,
+                    location = destination
+                )
+
+                # Mix the destination liquid (if required)
+                if Mix_After:
+                    pipette.mix(
+                        repetitions = Mix_After[0],
+                        volume = Mix_After[1],
+                        location = destination
+                    )
+
+                # knock the tip against the sides of the current well (if required)
+                if touch_tip:
+                    pipette.touch_tip()
+
+                # Move after dispensing (if required)
+                if move_after_dispense == "well_top":
+                    pipette.move_to(destination.top())
+                elif move_after_dispense == "well_bottom":
+                    pipette.move_to(destination.bottom())
+                else:
+                    pass
+
+                # Blowout (if required)
+                if blow_out:
+                    if blowout_location == "destination well":
+                        b_location = destination
+                    elif blowout_location == "source_well":
+                        b_location = source
+                    elif blowout_location == "trash":
+                        b_location = Protocol.fixed_trash["A1"]
+                    else:
+                        b_location == "" # this is to use the OT API error handling
+                    pipette.blow_out(b_location)
+
+                    # Move after blowout (if required)
+                    # Don't move if blowout at trash
+                    if blowout_location == "trash":
+                        pass
+                    else:
+                        if move_after_dispense == "well_top":
+                            pipette.move_to(b_location.top())
+                        elif move_after_dispense == "well_bottom":
+                            pipette.move_to(b_location.bottom())
+                        else:
+                            pass
+
+
+                volume_to_transfer -= current_transfer_volume
+
+            # pipette.transfer(
+            #     transfer_volume,
+            #     source,
+            #     destination,
+            #     new_tip = "never",
+            #     mix_before = Mix_Before,
+            #     mix_after = Mix_After,
+            #     touch_tip = touch_tip,
+            #     blow_out = blow_out,
+            #     blowout_location = blowout_location
+            # )
 
         if p20:
             if p20.has_tip:
@@ -409,7 +496,107 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
             if Mix_After and Mix_After[1] > pipette.max_volume:
                 Mix_After = (Mix_After[0], pipette.max_volume)
 
-            pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location)
+
+            volume_to_transfer = transfer_volume # track how much volume is left to transfer - important when need to transfer more than pipette max
+            while not volume_to_transfer == 0:
+                # Check if the transfer volume is more than the pipette's max volume
+                ## if so, split the transfer into multiple actions
+                ## This code block only deals with situations where the same tip is used for everything, so assume that situation
+                if volume_to_transfer > pipette.max_volume:
+                    current_transfer_volume = pipette.max_volume
+                else:
+                    current_transfer_volume = volume_to_transfer
+
+                # Get a new tip
+                pipette.pick_up_tip()
+
+                # Move to the source location
+                pipette.move_to(source.top())
+
+                # Mix the source liquid (if required)
+                if Mix_Before:
+                    pipette.mix(
+                        repetitions = Mix_Before[0],
+                        volume = Mix_Before[1],
+                        location = source
+                    )
+
+                # Aspirate the liquid
+                pipette.aspirate(
+                    volume = current_transfer_volume,
+                    location = source
+                )
+
+                # knock the tip against the sides of the current well (if required)
+                if touch_tip:
+                    pipette.touch_tip()
+
+                # Move to the destination well
+                pipette.move_to(destination.top())
+
+                # Dispense the liquid
+                pipette.dispense(
+                    volume = current_transfer_volume,
+                    location = destination
+                )
+
+                # Mix the destination liquid (if required)
+                if Mix_After:
+                    pipette.mix(
+                        repetitions = Mix_After[0],
+                        volume = Mix_After[1],
+                        location = destination
+                    )
+
+                # knock the tip against the sides of the current well (if required)
+                if touch_tip:
+                    pipette.touch_tip()
+
+                # Move after dispensing (if required)
+                if move_after_dispense == "well_top":
+                    pipette.move_to(destination.top())
+                elif move_after_dispense == "well_bottom":
+                    pipette.move_to(destination.bottom())
+                else:
+                    pass
+
+                # Blowout (if required)
+                if blow_out:
+                    if blowout_location == "destination well":
+                        b_location = destination
+                    elif blowout_location == "source_well":
+                        b_location = source
+                    elif blowout_location == "trash":
+                        b_location = Protocol.fixed_trash["A1"]
+                    else:
+                        b_location == "" # this is to use the OT API error handling
+                    pipette.blow_out(b_location)
+
+                    # Move after blowout (if required)
+                    # Don't move if blowout at trash
+                    if blowout_location == "trash":
+                        pass
+                    else:
+                        if move_after_dispense == "well_top":
+                            pipette.move_to(b_location.top())
+                        elif move_after_dispense == "well_bottom":
+                            pipette.move_to(b_location.bottom())
+                        else:
+                            pass
+
+
+                # Drop the tip
+                pipette.drop_tip()
+                volume_to_transfer -= current_transfer_volume
+
+
+            # pipette.transfer(transfer_volume, source, destination, mix_before = Mix_Before, mix_after = Mix_After, new_tip = "always", touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location)
+
+            # if move_after_dispense == "well_top":
+            #     pipette.move_to(destination.top())
+            # elif move_after_dispense == "well_bottom":
+            #     pipette.move_to(destination.bottom())
+
 
     # Reset the flow rate (if specified)
     if flow_rate_multiplier:
@@ -419,8 +606,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
                 pipette.flow_rate.dispense /= flow_rate_multiplier
                 pipette.flow_rate.blow_out /= flow_rate_multiplier
 
-
-def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Min_Transfer = None, Calculate_Only = False, Dead_Volume_Proportion = 0.95, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, flow_rate_multiplier = None, touch_tip = False, blow_out = False, blowout_location = "destination well"):
+def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations, Destinations, Min_Transfer = None, Calculate_Only = False, Dead_Volume_Proportion = 0.95, Aliquot_Volumes = None, new_tip = True, mix_after = None, mix_before = None, flow_rate_multiplier = None, touch_tip = False, blow_out = False, blowout_location = "destination well", move_after_dispense = None):
 
     Initial_Source_Locations = Aliquot_Source_Locations.copy()
 
@@ -539,7 +725,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
     if Calculate_Only:
         return(Transfer_Volumes, Aliquot_Source_Order, Destinations)
     else:
-        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, flow_rate_multiplier = flow_rate_multiplier, mix_after = mix_after, touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location)
+        transfer_liquids(Protocol, Transfer_Volumes, Aliquot_Source_Order, Destinations, new_tip = new_tip, mix_before = mix_before, flow_rate_multiplier = flow_rate_multiplier, mix_after = mix_after, touch_tip = touch_tip, blow_out = blow_out, blowout_location = blowout_location, move_after_dispense = move_after_dispense)
 
 def next_empty_slot(protocol):
     for slot in protocol.deck:
