@@ -1314,6 +1314,9 @@ No solution could be found with these constraints. Try one of the following opti
 
     return(Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts)
 
+def fmol_calculator(mass_ng, length_bp):
+    return(((mass_ng * 1e-9)/((length_bp * 617.96) + 36.04)) * 1e15)
+
 ## Private ##
 def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
