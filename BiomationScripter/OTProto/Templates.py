@@ -821,6 +821,13 @@ class Spot_Plating(_OTProto.OTProto_Template):
         ##########################
 
         # Perform serial dilutions if required
+
+
+
+
+
+
+
         if not self.dilution_factors == [1]:
             # Add LB to the required wells of the dilution labware
             _OTProto.dispense_from_aliquots(
@@ -829,10 +836,21 @@ class Spot_Plating(_OTProto.OTProto_Template):
                                 Aliquot_Source_Locations = Media_Source_Locations,
                                 Destinations = Dilution_Locations,
                                 Aliquot_Volumes = self.media_aliquot_volume,
+                                Min_Transfer = None,
+                                Calculate_Only = False,
+                                Dead_Volume_Proportion = 1,
                                 new_tip = False,
-                                touch_tip = True,
+                                mix_after = None,
+                                mix_before = None,
+                                mix_speed_multiplier = 1.5,
+                                aspirate_speed_multiplier = 1.5,
+                                dispense_speed_multiplier = 1.5,
+                                blowout_speed_multiplier = 1.5,
+                                touch_tip_source = False,
+                                touch_tip_destination = True,
                                 blow_out = True,
-                                blowout_location = "destination well"
+                                blowout_location = "destination well",
+                                move_after_dispense = "well_bottom"
             )
 
             # Add cells and perform serial dilutions
@@ -852,8 +870,19 @@ class Spot_Plating(_OTProto.OTProto_Template):
                                 Source_Locations = Serial_Source_Locations,
                                 Destination_Locations = dilution_destinations,
                                 new_tip = False,
-                                mix_after = (10, self.dilution_volume)
+                                mix_after = (10,"transfer_volume"),
+                                mix_before = None,
+                                mix_speed_multiplier = 2.5,
+                                aspirate_speed_multiplier = 1,
+                                dispense_speed_multiplier = 2,
+                                blowout_speed_multiplier = 1,
+                                touch_tip_source = False,
+                                touch_tip_destination = True,
+                                blow_out = True,
+                                blowout_location = "destination well",
+                                move_after_dispense = "well_bottom"
                 )
+
 
         # Plate cells (from either the cell source plate or the dilution plate)
 
@@ -876,7 +905,17 @@ class Spot_Plating(_OTProto.OTProto_Template):
                                 source_locations,
                                 destination_locations,
                                 new_tip = False,
-                                blow_out = True
+                                mix_after = None,
+                                mix_before = None,
+                                mix_speed_multiplier = 1,
+                                aspirate_speed_multiplier = 1.5,
+                                dispense_speed_multiplier = 0.8,
+                                blowout_speed_multiplier = 0.8,
+                                touch_tip_source = False,
+                                touch_tip_destination = False,
+                                blow_out = True,
+                                blowout_location = "destination well",
+                                move_after_dispense = "well_bottom"
             )
 
 
