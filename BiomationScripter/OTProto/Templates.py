@@ -1392,7 +1392,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ############################
         # Load Destination Labware #
         ############################
-        Destination_Labware = _OTProto.load_labware(self._protocol, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
+        Destination_Labware = _OTProto.load_labware(temperature_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
         Destination_Locations = Destination_Labware.wells()[:len(self.dna)]
 
         ######################
