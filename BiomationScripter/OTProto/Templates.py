@@ -1414,10 +1414,49 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         temperature_module.set_temperature(4)
 
         # Add comp cells
-        _OTProto.dispense_from_aliquots(self._protocol, Cell_Transfer_Volumes, Cell_Source_Locations, Destination_Locations, new_tip = False, mix_before = (5,"transfer_volume"), touch_tip = True, blow_out = True, blowout_location = "destination well")
+
+        _OTProto.dispense_from_aliquots(
+            self._protocol,
+            Cell_Transfer_Volumes,
+            Cell_Source_Locations,
+            Destination_Locations,
+            Min_Transfer = None,
+            Calculate_Only = False,
+            Dead_Volume_Proportion = 1,
+            Aliquot_Volumes = self.comp_cells_aliquot_volume,
+            new_tip = False,
+            mix_after = None,
+            mix_before = (5,"transfer_volume"),
+            mix_speed_multiplier = 1.5,
+            aspirate_speed_multiplier = 1,
+            dispense_speed_multiplier = 1,
+            blowout_speed_multiplier = 1,
+            touch_tip_source = False,
+            touch_tip_destination = True,
+            blow_out = True,
+            blowout_location = "destination well",
+            move_after_dispense = "well_bottom"
+        )
 
         # Add DNA
-        _OTProto.transfer_liquids(self._protocol, DNA_Transfer_Volumes, DNA_Source_Locations, Destination_Locations, new_tip = True, mix_after = (5,"transfer_volume"), touch_tip = True, blow_out = True, blowout_location = "destination well")
+        _OTProto.transfer_liquids(
+            self._protocol,
+            DNA_Transfer_Volumes,
+            DNA_Source_Locations,
+            Destination_Locations,
+            new_tip = True,
+            mix_after = (10,"transfer_volume"),
+            mix_before = None,
+            mix_speed_multiplier = 2,
+            aspirate_speed_multiplier = 1,
+            dispense_speed_multiplier = 1,
+            blowout_speed_multiplier = 1,
+            touch_tip_source = False,
+            touch_tip_destination = True,
+            blow_out = True,
+            blowout_location = "destination well",
+            move_after_dispense = "well_bottom"
+        )
 
         # Heat shock
 
@@ -1434,9 +1473,28 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         # Prompt user to open LB tubes
         self._protocol.pause("Open up LB tubes")
 
-        _OTProto.dispense_from_aliquots(self._protocol, Media_Transfer_Volumes, Media_Source_Locations, Destination_Locations, new_tip = False, blow_out = True, blowout_location = "destination well")
-
-
+        _OTProto.dispense_from_aliquots(
+            self._protocol,
+            Media_Transfer_Volumes,
+            Media_Source_Locations,
+            Destination_Locations,
+            Min_Transfer = None,
+            Calculate_Only = False,
+            Dead_Volume_Proportion = 1,
+            Aliquot_Volumes = self.media_aliquot_volume,
+            new_tip = True,
+            mix_after = None,
+            mix_before = None,
+            mix_speed_multiplier = 1,
+            aspirate_speed_multiplier = 1,
+            dispense_speed_multiplier = 1,
+            blowout_speed_multiplier = 1,
+            touch_tip_source = False,
+            touch_tip_destination = True,
+            blow_out = True,
+            blowout_location = "destination well",
+            move_after_dispense = None
+        )
 
 class Design_Of_Experiments(_OTProto.OTProto_Template):
     def __init__(self,
