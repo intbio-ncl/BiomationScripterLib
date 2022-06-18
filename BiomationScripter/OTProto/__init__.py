@@ -105,6 +105,7 @@ class OTProto_Template:
                 for tip_box in range(0, tip_boxes_needed):
                     tip_box_deck_slot = next_empty_slot(self._protocol)
                     tip_box = load_labware(self._protocol, tip_type, tip_box_deck_slot)
+
                     pipette.tip_racks.append(tip_box)
 
                 pipette.starting_tip = pipette.tip_racks[0].well(self.starting_tips[pipette_type])
@@ -454,7 +455,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
                 elif blowout_location == "trash":
                     b_location = Protocol.fixed_trash["A1"]
                 else:
-                    b_location == "" # this is to use the OT API error handling
+                    b_location = "" # this is to use the OT API error handling
                 pipette.blow_out(b_location)
 
             # If blowout was at the destination location, then do blowout now
