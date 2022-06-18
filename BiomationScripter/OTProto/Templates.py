@@ -5,27 +5,15 @@ import math
 import warnings
 # import smtplib, ssl
 
-class Example_Template(_OTProto.OTProto_Template):
     def __init__(self,
-        # insert custom arguments here, e.g.:
-#       arg_1,
-#       arg_2,
-        **kwargs # this accepts default keyword arguments from OTProto_Template, i.e. Protocol, Name, and Metadata
     ):
-        # Instantiate custom attributes here, e.g.:
-#       self.att1 = arg_1
-#       self.att2 = arg_2
-#       self.att3 = "Cello"
-        super().__init__(**kwargs) # This passes the Protocol, Name, Metadata, and various starting tip kw args
 
-    def run(self):
 
         #################
         # Load pipettes #
         #################
         self.load_pipettes()
 
-        # The rest of your code goes here #
 
 class Protocol_From_Layouts(_OTProto.OTProto_Template):
     def __init__(self,
@@ -654,6 +642,8 @@ class Spot_Plating(_OTProto.OTProto_Template):
         self.agar_labware_type = Agar_Labware_Type
         self.dilution_labware_type = Dilution_Labware_Type
 
+        self.mapping = {}
+
         #####################
         # Argument checking #
         #####################
@@ -800,8 +790,10 @@ class Spot_Plating(_OTProto.OTProto_Template):
         # User Setup Prompts #
         ######################
         # Print a list of locations and labels for mapping back
+
         for location, label in zip(Agar_Locations, Plating_Labels):
-            print(location, label)
+            self.mapping[label] = location
+            # print(location, label)
 
 
         self.add_tip_boxes_to_pipettes() # Starting tip(s) are defined here as well
@@ -821,11 +813,6 @@ class Spot_Plating(_OTProto.OTProto_Template):
         ##########################
 
         # Perform serial dilutions if required
-
-
-
-
-
 
 
         if not self.dilution_factors == [1]:
