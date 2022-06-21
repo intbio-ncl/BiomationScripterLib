@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from distutils.core import setup
 
 setup(name='BiomationScripter',
@@ -9,3 +7,4 @@ setup(name='BiomationScripter',
       author_email='bradley.brown4@hotmail.co.uk',
       packages=['BiomationScripter', 'BiomationScripter.EchoProto', 'BiomationScripter.OTProto'],
      )
+
