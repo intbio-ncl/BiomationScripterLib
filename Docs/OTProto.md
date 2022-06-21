@@ -1,6 +1,6 @@
 # BiomationScripter - OTProto
 ---
-[Overview](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#feature-overview) | [Setting up the OT-2](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#using-otproto) | [Functions](https://github.com/intbio-ncl/BiomationScripterLib/wiki/OTProto#functions) | [Using OTProto Templates](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#otprototemplates) | [All Templates](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#templates) | [Simulating Protocols](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto#simulating-protocols)
+[Overview](#feature-overview) | [Setting up the OT-2](#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](#using-otproto) | [Functions](#functions) | [Simulating Protocols](#simulating-protocols) | [All Templates](#templates)
 
 ---
 ## Feature Overview
@@ -8,18 +8,18 @@ OTProto is a module within the BiomationScripter package which contains tools sp
 
 OTProto contains two submodules:
 * [**OTProto:**](#using-otproto) A set of functions and classes which abstract out some parts of the protocol writing, such as determining how many tips are required, and switching loading custom labware
-* [**OTProto.Templates:**](#using-otprototemplates) A set of classes which generate OT-2 instructions for common protocols, such as plasmid purification and transformation, based on user inputs
+* [**OTProto.Templates:**](#templates) A set of classes which generate OT-2 instructions for common protocols, such as plasmid purification and transformation, based on user inputs
 
-If you are planning on using the Opentrons to automate common protocols, such as transformation, there may be a pre-written OTProto template available. A list of currently available templates can be found [here](#template-classes).
+If you are planning on using the Opentrons to automate common protocols, such as transformation, there may be a pre-written OTProto template available. A list of currently available templates can be found [here](OTProto_Templates.md).
 
-If you are planning on automating a protocol which you will use many times, but with slightly different variations/inputs, it may be helpful to create your own OTProto template. A walkthrough explaining how this can be done can be found [here](#creating-custom-otprototemplates).
+If you are planning on automating a protocol which you will use many times, but with slightly different variations/inputs, it may be helpful to create your own OTProto template. A walkthrough explaining how this can be done can be found [here](Example_Code_Snippets/OTProto/OTProto-OTProto_Template-Superclass.ipynb).
 
-If you are planning to automate a protocol for which there are no existing templates, and that protocol will only be repeated identically (or not at all), it may be best to not write a template. In this case, the [general BiomationScripter tools](https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter) and [OTProto tools](#using-otproto) can be used to help write the protocol.
+If you are planning to automate a protocol for which there are no existing templates, and that protocol will only be repeated identically (or not at all), it may be best to not write a template. In this case, the [general BiomationScripter tools](BiomationScripter.md) and [OTProto tools](#using-otproto) can be used to help write the protocol.
 
 ---
 
 ## Setting up the OT-2 to work with BiomationScripter
-Due to large amounts of the OT-2's onboard computer being read only, the BiomationScripter package can not be installed as usual. Instead follow the instructions below to get set up.
+Due to large amounts of the OT-2's onboard computer being read only, the BiomationScripter package can not be installed as usual. Instead, follow the instructions below to get set up.
 
 1. Create a new directory called `Packages` in the writable section of the OT-2's onboard computer
      * `/var/lib/jupyter/notebooks/` is suggested for convenience in the case of using Jupyter Notebook to run the OT2

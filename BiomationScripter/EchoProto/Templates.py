@@ -1,22 +1,22 @@
 import BiomationScripter as _BMS
 import BiomationScripter.EchoProto as _EchoProto
 import math
+from typing import List, NewType, Dict
 
 #### PROTOCOL TEMPLATES ####
 
 class Loop_Assembly(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Enzyme,
-        Source_Plates,
-        Destination_Plate_Layout,
-        Volume,
-        Assemblies,
-        Backbone_to_Part = ["1:1"],
-        Repeats = 1,
+        Enzyme: str,
+        Buffer: str,
+        Volume: float,
+        Assemblies: List[_BMS.Assembly],
+        Backbone_to_Part: List[str] = ["1:1"],
+        Repeats: int = 1,
         **kwargs
     ):
-
         super().__init__(**kwargs)
+
 
         ########################################
         # User defined aspects of the protocol #
@@ -25,24 +25,22 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         self.ratios = Backbone_to_Part
         self.repeats = Repeats
         self.enzyme = Enzyme
-        self.assemblies = Assemblies # [ [Backbone, [Part1, ... Partn]] ]
+        self.buffer = Buffer
 
-        ###########
-        # Labware #
-        ###########
-        # Add source layouts to self.source_plate_layouts
-        for source in Source_Plates:
-            self.add_source_layout(source)
-
-        # Add the destination layout (more may be created later if needed)
-        self.add_destination_layout(Destination_Plate_Layout)
+        # Deal with assemblies as a list or a list of the new object
+        self.assemblies = []
+        for assembly in Assemblies:
+            if type(Assemblies[0]) == _BMS.Assembly:
+                self.assemblies.append([assembly.backbone, assembly.parts])
+            else:
+                self.assemblies.append(assembly)
 
         ##############################################
         # Default reagent amounts for 5 uL reactions #
         ##############################################
         self.__default_volume = 5
         self._enzyme_amount = 0.125
-        self._ligase_buffer_amount = 0.5
+        self._buffer_amount = 0.5
         self._ligase_amount = 0.125
 
         ##########################################
@@ -55,11 +53,8 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         #########################
         # Default reagent names #
         #########################
-        self.ligase_buffer = "T4 Ligase Buffer"
         self.ligase = "T4 Ligase"
         self.water = "Water"
-
-        self.assembly_locations = []
 
     def run(self):
 
@@ -79,6 +74,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 
         # Add any extra destination plates needed
         for layout in extra_destination_layouts:
+            layout.set_available_wells()
             self.add_destination_layout(layout)
 
         ######################################
@@ -88,10 +84,10 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         volume_factor = self.volume/self.__default_volume
         # Use the volume factor to calculate the reagent volumes
         enzyme_amount = self._enzyme_amount*volume_factor
-        ligase_buffer_amount = self._ligase_buffer_amount*volume_factor
+        buffer_amount = self._buffer_amount*volume_factor
         ligase_amount = self._ligase_amount*volume_factor
         # Store the total amount of reagents per reaction for later use
-        reagent_amount = enzyme_amount + ligase_buffer_amount + ligase_amount
+        reagent_amount = enzyme_amount + buffer_amount + ligase_amount
 
         ########################################
         # Add liquids to destination layout(s) #
@@ -116,7 +112,11 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                     # Add the reagents, water, and DNA to the destinaton plate
                     try:
                         current_destination_plate.add_content(current_destination_well, self.water, water_amount)
-                        current_destination_plate.add_content(current_destination_well, self.ligase_buffer, ligase_buffer_amount)
+                        if type(self.buffer) == list:
+                            for buffer in self.buffer:
+                                current_destination_plate.add_content(current_destination_well, buffer, buffer_amount/len(self.buffer))
+                        else:
+                            current_destination_plate.add_content(current_destination_well, self.buffer, buffer_amount)
                         current_destination_plate.add_content(current_destination_well, self.enzyme, enzyme_amount)
                         current_destination_plate.add_content(current_destination_well, self.ligase, ligase_amount)
                         backbone_name = assembly[0]
@@ -127,7 +127,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
                             current_destination_plate.add_content(current_destination_well, part_name, part_amount)
                             well_label += "{} + ".format(part_name)
 
-                        well_label = "{}{}".format(well_label[:-2], ratio)
+                        well_label = "{}{}{}".format(well_label[:-2], ratio,rep)
 
                         current_destination_plate.add_well_label(current_destination_well, well_label)
                     # Raise a more relevant error message if NegativeVolumeError occurs
@@ -147,14 +147,14 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
-        Polymerase,
-        Polymerase_Buffer,
-        Source_Plates,
-        Destination_Plate_Layout,
-        Volume,
-        Reactions,
-        Master_Mix = False,
-        Repeats = 1,
+        Volume: float,
+        Reactions: List[str],
+        Polymerase: str = None,
+        Polymerase_Buffer: str = None,
+        Polymerase_Buffer_Stock_Conc: float = None,
+        Master_Mix: str = None,
+        Master_Mix_Stock_Conc = None,
+        Repeats: int = 1,
         **kwargs
     ):
 
@@ -169,16 +169,12 @@ class PCR(_EchoProto.EchoProto_Template):
         self.polymerase = Polymerase
         self.buffer = Polymerase_Buffer
         self.master_mix = Master_Mix
+        self.master_mix_stock_conc = Master_Mix_Stock_Conc
+        self.buffer_stock_conc = Polymerase_Buffer_Stock_Conc
 
-        ###########
-        # Labware #
-        ###########
-        # Add source layouts to self.source_plate_layouts
-        for source in Source_Plates:
-            self.add_source_layout(source)
-
-        # Add the destination layout (more may be created later if needed)
-        self.add_destination_layout(Destination_Plate_Layout)
+        if not self.master_mix:
+            if not self.polymerase or not self.buffer:
+                raise _BMS.BMSTemplateError("If mastermix is not specified, then the polymerase and buffer to use must be given.")
 
         ###########################
         # Default reagent amounts #
@@ -186,17 +182,23 @@ class PCR(_EchoProto.EchoProto_Template):
         self.__default_volume = 5
 
         self._dNTPs_amount = 0.1
-        self._buffer_amount = 1
         self._polymerase_amount = 0.05
-        self._master_mix_amount = 2.5
+        if self.master_mix:
+            if not self.master_mix_stock_conc:
+                raise _BMS.BMSTemplateError("If master mix is specified, a stock concentration (e.g. 2x) must also be given.")
+            else:
+                self._master_mix_amount = self.__default_volume / self.master_mix_stock_conc
+        else:
+            self._master_mix_amount = None
+            self._buffer_amount = self.__default_volume / self.buffer_stock_conc
 
         ##################################
         # Default DNA and primer amounts #
         ##################################
         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
-        self._dna_amount = 1
+        self.dna_amount = 1
         # Default primer amounts in uL for 5 uL reactions, and 10 μM stock concentration
-        self._primer_amount = 0.25
+        self.primer_amount = 0.25
 
         #########################
         # Default reagent names #
@@ -231,8 +233,8 @@ class PCR(_EchoProto.EchoProto_Template):
         volume_factor = self.volume/self.__default_volume
 
         # Use the volume factor to calculate the reagent volumes
-        dna_amount = self._dNTPs_amount * volume_factor
-        primer_amount = self._primer_amount * volume_factor
+        dna_amount = self.dna_amount * volume_factor
+        primer_amount = self.primer_amount * volume_factor
 
         # Determine if a mastermix is being used
         if self.master_mix:
@@ -276,7 +278,7 @@ class PCR(_EchoProto.EchoProto_Template):
                         current_destination_plate.add_content(current_destination_well, self.polymerase, polymerase_amount)
 
                     # Label the well
-                    current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}".format(reaction[0], reaction[1], reaction[2]))
+                    current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}-{}".format(reaction[0], reaction[1], reaction[2], rep))
                 # Raise a more relevant error message if NegativeVolumeError occurs
                 except _BMS.NegativeVolumeError:
                     raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
@@ -292,337 +294,106 @@ class PCR(_EchoProto.EchoProto_Template):
         # Generate the picklists
         self.create_picklists()
 
-# class PCR:
-#     def __init__(self,
-#         Name,
-#         Volume,
-#         Polymerase,
-#         Polymerase_Buffer,
-#         Repeats = 1,
-#         Master_Mix = False,
-#         Colony = False
-#     ):
-#
-#         #####################
-#         # Protocol Metadata #
-#         #####################
-#         self.name = Name
-#
-#         ########################################
-#         # User defined aspects of the protocol #
-#         ########################################
-#         self.samples = []
-#         self.volume = Volume
-#         self.repeats = Repeats
-#         self.buffer = Polymerase_Buffer
-#         self.polymerase = Polymerase
-#         self._master_mix = Master_Mix
-#         self.colony_pcr = Colony
-#
-#         ###########
-#         # Labware #
-#         ###########
-#         self.source_plates = []
-#         self.destination_plate_format = None
-#
-#
-#         ###########################
-#         # Default reagent amounts #
-#         ###########################
-#         self.__default_volume = 5
-#         self.__volume_factor = self.volume/self.__default_volume
-#
-#         self._dNTPs_amount = 0.1
-#         self._buffer_amount = 1
-#         self._polymerase_amount = 0.05
-#         self._master_mix_amount = 2.5
-#
-#         ##################################
-#         # Default DNA and primer amounts #
-#         ##################################
-#         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
-#         self._dna_amount = 1
-#         # Default primer amounts in uL for 5 uL reactions, and 10 μM stock concentration
-#         self._primer_amount = 0.25
-#
-#         #########################
-#         # Default reagent names #
-#         #########################
-#         self.dNTPs = "dNTPs"
-#         self.master_mix = "Master Mix"
-#         self.water = "Water"
-#
-#     def add_sample(self,Template,Primer1,Primer2):
-#         self.samples.append([Template,Primer1,Primer2])
-#
-#     def add_source_plate(self,SPlate):
-#         self.source_plates.append(SPlate)
-#
-#     def define_destination_plate(self, Plate_Layout, Well_Range=None, Use_Outer_Wells=True):
-#         self.destination_plate_format = [Plate_Layout, Plate_Layout.get_well_range(Well_Range, Use_Outer_Wells)]
-#
-#     def make_picklist(self, Directory):
-#         n_samples = len(self.samples) * self.repeats
-#         wells_per_dplate = len(self.destination_plate_format[1])
-#         dplates = _BMS.Create_Plates_Needed(self.destination_plate_format[0], n_samples, wells_per_dplate)
-#
-#         dna_amount = self._dNTPs_amount*self.__volume_factor
-#         primer_amount = self._primer_amount*self.__volume_factor
-#
-#         if self._master_mix:
-#             master_mix_amount = self._master_mix_amount*self.__volume_factor
-#             reagent_amount = master_mix_amount + dna_amount + (2 * primer_amount)
-#         else:
-#             dNTPs_amount = self._dNTPs_amount*self.__volume_factor
-#             buffer_amount = self._buffer_amount*self.__volume_factor
-#             polymerase_amount = self._polymerase_amount*self.__volume_factor
-#             reagent_amount = dNTPs_amount + buffer_amount + polymerase_amount + dna_amount + (2 * primer_amount)
-#
-#         water_amount = self.volume - reagent_amount
-#         # If need to add less than 0.025 uL water, just add none (too small for echo to transfer)
-#         if water_amount < 0.025:
-#             water_amount = 0
-#
-#         dplate_id = 0
-#         dplate_current_well = 0
-#         dplate_well_range = self.destination_plate_format[1]
-#
-#         for sample in self.samples:
-#             for rep in range(0, self.repeats):
-#                 dplate = dplates[dplate_id]
-#                 if not self.colony_pcr:
-#                     dplate.add_content(dplate_well_range[dplate_current_well], sample[0], dna_amount)
-#                 dplate.add_content(dplate_well_range[dplate_current_well], sample[1], primer_amount)
-#                 dplate.add_content(dplate_well_range[dplate_current_well], sample[2], primer_amount)
-#                 dplate.add_content(dplate_well_range[dplate_current_well], self.water, water_amount)
-#
-#                 if self._master_mix:
-#                     dplate.add_content(dplate_well_range[dplate_current_well], self.master_mix, master_mix_amount)
-#                 else:
-#                     dplate.add_content(dplate_well_range[dplate_current_well], self.dNTPs, dNTPs_amount)
-#                     dplate.add_content(dplate_well_range[dplate_current_well], self.buffer, buffer_amount)
-#                     dplate.add_content(dplate_well_range[dplate_current_well], self.polymerase, polymerase_amount)
-#
-#                 dplate_current_well += 1
-#                 # Check if the current destination plate is full, and if so move on to the next plate
-#                 if dplate_current_well - 1 == len(dplate_well_range):
-#                     dplate_id += 1
-#                     dplate_current_well = 0
-#
-#         # Create protocol and generate picklists
-#         Protocol = _BMS.EchoProto.Protocol(self.name)
-#         Protocol.add_source_plates(self.source_plates)
-#         Protocol.add_destination_plates(dplates)
-#         _BMS.EchoProto.Generate_Actions(Protocol)
-#         _BMS.EchoProto.Write_Picklists(Protocol,Directory)
+class Colour_Mixing(_EchoProto.EchoProto_Template):
+    def __init__(
+        self,
+        Source_Colours: List[str],
+        Final_Volume: float,
+        Mixing_Ratios: List[str],
+        Permutations: bool = False,
+        Merge: bool = True,
+        **kwargs # This will make the superclass arguments available to `Colour_Mixing` as keyword arguments
+    ):
+        super().__init__(**kwargs) # This passes the keyword arguments to the superclass
 
-# class Loop_Assembly: # Volume is uL, assumes parts are at 10 fmol/uL
-#
-#     def __init__(self,
-#         Name,
-#         Enzyme,
-#         Source_Plates,
-#         Destination_Plate_Format,
-#         Destination_Well_Range = None,
-#         Use_Outer_Destination_Wells = True,
-#         Volume = 5,
-#         Backbone_to_Part = ["1:1"],
-#         Repeats = 1
-#     ):
-#         #####################
-#         # Protocol Metadata #
-#         #####################
-#         self.name = Name
-#         # Create an empty Echo protocol
-#         self._protocol = _BMS.EchoProto.Protocol(Name)
-#
-#         ########################################
-#         # User defined aspects of the protocol #
-#         ########################################
-#         self.volume = Volume # uL
-#         self.ratios = Backbone_to_Part
-#         self.repeats = Repeats
-#         self.assemblies = []
-#         self.enzyme = Enzyme
-#
-#         ###########
-#         # Labware #
-#         ###########
-#         self.source_plates = Source_Plates
-#         self.destination_plate_format = Destination_Plate_Format # [Plate_Layout, Wells_For_Use]
-#         self.destination_well_range = Destination_Plate_Format.get_well_range(Well_Range = Destination_Well_Range, Use_Outer_Wells = Use_Outer_Destination_Wells)
-#
-#         ##############################################
-#         # Default reagent amounts for 5 uL reactions #
-#         ##############################################
-#         self._enzyme_amount = 0.125
-#         self._ligase_buffer_amount = 0.5
-#         self._ligase_amount = 0.125
-#
-#         ##########################################
-#         # Default DNA amounts for 5 uL reactions #
-#         ##########################################
-#         # For 1:1 ratio, and source concentration of 10 fmol/uL
-#         self._backbone_amount = 0.25
-#         self._part_amount = 0.25
-#
-#         #########################
-#         # Default reagent names #
-#         #########################
-#         self.ligase_buffer = "T4 Ligase Buffer"
-#         self.ligase = "T4 Ligase"
-#         self.water = "Water"
-#
-#         self.assembly_locations = []
-#
-#     ###############################
-#     # Function to add an assembly #
-#     ###############################
-#     def add_assembly(self,Backbone,Parts):
-#         # If a single string is given for Parts, convert it to a list
-#         ## This keeps things consistent for downstream usage,
-#         ## but allows user input flexiblility when assembling a single part
-#         if isinstance(Parts, str):
-#             Parts = list(Parts)
-#         # Add the assembly to self.assemblies in the format list[Backbone: str, Parts: list[Part: str]]
-#         self.assemblies.append([Backbone,Parts])
-#
-#     #####################################
-#     # Function to generate the picklist #
-#     #####################################
-#     def make_picklist(self,Directory):
-#
-#         ###################################################
-#         # Calculate number of destination plates required #
-#         ###################################################
-#         # Determine final number of assemblies, and hence number of destination wells required
-#         n_assemblies = (len(self.assemblies) * len(self.ratios)) * self.repeats
-#
-#         ################################################
-#         # Create required number of destination plates #
-#         ################################################
-#         destination_plates = _BMS.EchoProto.Calculate_And_Create_Plates(self.destination_plate_format, n_assemblies, len(self.destination_well_range))
-#
-#         ######################################
-#         # Calculate reagent volumes required #
-#         ######################################
-#         # Volume factor is the difference between the default volume (5 uL) and the user-define final volume
-#         volume_factor = self.volume/5
-#         # Use the volume factor to calculate the reagent volumes
-#         enzyme_amount = self._enzyme_amount*volume_factor
-#         ligase_buffer_amount = self._ligase_buffer_amount*volume_factor
-#         ligase_amount = self._ligase_amount*volume_factor
-#         # Store the total amount of reagents per reaction for later use
-#         reagent_amount = enzyme_amount + ligase_buffer_amount + ligase_amount
-#
-#         #########################################################
-#         # Add DNA, water, and reagents to each destination well #
-#         #########################################################
-#         # Counter to define which destination plate is in use
-#         destination_plate_index = 0
-#         # Counter to define which destination well is in use
-#         destination_well_index = 0
-#
-#         # For every reaction
-#         for assembly in self.assemblies:
-#             for ratio in self.ratios:
-#                 for rep in range(0, self.repeats):
-#                     backbone_amount = (self._backbone_amount*volume_factor)*float(ratio.split(":")[0])
-#                     part_amount = (self._part_amount*volume_factor)*float(ratio.split(":")[1])
-#                     water_amount = self.volume - (backbone_amount + (part_amount*len(assembly[1])) + reagent_amount)
-#                     # If water amount is below the minimum amount which can be transfered by the Echo, set the water amount to 0
-#                     ## This is to avoid errors
-#                     if water_amount < 0.025 and water_amount > 0:
-#                         water_amount = 0
-#
-#                     # Get the current destination plate
-#                     destination_plate = destination_plates[destination_plate_index]
-#                     # Get the current destination well
-#                     destination_well = self.destination_well_range[destination_well_index]
-#
-#                     # Add the reagents, water, and DNA to the destinaton plate
-#                     try:
-#                         destination_plate.add_content(destination_well, self.enzyme, enzyme_amount)
-#                         destination_plate.add_content(destination_well, self.ligase_buffer, ligase_buffer_amount)
-#                         destination_plate.add_content(destination_well, self.ligase, ligase_amount)
-#                         destination_plate.add_content(destination_well, self.water, water_amount)
-#                         destination_plate.add_content(destination_well, assembly[0], backbone_amount)
-#                         part_string = ""
-#                         for part in assembly[1]:
-#                             destination_plate.add_content(destination_well, part, part_amount)
-#                             part_string += part + "+"
-#                     except _BMS.NegativeVolumeError:
-#                         raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
-#
-#                     assembly_name = "{}-{}-{}".format(assembly[0],part_string[0:-1],ratio)
-#                     self.assembly_locations.append([destination_plate.name, destination_well, assembly_name])
-#
-#                     # Iterate to the next destination well
-#                     destination_well_index += 1
-#                     # Check if the current destinaton plate is full
-#                     if destination_well_index - 1 == len(self.destination_well_range):
-#                         # If so, iterate to the first well of the next destination plate
-#                         destination_plate_index += 1
-#                         destination_well_index = 0
-#
-#         # dplate_id = 0
-#         # # Counter to define which destination well is in use
-#         # dplate_current_well = 0
-#         # # For every reaction
-#         # for assembly in self.assemblies:
-#         #     for ratio in self.ratios:
-#         #         for rep in range(0, self.repeats):
-#         #             backbone_amount = (self._backbone_amount*volume_factor)*float(ratio.split(":")[0])
-#         #             part_amount = (self._part_amount*volume_factor)*float(ratio.split(":")[1])
-#         #             # Calculate amount of water to be added
-#         #             water_amount = self.volume - (backbone_amount + (part_amount*len(assembly[1])) + reagent_amount)
-#         #             # If the amount of water required is less than 0, that means that the reaction is above the reaction volume
-#         #             ## In this case, raise an error
-#         #             if water_amount < 0:
-#         #                 raise ValueError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
-#         #             # If water amount is below the minimum amount which can be transfered by the Echo, set the water amount to 0
-#         #             ## This is to avoid errors
-#         #             if water_amount < 0.025:
-#         #                 water_amount = 0
-#         #
-#         #             # Get the current destination plate
-#         #             dplate = dplates[dplate_id]
-#         #             # Get the current destination well
-#         #             d_well = dplate_well_range[dplate_current_well]
-#         #
-#         #             # Add the reagents, water, and DNA to the destinaton plate
-#         #             dplate.add_content(d_well, self.enzyme, enzyme_amount)
-#         #             dplate.add_content(d_well, self.ligase_buffer, ligase_buffer_amount)
-#         #             dplate.add_content(d_well, self.ligase, ligase_amount)
-#         #             dplate.add_content(d_well, self.water, water_amount)
-#         #             dplate.add_content(d_well, assembly[0], backbone_amount)
-#         #             part_string = ""
-#         #             for part in assembly[1]:
-#         #                 dplate.add_content(d_well, part, part_amount)
-#         #                 part_string += part + "+"
-#         #
-#         #             assembly_name = "{}-{}-{}".format(assembly[0],part_string[0:-1],ratio)
-#         #             self.assembly_locations.append([dplate.name, d_well, assembly_name])
-#         #
-#         #             # Iterate to the next destination well
-#         #             dplate_current_well += 1
-#         #             # Check if the current destinaton plate is full
-#         #             if dplate_current_well - 1 == len(dplate_well_range):
-#         #                 # If so, iterate to the first well of the next destination plate
-#         #                 dplate_id += 1
-#         #                 dplate_current_well = 0
-#
-#         # self.destination_plates = dplates
-#
-#         ##########################################
-#         # Create protocol and generate picklists #
-#         ##########################################
-#         # Create an empty Echo protocol
-#         Protocol = _BMS.EchoProto.Protocol(self.name)
-#         # Add the source and destination plates to the protocol
-#         Protocol.add_source_plates(self.source_plates)
-#         Protocol.add_destination_plates(destination_plates)
-#         # Generate the liquid transfer actions
-#         _BMS.EchoProto.Generate_Actions(Protocol)
-#         # Create and write the picklists
-#         _BMS.EchoProto.Write_Picklists(Protocol,Directory)
+        #######################
+        # User Defined Values #
+        #######################
+        self.source_colours = Source_Colours
+        self.final_volume = Final_Volume # uL
+        self.mixing_ratios = Mixing_Ratios
+        self.permutations = Permutations
+        self.merge = Merge
+
+    def run(self):
+
+        # Set up an empty list in which the colour mixtures required will be added
+        Colour_Mixtures = []
+
+        # Iterate through the list of source colours provided to create the list of mixtures.
+        for colour_1 in self.source_colours:
+            for colour_2 in self.source_colours:
+                # Ignore situations where colour_1 and colour_2 are the same
+                if colour_1 == colour_2:
+                    continue
+                # Unless permutations has been set to `True`, ignore situations where...
+                # ...the same colours have already been mixed, just in a different order
+                elif not self.permutations and [colour_2, colour_1] in Colour_Mixtures:
+                    continue
+                else:
+                    # Add the two colours to the list of mixtures to prepare
+                    Colour_Mixtures.append([colour_1, colour_2])
+
+        # Here, we'll print to OUT all of the mixtures which will be prepared
+        for c in Colour_Mixtures:
+            print(c)
+
+        # Determine how may different mixtures will be prepared
+        Number_Of_Mixtures = len(Colour_Mixtures) * len(self.mixing_ratios)
+
+        # Use BMS.Create_Labware_Needed to ensure enough destination plates are available
+        Extra_Destination_Plates_Required = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
+            N_Wells_Needed = Number_Of_Mixtures,
+            N_Wells_Available = "All",
+            Return_Original_Layout = False
+        )
+
+        # If any extra plates were created, add them using the `add_destination_layout` method defined by the superclass
+        for plate_layout in Extra_Destination_Plates_Required:
+            self.add_destination_layout(plate_layout)
+
+        # Add content to the destination plate(s)
+
+        # A counter is used to iterate through the destination plates (if more than one)
+        Destination_Plate_Index = 0
+
+        for mixture in Colour_Mixtures:
+            # Get the current destination plate
+            Destination_Plate = self.destination_plate_layouts[Destination_Plate_Index]
+
+            # Get the colours
+            colour_1 = mixture[0]
+            colour_2 = mixture[1]
+
+            # For every ratio defined by the user
+            for ratio in self.mixing_ratios:
+                # Get the ratio for each colour
+                colour_1_ratio = float(ratio.split(":")[0])
+                colour_2_ratio = float(ratio.split(":")[1])
+
+                # Get the volumes to add for each colour
+                colour_1_volume = (colour_1_ratio/(colour_1_ratio + colour_2_ratio)) * self.final_volume
+                colour_2_volume = (colour_2_ratio/(colour_1_ratio + colour_2_ratio)) * self.final_volume
+
+                # Get the next empty well in the destination plate
+                well = Destination_Plate.get_next_empty_well()
+                # If there are no empty wells left, iterate to the next plate and try again
+                if not well:
+                    Destination_Plate_Index += 1
+                    Destination_Plate = self.destination_plate_layouts[Destination_Plate_Index]
+                    well = Destination_Plate.get_next_empty_well()
+
+                # Add content to the plate
+                Destination_Plate.add_content(
+                    Well = well,
+                    Reagent = colour_1,
+                    Volume = colour_1_volume
+                )
+                Destination_Plate.add_content(
+                    Well = well,
+                    Reagent = colour_2,
+                    Volume = colour_2_volume
+                )
+
+        self.create_picklists()

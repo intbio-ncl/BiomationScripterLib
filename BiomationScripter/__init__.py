@@ -1,11 +1,26 @@
-from BiomationScripter import EchoProto
-from BiomationScripter import OTProto
+# from BiomationScripter import EchoProto
+# from BiomationScripter import OTProto
+from typing import List
+from typing import Dict
+from typing import Union
+import random
 # from BiomationScripter import FeliXProto
 # from BiomationScripter import PIXLProto
 # from BiomationScripter import AttuneProto
 # from BiomationScripter import ClarioProto
 
-import math
+# Function to pass template modules
+def get_template_module(Module_Name):
+    if Module_Name == "OTProto":
+        import BiomationScripter.OTProto.Templates as OTProto_Templates
+        return(OTProto_Templates)
+
+    elif Module_Name == "EchoProto":
+        import BiomationScripter.EchoProto.Templates as EchoProto_Templates
+        return(EchoProto_Templates)
+
+
+import math as _math
 
 # Exception classes #
 
@@ -25,6 +40,9 @@ class OutOFSourceMaterial(Exception):
     pass
 
 class DoEError(Exception):
+    pass
+
+class TransferError(Exception):
     pass
 
 #####################
@@ -181,19 +199,33 @@ class DoE_Run_Data:
         else:
             return(Value)
 
+class Labware_Content:
+    def __init__(self, Name, Volume, Liquid_Class = None):
+        self.name = Name
+        self.volume = Volume
+        self.liquid_class = Liquid_Class
 
+    def get_info(self):
+        return([self.name, self.volume, self.liquid_class])
+
+class Assembly:
+    def __init__(self, Name: str, Backbone: str, Parts: List[str]):
+        self.name = Name
+        self.backbone = Backbone
+        self.parts = Parts
 
 class Labware_Layout:
     def __init__(self, Name, Type):
-        self.name = Name
-        self.type = Type
-        self.rows = None
-        self.columns = None
-        self.content = {}
-        self.available_wells = None
-        self.well_labels = {}
+        self.name: str = Name
+        self.type: str = Type
+        self.rows: int = None
+        self.columns: int = None
+        self.content: Dict[str, List[Labware_Content]] = {}
+        self.available_wells: List[str] = None
+        self.empty_wells: List[str] = None
+        self.well_labels: Dict[str, str] = {}
 
-    def define_format(self, Rows, Columns):
+    def define_format(self, Rows: int, Columns: int):
         self.rows = Rows
         self.columns = Columns
 
@@ -202,6 +234,7 @@ class Labware_Layout:
 
     def set_available_wells(self, Well_Range = None, Use_Outer_Wells = True, Direction = "Horizontal", Box = False):
         self.available_wells = self.get_well_range(Well_Range, Use_Outer_Wells, Direction, Box)
+        self.empty_wells = self.available_wells.copy()
 
     def get_available_wells(self):
         return(self.available_wells)
@@ -251,8 +284,10 @@ class Labware_Layout:
         type = self.type
         rows = self.rows
         columns = self.columns
-        plate_copy = PlateLayout(name, type)
+        plate_copy = Labware_Layout(name, type)
         plate_copy.define_format(rows, columns)
+        plate_copy.available_wells = self.available_wells.copy()
+        plate_copy.empty_wells = plate_copy.available_wells.copy()
         return(plate_copy)
 
     def add_content(self, Well, Reagent, Volume, Liquid_Class = None):
@@ -262,35 +297,45 @@ class Labware_Layout:
         if Volume < 0:
             raise NegativeVolumeError
 
+        if self.available_wells and not ":" in Well and not type(Well) == list:
+            if not Well in self.available_wells:
+                raise LabwareError("Available wells are specified, but well {} is not defined as available.\nCheck that the correct well has been specified. Available wells are:{}\n".format(Well, self.available_wells))
+
         # Volume should always be uL
         if Liquid_Class == None:
             Liquid_Class = "Unknown"
         if ":" in Well:
-            for w in well_range(Well):
+            for w in well_range(Well, Labware_Format = self):
                 self.add_content(w, Reagent, Volume, Liquid_Class)
         elif type(Well) == list:
             for well in Well:
                 self.add_content(well, Reagent, Volume, Liquid_Class)
         elif Well in self.content:
-            self.content[Well].append([Reagent,float(Volume), Liquid_Class])
+            self.content[Well].append(Labware_Content(Reagent, float(Volume), Liquid_Class))
         else:
-            self.content[Well] = [ [Reagent,float(Volume), Liquid_Class] ]
+            self.content[Well] = [ Labware_Content(Reagent, float(Volume), Liquid_Class) ]
+
+        if self.empty_wells and Well in self.empty_wells:
+            self.empty_wells.remove(Well)
 
     def add_well_label(self, Well: str, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
-                raise ValueError('Label "{}" is already used as a label in {}'.format(Label, well))
+                raise LabwareError('Label "{}" is already used as a label in {}'.format(Label, well))
         self.well_labels[Well] = Label
 
     def get_well_content_by_label(self, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
                 return(self.content[well])
+        return(None)
 
     def get_well_location_by_label(self, Label: str):
         for well in self.well_labels:
             if self.well_labels[well] == Label:
                 return(well)
+
+        return(None)
 
     def get_content(self):
         return(self.content)
@@ -305,7 +350,7 @@ class Labware_Layout:
         liquids_in_well = []
         content_in_well = self.content[Well]
         for content in content_in_well:
-            liquids_in_well.append(content[0])
+            liquids_in_well.append(content.name)
 
         return(liquids_in_well)
 
@@ -315,23 +360,50 @@ class Labware_Layout:
         wells = self.get_occupied_wells()
         for well in wells:
             for liquid in content[well]:
-                if liquid[0] == Liquid_Name:
+                if liquid.name == Liquid_Name:
                     wells_to_return.append(well)
         return(wells_to_return)
 
     def clear_content(self):
         self.content = {}
+        if self.available_wells:
+            self.empty_wells = self.available_wells.copy()
 
     def clear_content_from_well(self, Well):
         del self.content[Well]
+
+        if self.empty_wells:
+            self.empty_wells.append(Well)
+
+    def clear_liquid_in_well(self, Well, Liquid):
+        well_contents = self.content[Well].copy()
+        for content in well_contents:
+            if Liquid == content.name:
+                self.content[Well].remove(content)
+
+        # Check if the well is now empty
+        if len(self.content[Well]) == 0:
+            # Clean up
+            self.clear_content_from_well(Well)
+
+    def get_next_empty_well(self):
+        if not self.available_wells:
+            raise LabwareError("Available wells must be specified to get the next empty well. Specify the avilable wells for {} using `.set_available_wells`.".format(self.name))
+        if len(self.empty_wells) == 0:
+            return(None)
+        # Iterate through all available wells, and return the first one which also exists in the empty wells attribute
+        for well in self.available_wells:
+            if well in self.empty_wells:
+                return(well)
+
 
     def get_volume_of_liquid_in_well(self, Liquid, Well):
         # if not Well in self.get_occupied_wells():
         #     raise LabwareError("Well {} in labware {} contains no liquids.".format(Well, self.name))
         well_content = self.get_content()[Well]
         for content in well_content:
-            if content[0] == Liquid:
-                return(content[1])
+            if content.name == Liquid:
+                return(content.volume)
 
         return(0.0)
 
@@ -340,19 +412,19 @@ class Labware_Layout:
             raise LabwareError("{} has not been previously defined. Add content to this well using the `add_content` method.".format(Well))
         well_content = self.get_content()[Well]
         for content in well_content:
-            if content[0] == Reagent:
-                content[1] = float(Volume)
+            if content.name == Reagent:
+                content.volume = float(Volume)
 
     def print(self):
-        print("Information for " + self.name)
+        print("\033[1mInformation for " + self.name + "\033[0m")
         print("Plate Type: " + self.type)
         content = self.get_content()
         print("Well\tVolume(uL)\tLiquid Class\tReagent")
         content_return = ""
         for well in content:
             for c in content[well]:
-                content_return += (well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0]+ "\n")
-                print(well+"\t"+str(c[1])+"\t\t"+c[2]+"\t\t"+c[0])
+                content_return += (well+"\t"+str(c.volume)+"\t\t"+c.liquid_class+"\t\t"+c.name+ "\n")
+                print(well+"\t"+str(c.volume)+"\t\t"+c.liquid_class+"\t\t"+c.name)
         return(content_return)
 
 
@@ -397,10 +469,9 @@ class Labware_Layout:
             self.add_content(row[0], row[1], row[2], row[3])
         return(self)
 
-
 class PlateLayout(Labware_Layout):
-    pass
-
+    def __init__(self, Name, Type):
+        raise ValueError("`PlateLayout` has been replaced by `Labware_Layout`")
 
 class Liquids:
     def __init__(self):
@@ -453,6 +524,11 @@ class Liquids:
     def get_all_liquids(self):
         return(list(self.liquids.keys()))
 
+class Mastermix:
+    def __init__(self, Name, Reagents, Wells):
+        self.name = Name
+        self.reagents = Reagents
+        self.wells = Wells
 ##########################################
 # Functions
 
@@ -556,31 +632,60 @@ def DoE_Create_Intermediate(DoE_Experiment, Intermediate_Name, Source_Material_N
 
     return(Intermediate_Types)
 
+def Reagent_Finder(Reagents, Directories):
+    import os
+    # Get all labware layouts in the specified directories
+    Files = []
+    for directory in Directories:
+        Files.append([file for file in os.listdir(directory+"/") if os.path.isfile(os.path.join(directory+"/", file)) and not "~$" in file])
+
+    Layouts = []
+    for files, directory in zip(Files, Directories):
+        for file in files:
+            try:
+                Layouts.append(
+                    Import_Labware_Layout(
+                        Filename = file,
+                        path = directory+"/"
+                    )
+                )
+            except:
+                continue
+
+    # Check if each reagent is in a labware file
+    for reagent in Reagents:
+        print("\n{}:".format(reagent))
+        for layout in Layouts:
+            if len(layout.get_wells_containing_liquid(reagent)) > 0:
+                print("> {}: {}".format(layout.name, layout.get_wells_containing_liquid(reagent)))
+
 def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
     labware_layout = Labware_Layout("name", "type")
     labware_layout.import_labware(Filename, path = path, ext = ext)
     return(labware_layout)
 
 def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
-    return(Import_Labware_Layout(Filename, path = path, ext = ext))
+    raise ValueError("`Import_Plate_Layout` has been replaced by `Import_Labware_Layout`.")
 
 def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
+    return(Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available, Return_Original_Layout))
+
+def Create_Labware_Needed(Labware_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
-            N_Wells_Available = Plate_Format.rows * Plate_Format.columns
+            N_Wells_Available = Labware_Format.rows * Labware_Format.columns
         else:
             raise ValueError("`N_Wells_Available` should either be an integer, or 'All'.")
 
-    N_Plates_Needed = math.ceil(N_Wells_Needed/N_Wells_Available)
+    N_Plates_Needed = _math.ceil(N_Wells_Needed/N_Wells_Available)
     if Return_Original_Layout == True:
-        Plates = [Plate_Format]
+        Plates = [Labware_Format]
     elif Return_Original_Layout == False:
         Plates = []
     for plate_n in range(1, N_Plates_Needed):
-        Plate_Name = Plate_Format.name + str(plate_n)
-        Plates.append(Plate_Format.clone_format(Plate_Name))
+        Plate_Name = Labware_Format.name + str(plate_n)
+        Plates.append(Labware_Format.clone_format(Plate_Name))
     return(Plates)
-
 
 def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = False):
     if not Direction == "Horizontal" and not Direction == "Vertical":
@@ -612,7 +717,7 @@ def well_range(Wells, Labware_Format = None, Direction = "Horizontal", Box = Fal
         # Get the end row and end column number for the labware being used
         if type(Labware_Format) is list:
             if not len(Labware_Format) == 2:
-                raise ValueError("Labware_Format argument MUST either be a BiomationScripter.PlateLayout object, or a list specifying number of rows and number of columns (e.g. [8, 12]).")
+                raise ValueError("Labware_Format argument MUST either be a BiomationScripter.Labware_Layout object, or a list specifying number of rows and number of columns (e.g. [8, 12]).")
             end_row, end_col = Labware_Format
         else:
             Labware_Format = [Labware_Format.rows, Labware_Format.columns]
@@ -676,6 +781,536 @@ def Group_Locations(Locations, Group_Populations):
         start_index += group_pop
     return(Grouped_Locations)
 
+def serial_dilution_volumes(dilution_factors, total_volume):
+    # Note that total volume is the amount the dilution will be made up to
+    ## The total volume of all dilutions other than the final will be lower than this
+    sample_volumes = []
+    solution_volumes = []
+
+    # This the the dilution factor of the source material for the first serial dilution
+    ## This is always 1, as the initial sample is assumed to be undiluted
+    source_dilution_factor = 1
+
+    for df in dilution_factors:
+        # Get the dilution factor of the current serial dilution being performed
+        destination_dilution_factor = df
+
+        # Calculate the volume, in uL, of sample and solution required for each dilution factor
+        sample_volume = total_volume * (source_dilution_factor/destination_dilution_factor)
+        solution_volume = total_volume - sample_volume
+
+        # Store the volumes required for later use
+        sample_volumes.append(sample_volume)
+        solution_volumes.append(solution_volume)
+
+        # Set the current dilution as the source for the next serial dilution
+        source_dilution_factor = df
+
+    return(sample_volumes, solution_volumes)
+
+
+def _get_well_layout_index(well):
+    return(int(well.split("_")[0]))
+
+def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Maximum_Mastermix_Volume, Min_Transfer_Volume, Extra_Reactions, Excluded_Reagents = [], Excluded_Combinations = [], Preferential_Reagents = [], Seed = None):
+
+    Solved = False # Check whether a solution has been found
+
+    First_Attempt = True # Determine whether this is the first attempt to find a solution
+
+    # Whilst there is no solution
+    print("\nDetermining mastermixes, this may take a while...\n")
+    while not Solved:
+
+        try:
+
+            # Get all unique reagents in the destination layout
+            All_Reagents = set()
+
+            for Destination_Layout in Destination_Layouts:
+                for well in Destination_Layout.get_content():
+                    for reagent in Destination_Layout.get_liquids_in_well(well):
+                        All_Reagents.add(reagent)
+
+            # For each reagent at each volume/well, get the wells it appears in
+            ## e.g., 20 uL water might be in wells A1, A2, A3 and 30 uL water might be in wells A4, A5, A6
+
+            Wells_By_Reagent_ID = {}
+
+            for reagent in All_Reagents:
+                # get wells containing the current reagent (grouped by destination layout)
+                wells_with_reagent_by_destination = [Destination_Layout.get_wells_containing_liquid(reagent) for Destination_Layout in Destination_Layouts]
+
+                # combine grouped wells into one list, and add the destination layout index to the well designation (INDEX_WELL)
+                wells_with_reagent = []
+                for wells, dest_index in zip(wells_with_reagent_by_destination, range(0,len(wells_with_reagent_by_destination))):
+                    wells_with_reagent += ["{}_{}".format(dest_index, well) for well in wells]
+
+                # Group the identified wells based on the reagent's volume/well
+                for well in wells_with_reagent:
+                    # Get the volume in the well
+                    well_volume = Destination_Layouts[_get_well_layout_index(well)].get_volume_of_liquid_in_well(reagent, well.split("_")[1])
+                    # Create a new reagent ID which includes the volume/well
+                    reagent_id = "{}_vol_{}".format(reagent, well_volume)
+                    # Add the well to the relevant reagent id (create the entry if needed)
+                    if reagent_id in Wells_By_Reagent_ID.keys():
+                        Wells_By_Reagent_ID[reagent_id].add(well)
+                    else:
+                        Wells_By_Reagent_ID[reagent_id] = set([well])
+
+
+
+            # a set of all volume/well values
+            vols_per_well = set()
+            # Get the reagent id keys in alphabetical order - needed to ensure consistency when doing random shuffles
+            reagent_id_keys = list(Wells_By_Reagent_ID.keys())
+            reagent_id_keys.sort()
+
+            for reagent_id in reagent_id_keys:
+                vols_per_well.add(_get_vol_per_well(reagent_id))
+
+            vols_per_well = list(vols_per_well)
+            vols_per_well.sort()
+
+            # Get a list of reagent IDs ordered by volume/well (ascending)
+            Ordered_Reagent_IDs = []
+            for volume in vols_per_well:
+                for reagent_id in reagent_id_keys:
+                    if _get_vol_per_well(reagent_id) == volume:
+                        Ordered_Reagent_IDs.append(reagent_id)
+
+            # Removed excluded reagents (i.e. those not to be used in mastermixes)
+
+            for reagent in Ordered_Reagent_IDs.copy(): # copy to make sure the iterating works as expected
+                for excluded_reagent in Excluded_Reagents:
+                    if excluded_reagent in reagent:
+                        Ordered_Reagent_IDs.remove(reagent)
+
+            #####################################
+
+            # Check for linked reagents (where reagent ids share the same well set)
+
+            reagents_checked = [] # Used to ensure combinations, NOT permutations
+            Linked_Reagents = []
+
+            for reagent_id in Ordered_Reagent_IDs:
+                linked_reagents = [reagent_id] # temp list for inside loop
+                reagent_well_set = Wells_By_Reagent_ID[reagent_id] # well set for the current reagent
+                for candidate_reagent in Ordered_Reagent_IDs:
+                    if candidate_reagent == reagent_id:
+                        # Don't link a reagent with itself
+                        continue
+                    elif candidate_reagent in reagents_checked:
+                        # Ignore already checked reagents - avoids permutations
+                        continue
+                    elif reagent_well_set == Wells_By_Reagent_ID[candidate_reagent]:
+                        # If the reagent well sets are identical, then link the reagents
+                        linked_reagents.append(candidate_reagent)
+                        # Make sure that the linked reagents aren't excluded combinations
+                        for excluded_combo in Excluded_Combinations:
+                            if candidate_reagent.split("_vol_")[0] in excluded_combo and reagent_id.split("_vol_")[0] in excluded_combo:
+                                linked_reagents.remove(candidate_reagent) # remove it if it is an excluded combo
+
+                # Reagent volumes will be scaled up to ensure that the mastermix can service the correct number of wells,
+                ## and to also ensure that the lowest volume reagent can be added with a transfer volume above the min transfer vol
+                # Check that this scale up will not put the total mastermix volume above the total well capacity if these linked reagents were used
+                lowest_vol_reag = [reag for reag in linked_reagents if _get_vol_per_well(reag) == min([_get_vol_per_well(reag) for reag in linked_reagents])][0]
+                if _get_vol_per_well(lowest_vol_reag) * (len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions) >= Min_Transfer_Volume:
+                    potential_mm_reaction_num = len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions
+                else:
+                    potential_mm_reaction_num = Min_Transfer_Volume/_get_vol_per_well(lowest_vol_reag)
+                # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed
+                ## then remove the highest vol reagent until the vol is below the max volume allowed
+                total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in linked_reagents])
+                while total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                    linked_reagents.remove([reag for reag in linked_reagents if _get_vol_per_well(reag) == max([_get_vol_per_well(reag) for reag in linked_reagents])][0])
+                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in linked_reagents])
+
+                # Check if the current reagent was linked with any other reagent(s)
+                if len(linked_reagents) == 1:
+                    pass
+                else:
+                    Linked_Reagents.append(linked_reagents)
+
+                # Mark that the reagent has been checked
+                reagents_checked.append(reagent_id)
+
+            # print(Linked_Reagents)
+
+            ######################################
+
+            # Create the mastermixes
+
+            No_Solution = False
+
+            if Seed:
+                random.seed(Seed)
+                random.shuffle(Ordered_Reagent_IDs)
+
+            Mastermixes = []
+            for reagent_id in Ordered_Reagent_IDs:
+
+                # Check if the reagent's volume/well is below the trasfer threshold
+                if _get_vol_per_well(reagent_id) < Min_Transfer_Volume:
+                    # print("\n")
+                    mastermix_reagents = [reagent_id] # list to hold the mastermix components
+                    mastermix_per_well = _get_vol_per_well(reagent_id) # to track the volume of MM to add per well
+                    current_reagent_well_set = Wells_By_Reagent_ID[reagent_id].copy() # set of wells which need to be statisifed by the MMs
+
+
+                    # Check if the reagent's well set is empty
+                    ## This can occur if the reagent has been satisified by other mastermixes
+                    if len(current_reagent_well_set) == 0:
+                        continue
+
+                    # print("start", mastermix_reagents)
+
+
+                    ##########################################
+                    # Check if there are any linked reagents #
+                    ##########################################
+                    for linked_reagents in Linked_Reagents:
+                        if reagent_id in linked_reagents:
+                            # For any linked reagents found...
+                            for linked_reagent in linked_reagents:
+                                # Skip the current reagent in the list so it isn't added to itself
+                                if linked_reagent == reagent_id:
+                                    continue
+                                # Check that the linked reagent hasn't already been used up in other mastermixes
+                                elif len(Wells_By_Reagent_ID[linked_reagent]) == 0:
+                                    continue
+                                else:
+                                    mastermix_reagents.append(linked_reagent)
+                                    mastermix_per_well += _get_vol_per_well(linked_reagent)
+                    # Check if the MM per well is above the threshold
+                    if mastermix_per_well >= Min_Transfer_Volume:
+                        # print("Reagent:", reagent_id)
+                        # print("linked mm reag", mastermix_reagents)
+                        # If it is, then create the mastermix
+                        mastermix_name = ":".join(mastermix_reagents)
+                        # Check if any linked reagents have already been used
+                        if False in [current_reagent_well_set == Wells_By_Reagent_ID[mm_reag] for mm_reag in mastermix_reagents]:
+                            # If the well sets are not equal, then just skip to the next code block (essentially means that the simple solution failed...)
+                            # Reset the variables first...
+                            mastermix_reagents = [reagent_id] # list to hold the mastermix components
+                            mastermix_per_well = _get_vol_per_well(reagent_id) # to track the volume of MM to add per well
+                            current_reagent_well_set = Wells_By_Reagent_ID[reagent_id].copy() # set of wells which need to be statisifed by the MMs
+                            pass
+                        else:
+                            mastermix_well_set = current_reagent_well_set.copy()
+                            Mastermixes.append(Mastermix(mastermix_name, mastermix_reagents.copy(), mastermix_well_set.copy()))
+                            # Remove the used wells from the reagent IDs
+                            for used_reagent in mastermix_reagents:
+                                # print("Current {} well set: {}".format(used_reagent, Wells_By_Reagent_ID[used_reagent]))
+                                Wells_By_Reagent_ID[used_reagent] -= mastermix_well_set
+                                # print("Updated {} well set: {}".format(used_reagent, Wells_By_Reagent_ID[used_reagent]))
+                            # print("---")
+
+                            # Then continue to the next reagent in need of a mastermix
+                            continue
+                    else:
+                        # If not, pass to the next code block to add some more components
+                        pass
+
+                    ###############################################################
+                    # Add components until the MM per well is above the threshold #
+                    ###############################################################
+                    split = [] # This is used to keep track of things if multiple MMs are needed for a reagent
+                    ## split is a list of sets: split = [ [wells: set, mm_reagents: set] ]
+                    split_active = False # True when there are still wells that need to be dealt with
+                    ## split variables hold wells that are not currently active
+                    ## mastermix_ variables hold currently active wells (actively trying to satisify)
+
+
+                    # Keep looping until the MM per well is above the threshold and all wells have been satisified
+                    while mastermix_per_well < Min_Transfer_Volume or len(current_reagent_well_set) > 0 or split_active:
+                        # Start by identifying the reagent with the most wells in common
+                        ## (if there is a tie, the reagent with lowest vol/well is selected)
+                        common_wells = set()
+                        chosen_component = ""
+                        chosen_components = []
+                        preferential_selected = False
+                        for candidate_reagent in Ordered_Reagent_IDs:
+                            # Make sure that the linked reagents aren't excluded combinations
+                            exclude = False
+                            for excluded_combo in Excluded_Combinations:
+                                if candidate_reagent.split("_vol_")[0] in excluded_combo and reagent_id.split("_vol_")[0] in excluded_combo:
+                                    exclude = True
+                                    break
+                            if exclude:
+                                continue
+
+                            # Make sure that adding the reagent wouldn't put the mastermix volume over the max allowed
+                            # Reagent volumes will be scaled up to ensure that the mastermix can service the correct number of wells,
+                            ## and to also ensure that the lowest volume reagent can be added with a transfer volume above the min transfer vol
+                            # Check that this scale up will not put the total mastermix volume above the total well capacity if these linked reagents were used
+                            # Only bother checking if the candidate reagent shares wells with the current reagent
+                            if len(current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])) > 0:
+                                lowest_vol_reag = [reag for reag in mastermix_reagents + [candidate_reagent] if _get_vol_per_well(reag) == min([_get_vol_per_well(reag) for reag in mastermix_reagents + [candidate_reagent]])][0]
+                                if _get_vol_per_well(lowest_vol_reag) * (len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions) >= Min_Transfer_Volume:
+                                    potential_mm_reaction_num = len(Wells_By_Reagent_ID[lowest_vol_reag]) + Extra_Reactions
+                                    # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed, then continue
+                                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in mastermix_reagents + [candidate_reagent]])
+                                    if total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                                        # print(total_potential_mastermix_volume, Maximum_Mastermix_Volume, reagent_id, candidate_reagent)
+                                        continue
+                                else:
+                                    potential_mm_reaction_num = Min_Transfer_Volume/_get_vol_per_well(lowest_vol_reag)
+                                    # before continuing, if the number of reactions required by the lowest vol reagent will always make the candidate reagent above the max
+                                    ## vol allowed, then mark the reagents as excluded combos to ensure that they don't keep getting checked
+                                    if _get_vol_per_well(candidate_reagent) * potential_mm_reaction_num > Maximum_Mastermix_Volume:
+                                        Excluded_Combinations.append([candidate_reagent, lowest_vol_reag])
+                                        continue
+                                    # If the sum of all mm reagents multiplied by the number of required reagents would be more than the max mastermix vol allowed, then continue
+                                    total_potential_mastermix_volume = sum([_get_vol_per_well(reag)*potential_mm_reaction_num for reag in mastermix_reagents + [candidate_reagent]])
+                                    if total_potential_mastermix_volume > Maximum_Mastermix_Volume:
+                                        continue
+
+                            if candidate_reagent == reagent_id:
+                                # don't check reagents with theirselves
+                                continue
+                            elif candidate_reagent in mastermix_reagents:
+                                # Don't add duplicate reagents
+                                continue
+
+                            elif candidate_reagent.split("_vol_")[0] in Preferential_Reagents:
+                                preferential_selected = True
+                                # If the candidate is a preferential reagent, choose it over non-preferential reagents
+                                if len(current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])) > len(common_wells):
+                                    # If so, store this as the current best option (may get overwritten later)
+                                    common_wells = current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])
+                                    chosen_component = candidate_reagent
+                            # Check if the number of wells in common is higher than the currently recorded number
+                            elif len(current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])) > len(common_wells) and not preferential_selected:
+                                # If so, store this as the current best option (may get overwritten later)
+                                common_wells = current_reagent_well_set.intersection(Wells_By_Reagent_ID[candidate_reagent])
+                                chosen_component = candidate_reagent
+                        chosen_components = [chosen_component] # make a list to make downstreaming processing easier
+
+                        # Check if there were any identified reagents
+                        if not chosen_components == [""]:
+                            # print("chosen comps", chosen_components)
+                            # If there were, then check if it satisifies all wells or not
+                            if not len(current_reagent_well_set) == len(common_wells):
+                                ## If the chosen component only applies to a subset of wells, activate the split
+                                split_active = True
+                                # Store the non-common wells in the split, along with the current reagents
+                                split_tracker_wells = current_reagent_well_set.symmetric_difference(common_wells)
+                                split_tracker_reagents = mastermix_reagents.copy()
+                                split.append([split_tracker_wells.copy(), split_tracker_reagents.copy()])
+                                # Remove split wells from the active mastermix_wells
+                                current_reagent_well_set -= split_tracker_wells
+                            else:
+                                # If applies to all wells, then just pass
+                                pass
+
+
+                        else:
+                            # print("chosen comps", chosen_components)
+                            # if no remaining reagent has any common wells, then start looking at breaking apart current MMs
+                            common_wells = set()
+                            chosen_mastermix = None
+                            for mastermix in Mastermixes:
+                                # print(current_reagent_well_set, mastermix.wells)
+                                if len(current_reagent_well_set.intersection(mastermix.wells)) > len(common_wells):
+                                    # check that none of the current reagents are in the identified mastermix
+                                    if len(current_reagent_well_set.intersection(mastermix.reagents)) > 0:
+                                        continue
+                                    # Make sure that the linked reagents aren't excluded combinations
+                                    exclude = False
+                                    for excluded_combo in Excluded_Combinations:
+                                        for reagent_in_candidate_mm in mastermix.reagents:
+                                            if reagent_in_candidate_mm.split("_vol_")[0] in excluded_combo and reagent_id.split("_vol_")[0] in excluded_combo:
+                                                exclude = True
+                                                break
+                                    if exclude:
+                                        continue
+                                    common_wells = current_reagent_well_set.intersection(mastermix.wells)
+                                    chosen_mastermix = mastermix
+                            # Check if a mastermix was found
+                            if chosen_mastermix:
+                                # print("chosen mm", chosen_mastermix.name)
+                                # Remove the common wells from the chosen mastermix as they will be re-assigned to the new mastermix
+                                chosen_mastermix.wells -= common_wells
+                                # If the mastermix is now not servicing any wells, delete it
+                                if len(chosen_mastermix.wells) == 0:
+                                    Mastermixes.remove(chosen_mastermix)
+                                # Store the components from the chosen mastermix
+                                chosen_components = chosen_mastermix.reagents.copy()
+                                # If there were, then check if it satisifies all wells or not
+                                if not len(current_reagent_well_set) == len(common_wells):
+                                    # If the chosen component only applies to a subset of wells, activate the split
+                                    split_active = True
+                                    # Store the non-common wells in the split, along with the current reagents
+                                    split_tracker_wells = current_reagent_well_set.symmetric_difference(common_wells)
+                                    split_tracker_reagents = mastermix_reagents.copy()
+                                    split.append([split_tracker_wells.copy(), split_tracker_reagents.copy()])
+                                    # Remove split wells from the active mastermix_wells
+                                    current_reagent_well_set = common_wells.copy()
+                                else:
+                                    # If applies to all wells, then just pass
+                                    pass
+
+                            else:
+                                # If no mastermixes could be found to split, then raise an error
+                                No_Solution = True
+                                break
+
+
+
+                        # update mastermix components
+                        for chosen_component in chosen_components:
+                            # print("Add comp", chosen_component)
+                            mastermix_reagents.append(chosen_component)
+                            mastermix_per_well += _get_vol_per_well(chosen_component)
+                        # Check if the mm per well is above the threshold
+                        if mastermix_per_well >= Min_Transfer_Volume:
+                            # print("mm_per_well_sanity_check", mastermix_per_well, Min_Transfer_Volume)
+                            # print("Reagent:", reagent_id)
+                            # print("mm reag", mastermix_reagents)
+                            # if yes, then mark the active well set as satisified and create a mastermix
+                            mastermix_name = ":".join(mastermix_reagents)
+                            mastermix_well_set = current_reagent_well_set.copy() # active well set
+                            Mastermixes.append(Mastermix(mastermix_name, mastermix_reagents.copy(), mastermix_well_set))
+                            # Remove the used wells from the reagent IDs
+                            for used_reagent in mastermix_reagents:
+                                # print("Current {} well set: {}".format(used_reagent, Wells_By_Reagent_ID[used_reagent]))
+                                Wells_By_Reagent_ID[used_reagent] -= mastermix_well_set
+                                # print("Updated {} well set: {}".format(used_reagent, Wells_By_Reagent_ID[used_reagent]))
+                            # print("---")
+                            # Mark the current wells as satisified
+                            current_reagent_well_set.clear()
+
+                            if split_active:
+                                ## Apply the most recent split as active
+                                current_reagent_well_set = split[-1][0]
+                                mastermix_reagents = split[-1][1]
+                                mastermix_per_well = sum([_get_vol_per_well(r) for r in mastermix_reagents])
+                                split.remove(split[-1])
+                                if len(split) == 0:
+                                    split_active = False
+                                else:
+                                    pass
+                        else:
+                            # if mm/well is not above the threshold, then keep looping
+                            continue
+
+                    if No_Solution:
+                        break
+
+                else:
+                    # If the reagent vol/well is already above the threshold, then just skip
+                    continue
+
+            if No_Solution:
+                raise MastermixError("No solution could be found with these constraints.")
+            else:
+                Solved = True # break out of the while loop with a solution
+
+        # If a solution is not possible
+        except MastermixError:
+            # If this was the first attempt
+            if First_Attempt:
+                # Check if a seed was given
+                if Seed:
+                    raise MastermixError("No solution could be found with these constraints and a seed of {}".format(Seed))
+                # If a seed wasn't given, then try shuffling the order of the reagents with different seeds
+                else:
+                    Seed = 0
+                    First_Attempt = False
+            else:
+                # Iterate the seed number
+                Seed += 1
+                # To stop infinte loops
+                if not First_Attempt:
+                    if Seed > 1000:
+                        raise MastermixError(
+"""
+No solution could be found with these constraints. Try one of the following options:
+> Decrease the minimum transfer volume (if specified)
+> Decrease the stock concentration of highly concentrated source material
+> Use a mastermix labware with a higher well capacity (especially when there are a lot of samples)
+"""
+                        )
+
+
+    # Remove any empty mastermixes
+    ## These are MMs which were generated at some point, but then were split out into other mastermixes and no longer service any wells
+
+    for mm in Mastermixes:
+        if sum([_get_vol_per_well(reagent) for reagent in mm.reagents]) < Min_Transfer_Volume:
+            raise ValueError(mm.name)
+        if len(mm.wells) == 0:
+            Mastermixes.remove(mm)
+
+
+    # Set up the mastermix layout with the generated content
+    Mastermix_Layouts = [Mastermix_Layout]
+    Mastermix_Layout_Index = 0
+
+    for mastermix in Mastermixes:
+        well = Mastermix_Layouts[Mastermix_Layout_Index].get_next_empty_well()
+        Mastermix_Layouts[Mastermix_Layout_Index].add_well_label(well, mastermix.name)
+
+        # Make sure that the transfer volume TO the mastermix is above the threshold for all reagents
+        ## If not, additional extra reactions will be added to that mastermix
+        extra_reactions = Extra_Reactions
+        for reagent in mastermix.reagents:
+            volume = (len(mastermix.wells) + extra_reactions) * (_get_vol_per_well(reagent))
+            # Make sure that the transfer volume TO the mastermix is above the threshold
+            if volume < Min_Transfer_Volume:
+                extra_vol_needed = Min_Transfer_Volume - volume
+                extra_reactions_needed = extra_vol_needed/_get_vol_per_well(reagent)
+                extra_reactions += extra_reactions_needed
+        # Add reagents to the mastermix layout
+        for reagent in mastermix.reagents:
+            Mastermix_Layouts[Mastermix_Layout_Index].add_content(
+                Well = well,
+                Reagent = reagent.split("_vol_")[0],
+                Volume = (len(mastermix.wells) + extra_reactions) * (_get_vol_per_well(reagent))
+            )
+
+
+        # Check if a new mastermix layout is needed
+        if Mastermix_Layouts[Mastermix_Layout_Index].get_next_empty_well() == None:
+
+            new_mastermix_layout_name = "{}_{}".format(Mastermix_Layout.name, Mastermix_Layout_Index + 1)
+            Mastermix_Layouts.append(Mastermix_Layout.clone_format(new_mastermix_layout_name))
+            Mastermix_Layout_Index += 1
+
+
+    # Modify the destination layout to now take mastermixes as reagents
+    for Destination_Layout, Dest_Index in zip(Destination_Layouts, range(0,len(Destination_Layouts))):
+
+        for destination_well in Destination_Layout.content.copy():
+            destination_location = "{}_{}".format(Dest_Index, destination_well)
+            for mastermix in Mastermixes:
+                # Find if any mastermixes satisfy the destination well
+                if destination_location in mastermix.wells:
+                    # Get the reagents that the mastermix covers
+                    reagents = mastermix.reagents
+                    # Calculate the volume of mastermix needed for this well
+                    mastermix_volume = sum([_get_vol_per_well(reagent) for reagent in reagents])
+                    # Sanity check
+                    if not mastermix_volume == sum([Destination_Layout.get_volume_of_liquid_in_well(reagent.split("_vol_")[0], destination_well) for reagent in reagents]):
+                        # print("destination well content:", [reagent.split("_vol_")[0] for reagent in reagents], Destination_Layout.get_liquids_in_well(destination_well))
+                        raise LabwareError("Mastermix Maker encountered an error with well {} mastermix {}: vol1 = {}, vol2 = {}".format(destination_well, mastermix.name, mastermix_volume, sum([Destination_Layout.get_volume_of_liquid_in_well(reagent.split("_vol_")[0], destination_well) for reagent in reagents])))
+
+                    # Remove the reagents in the mastermix from the destination well
+                    for reagent in reagents:
+                        # print("remove from destination {}: {}".format(Dest_Index, reagent))
+                        Destination_Layout.clear_liquid_in_well(destination_well, reagent.split("_vol_")[0])
+
+                    # Add mastermix to the destination well
+                    Destination_Layout.add_content(
+                        Well = destination_well,
+                        Reagent = mastermix.name,
+                        Volume = mastermix_volume
+                    )
+
+
+    return(Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts)
+
 ## Private ##
 def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
@@ -686,8 +1321,14 @@ def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
 def _Labware_Row_To_Index(row):
     return(ord(row.upper()) - ord("A"))
 
+def _get_vol_per_well(Reagent_ID):
+    return(float(Reagent_ID.split("_vol_")[1]))
+
+class MastermixError(Exception):
+    pass
+
 ## To be deprecated ##
 
 def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume = 0):
     print("This will soon be deprecated")
-    return(math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))
+    return(_math.ceil(Volume_Required/(Volume_Per_Aliquot + Dead_Volume)))

@@ -2,6 +2,7 @@ import BiomationScripter as _BMS
 import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
+import warnings
 # import smtplib, ssl
 
 class Example_Template(_OTProto.OTProto_Template):
@@ -999,7 +1000,292 @@ class Primer_Mixing(_OTProto.OTProto_Template):
 
         #END#
 
-class Spot_Plating:
+class Spot_Plating(_OTProto.OTProto_Template):
+    def __init__(self,
+        Cells,
+        Cells_Source_Wells,
+        Cells_Source_Type,
+        Agar_Labware_Type,
+        Plating_Volumes,
+        Repeats,
+        Media_Source_Type = None,
+        Media_Aliquot_Volume = None,
+        Dilution_Factors = [1],
+        Dilution_Volume = None,
+        Dilution_Labware_Type = None,
+        Pause_Before_Plating = True,
+        **kwargs
+    ):
+
+        ########################################
+        # User defined aspects of the protocol #
+        ########################################
+        self.repeats = Repeats
+        self.pause_before_plating = Pause_Before_Plating
+        # If a single volume is given, convert it to a list
+        if not type(Plating_Volumes) == list:
+            Plating_Volumes = [Plating_Volumes]
+        self.plating_volumes = Plating_Volumes
+        self.dilution_factors = Dilution_Factors
+        self.dilution_volume = Dilution_Volume
+
+        ####################
+        # Source materials #
+        ####################
+        self.cells = Cells
+        self.cells_source_type = Cells_Source_Type
+        self.cells_source_wells = Cells_Source_Wells
+
+        self.media_source_type = Media_Source_Type
+        self.media_aliquot_volume = Media_Aliquot_Volume
+
+        #######################
+        # Destination Labware #
+        #######################
+        self.agar_labware_type = Agar_Labware_Type
+        self.dilution_labware_type = Dilution_Labware_Type
+
+        #####################
+        # Argument checking #
+        #####################
+        if not Dilution_Factors == [1]:
+            if None in [Media_Source_Type, Media_Aliquot_Volume, Dilution_Factors, Dilution_Volume, Dilution_Labware_Type]:
+                raise _BMS.BMSTemplateError("Media_Source_Type, Dilution_Factors, Diltuon_Volume, and Dilution_Labware_Type MUST be defined if dilution factors other than 1 are specified.")
+
+        if Dilution_Factors == [1]:
+            for dilution_argument, dilution_argument_name in zip([Media_Source_Type, Media_Aliquot_Volume, Dilution_Factors, Dilution_Volume, Dilution_Labware_Type], ["Media_Source_Type", "Media_Aliquot_Volume", "Dilution_Factors", "Dilution_Volume", "Dilution_Labware_Type"]):
+                if dilution_argument:
+                    warnings.warn("{} will be ignored as no dilutions are specified.".format(dilution_argument_name))
+            if Pause_Before_Plating:
+                warnings.warn("Will not pause before plating as there is no dilution step specified")
+
+        ##################################################
+        # Protocol Metadata and Instrument Configuration #
+        ##################################################
+        super().__init__(**kwargs)
+
+    def run(self):
+        #################
+        # Load pipettes #
+        #################
+        self.load_pipettes()
+
+        ######################
+        # Load Cells Labware #
+        ######################
+        Cells_Source_Labware = _OTProto.load_labware(self._protocol, self.cells_source_type, custom_labware_dir = self.custom_labware_dir, label = "Cells Source Labware")
+        Cells_Source_Locations = _OTProto.get_locations(
+                        Labware = Cells_Source_Labware,
+                        Wells = self.cells_source_wells
+        )
+
+        #####################################################
+        # If dilutions need to happen, deal with that first #
+        #####################################################
+        # Check if dilutions are going to occur
+        if not self.dilution_factors == [1]:
+
+            ################################
+            # Create transfer volume lists #
+            ################################
+
+            Cell_Volumes_Per_Dilution, Media_Volumes_Per_Dilution = _BMS.serial_dilution_volumes(self.dilution_factors, self.dilution_volume)
+
+            # These lists will be split into lists for each cell type
+            # e.g., if there is cell1 and cell2 to plate, and dilutions of 1 and 10 are specified, the transfer volume lists would be:
+            # Media_Transfer_Volumes = [[cell1_media_1in1, cell1_media_1in10], [cell2_media_1in1, cell2_media_1in10]]
+            # Cell_Dilution_Volumes = [[cell1_cells_1in1, cell1_cells_1in10], [cell2_cells_1in1, cell2_cells_1in10]]
+            Grouped_Media_Transfer_Volumes = []
+            Grouped_Cell_Dilution_Volumes = []
+
+            for cell in self.cells:
+                Grouped_Media_Transfer_Volumes.append([])
+                Grouped_Cell_Dilution_Volumes.append([])
+                for cell_volume, media_volume in zip(Cell_Volumes_Per_Dilution, Media_Volumes_Per_Dilution):
+                    Grouped_Media_Transfer_Volumes[-1].append(media_volume)
+                    Grouped_Cell_Dilution_Volumes[-1].append(cell_volume)
+
+            # Will sometimes need the unpacked transfer volumes (i.e. as a single list, rather than nested by transformation)
+            Unpacked_Media_Transfer_Volumes = [transformation[dilution_factor_index] for transformation in Grouped_Media_Transfer_Volumes for dilution_factor_index in range(0, len(transformation))]
+            Unpacked_Cell_Dilution_Volumes = [transformation[dilution_factor_index] for transformation in Grouped_Cell_Dilution_Volumes for dilution_factor_index in range(0, len(transformation))]
+
+            #########################################################################
+            # Calculate the number of tips and tip racks required for this protocol #
+            #########################################################################
+
+            # Don't need a clean tip for the media
+            # Unpack all media volumes to a single list
+            self.calculate_and_add_tips(Unpacked_Media_Transfer_Volumes, New_Tip = False)
+            # Will need a clean tip for each transvomation, but can use the same one for dilutions of each type
+            for transformation_cell_volumes in Grouped_Cell_Dilution_Volumes:
+                self.calculate_and_add_tips(transformation_cell_volumes, New_Tip = False)
+            #######################
+            # Load Source Labware #
+            #######################
+            # Media
+            Media_Aliquots_Required = math.ceil(sum(Unpacked_Media_Transfer_Volumes)/self.media_aliquot_volume)
+            Media_Source_Labware, Media_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.media_source_type, Media_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+
+            ############################
+            # Load Destination Labware #
+            ############################
+            # Need to calculate no. labware to load
+
+            Dilution_Labware, Dilution_Locations = _OTProto.calculate_and_load_labware(
+                                self._protocol,
+                                self.dilution_labware_type,
+                                len(Unpacked_Cell_Dilution_Volumes),
+                                custom_labware_dir = self.custom_labware_dir,
+                                label = "Dilution Labware"
+            )
+
+        # Next deal with everything which is needed for after the dilution stage
+        ###############################
+        # Create transfer volume list #
+        ###############################
+
+        # This is also created nested like the serial dilution transfer volumes
+        Grouped_Plating_Transfer_Volumes = []
+        Plating_Labels = []
+        for transformation in self.cells:
+            Grouped_Plating_Transfer_Volumes.append([])
+            for dilution in self.dilution_factors:
+                for plating_volume in self.plating_volumes:
+                    for repeat in range(1, self.repeats + 1):
+                        Grouped_Plating_Transfer_Volumes[-1].append(plating_volume)
+                        Plating_Labels.append("Cells({}) - Dilution({}) - Plating Volume({}) - Repeat({})".format(transformation, dilution, plating_volume, repeat))
+
+        # Also create the unpacked transfer list
+        Unpacked_Plating_Transfer_Volumes = [transformation[spot_index] for transformation in Grouped_Plating_Transfer_Volumes for spot_index in range(0, len(transformation))]
+
+        #########################################################################
+        # Calculate the number of tips and tip racks required for this protocol #
+        #########################################################################
+        # One tip for each transformation
+        for transformation_spot_plating_volumes in Grouped_Plating_Transfer_Volumes:
+            self.calculate_and_add_tips(transformation_spot_plating_volumes, New_Tip = False)
+        #######################
+        # Load Source Labware #
+        #######################
+        # The source for plating onto agar is different depending on whether or not dilutions will be used
+        if not self.dilution_factors == [1]:
+            Plating_Source_Labware = Dilution_Labware
+            Plating_Source_Locations = Dilution_Locations
+        else:
+            Plating_Source_Labware = Cells_Source_Labware
+            Plating_Source_Locations = Cells_Source_Locations
+
+        ############################
+        # Load Destination Labware #
+        ############################
+        # Load as many agar labware as needed and store the locations of everything
+        Agar_Labware, Agar_Locations = _OTProto.calculate_and_load_labware(
+                                    self._protocol,
+                                    self.agar_labware_type,
+                                    len(Unpacked_Plating_Transfer_Volumes),
+                                    custom_labware_dir = self.custom_labware_dir
+        )
+
+
+        ######################
+        # User Setup Prompts #
+        ######################
+        # Print a list of locations and labels for mapping back
+        for location, label in zip(Agar_Locations, Plating_Labels):
+            print(location, label)
+
+
+        self.add_tip_boxes_to_pipettes() # Starting tip(s) are defined here as well
+        self.tip_racks_prompt()
+
+        for cell_name, location in  zip(self.cells, Cells_Source_Locations):
+            self._protocol.pause("Ensure cell type {} is at {}".format(cell_name, location))
+
+        if not self.dilution_factors == [1]:
+            self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, self.media_aliquot_volume, Media_Source_Locations))
+            self._protocol.pause("This protocol uses {} dilution labware: {}".format(len(Dilution_Labware), ["{} on position {}".format(l.load_name, l.parent) for l in Dilution_Labware]))
+
+        self._protocol.pause("This protocol uses {} agar plate(s): {}".format(len(Agar_Labware), ["{} on position {}".format(l.load_name, l.parent) for l in Agar_Labware]))
+
+        ##########################
+        # Liquid handling begins #
+        ##########################
+
+        # Perform serial dilutions if required
+        if not self.dilution_factors == [1]:
+            # Add LB to the required wells of the dilution labware
+            _OTProto.dispense_from_aliquots(
+                                Protocol = self._protocol,
+                                Transfer_Volumes = Unpacked_Media_Transfer_Volumes,
+                                Aliquot_Source_Locations = Media_Source_Locations,
+                                Destinations = Dilution_Locations,
+                                Aliquot_Volumes = self.media_aliquot_volume,
+                                new_tip = False,
+                                touch_tip = True,
+                                blow_out = True,
+                                blowout_location = "destination well"
+            )
+
+            # Add cells and perform serial dilutions
+            Cell_Source_Locations = _OTProto.get_locations(
+                                                    Labware = Cells_Source_Labware,
+                                                    Wells = self.cells_source_wells
+            )
+
+            # Group dilution destination locations based on cell type
+            Grouped_Dilution_Destination_Locations = [Dilution_Locations[len(self.dilution_factors) * i : len(self.dilution_factors) + len(self.dilution_factors)*i] for i in range(0, len(self.cells))]
+
+            for cell_dilution_volumes, cell_source_location, dilution_destinations in zip(Grouped_Cell_Dilution_Volumes, Cell_Source_Locations, Grouped_Dilution_Destination_Locations):
+                Serial_Source_Locations = [cell_source_location] + dilution_destinations[:-1]
+                _OTProto.transfer_liquids(
+                                Protocol = self._protocol,
+                                Transfer_Volumes = cell_dilution_volumes,
+                                Source_Locations = Serial_Source_Locations,
+                                Destination_Locations = dilution_destinations,
+                                new_tip = False,
+                                mix_after = (10, self.dilution_volume)
+                )
+
+        # Plate cells (from either the cell source plate or the dilution plate)
+
+        # Group plating destination locations based on cell type
+        Spots_Per_Cell_Type = len(Grouped_Plating_Transfer_Volumes[0])
+        Grouped_Agar_Locations = [Agar_Locations[Spots_Per_Cell_Type * i : Spots_Per_Cell_Type + Spots_Per_Cell_Type*i] for i in range(0, len(self.cells))]
+
+        Grouped_Plating_Source_Locations = [Plating_Source_Locations[int(Spots_Per_Cell_Type/(self.repeats + len(self.plating_volumes))) * i : int(Spots_Per_Cell_Type/(self.repeats + len(self.plating_volumes))) + int(Spots_Per_Cell_Type/(self.repeats + len(self.plating_volumes)))*i] for i in range(0, len(self.cells))]
+
+        for destination_locations, volumes, name, unique_source_locations in zip(Grouped_Agar_Locations, Grouped_Plating_Transfer_Volumes, self.cells, Grouped_Plating_Source_Locations):
+
+            source_locations = []
+            for location in unique_source_locations:
+                for transfers_per_source in range(0, self.repeats * len(self.plating_volumes)):
+                    source_locations.append(location)
+
+            _OTProto.transfer_liquids(
+                                self._protocol,
+                                volumes,
+                                source_locations,
+                                destination_locations,
+                                new_tip = False,
+                                blow_out = True
+            )
+
+
+        # for plating_volumes, cell_source_locations, agar_destinations in zip(Grouped_Plating_Transfer_Volumes, Grouped_Plating_Source_Locations, Grouped_Agar_Locations):
+        #
+        #     _OTProto.transfer_liquids(
+        #                     Protocol = self._protocol,
+        #                     Transfer_Volumes = plating_volumes,
+        #                     Source_Locations = cell_source_locations,
+        #                     Destination_Locations = agar_destinations,
+        #                     new_tip = False,
+        #                     blow_out = True,
+        #                     blowout_location = "destination well"
+        #     )
+
+
+
+class Spot_Plating_Old:
     def __init__(self,
         Protocol,
         Name,
@@ -1394,11 +1680,13 @@ class Spot_Plating:
                 plating_index = 0
                 self._protocol.pause("Uncover agar plate on position {}".format(petri_dishes[destination_labware_index].parent))
 
+
+
 class Heat_Shock_Transformation(_OTProto.OTProto_Template):
     def __init__(self,
-        DNA,
-        DNA_Source_Wells,
-        Competent_Cells_Source_Type,
+        DNA: list,
+        DNA_Source_Wells: list,
+        Competent_Cells_Source_Type: str,
         Transformation_Destination_Type,
         DNA_Source_Type,
         Media_Source_Type,
@@ -1540,288 +1828,6 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         _OTProto.dispense_from_aliquots(self._protocol, Media_Transfer_Volumes, Media_Source_Locations, Destination_Locations, new_tip = False, blow_out = True, blowout_location = "destination well")
 
 
-class Transformation:
-    def __init__(self,
-        Protocol,
-        Name,
-        Metadata,
-        DNA,
-        DNA_Source_Wells,
-        Competent_Cells_Source_Type,
-        Transformation_Destination_Type,
-        DNA_Source_Type,
-        DNA_Volume_Per_Transformation,
-        Starting_20uL_Tip = "A1",
-        Starting_300uL_Tip = "A1",
-        API = "2.10",
-        Simulate = "deprecated"
-    ):
-        # DNA should be a list of names, and DNA_Source_Wells should be a list of wells in the same order as DNA.
-
-        #####################
-        # Protocol Metadata #
-        #####################
-        self._protocol = Protocol
-        self.name = Name
-        self.metadata = Metadata
-        self._simulate = Simulate
-        self.custom_labware_dir = "../Custom_Labware/"
-
-        if not Simulate == "deprecated":
-            print("Simulate no longer needs to be specified and will soon be removed.")
-
-        ########################################
-        # User defined aspects of the protocol #
-        ########################################
-        # Running parameters
-        self.dna_volume_per_transformation = DNA_Volume_Per_Transformation # uL
-        self._competent_cell_volume_per_transformation = 10 # uL
-        self._transformation_volume = 200 #uL
-        self._heat_shock_time = 90 # Seconds
-        self._heat_shock_temp = 42 # celsius
-
-        ####################
-        # Source materials #
-        ####################
-        ## Pipette Tips ##
-        self._20uL_tip_type = "opentrons_96_tiprack_20ul"
-        self._300uL_tip_type = "opentrons_96_tiprack_300ul"
-        self.starting_20uL_tip = Starting_20uL_Tip
-        self.starting_300uL_tip = Starting_300uL_Tip
-        ## DNA to be transformed ##
-        self.dna = DNA
-        self.dna_source_wells = DNA_Source_Wells
-        self.dna_source_type = DNA_Source_Type
-        ## Competent cells ##
-        self._competent_cells_source_type = Competent_Cells_Source_Type
-        self.competent_cells_source_volume_per_well  = 45 # uL
-        ## Media ##
-        self.LB_source_type = "3dprinted_15_tuberack_15000ul"
-        self.LB_source_volume_per_well = 5000 # uL # No more than 6000 uL for 15 mL tubes
-
-        #######################
-        # Destination Labware #
-        #######################
-        self._transformation_destination_type = Transformation_Destination_Type
-        self.transformation_locations = []
-
-        ###############
-        # Robot Setup #
-        ###############
-        self._p20_type = "p20_single_gen2"
-        self._p20_position = "left"
-        self._p300_type = "p300_single_gen2"
-        self._p300_position = "right"
-        self._temperature_module = "temperature module gen2"
-
-    def run(self):
-        print("This protocol will be deprecated with version 0.1.0. Please switch to `OTProto.Heat_Shock_Transformation` instead.")
-        self._protocol.pause("This protocol will be deprecated with version 0.1.0. Please switch to `OTProto.Heat_Shock_Transformation` instead.")
-
-        ###########################
-        # Load temperature_module #
-        ###########################
-        temperature_module = self._protocol.load_module(self._temperature_module, 4)
-
-        #########################################################################
-        # Calculate the number of 20 and 300 uL tips required for this protocol #
-        #########################################################################
-        tips_needed_20uL = 0
-        tips_needed_300uL = 0
-
-        # Adding competent cells #
-        if self._competent_cell_volume_per_transformation > 20:
-            tips_needed_300uL += 1
-        else:
-            tips_needed_20uL += 1
-
-        # Add tips for adding DNA - one per sample #
-        tips_needed_20uL += len(self.dna)
-
-        # Add tips for adding LB - one per sample #
-        media_per_transformation = self._transformation_volume - (self._competent_cell_volume_per_transformation + self.dna_volume_per_transformation)
-        if media_per_transformation > 20:
-            tips_needed_300uL += len(self.dna)
-        else:
-            tips_needed_20uL += len(self.dna)
-
-        ##############################################################################
-        # Calculate the number of 20 and 300 uL tip racks required for this protocol #
-        ##############################################################################
-        # Calculate number of racks needed - account for the first rack missing some tips
-        racks_needed_20uL = _OTProto.tip_racks_needed(tips_needed_20uL, self.starting_20uL_tip)
-        racks_needed_300uL  = _OTProto.tip_racks_needed(tips_needed_300uL, self.starting_300uL_tip)
-        # Load tip racks
-        tip_racks_20uL = []
-        for rack20 in range(0, racks_needed_20uL):
-            # Find the next empty deck slot for the tip rack
-            rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
-            # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._20uL_tip_type, rack_deck_slot, self.custom_labware_dir)
-            # Store the tip rack for future usage
-            tip_racks_20uL.append(rack)
-
-        tip_racks_300uL = []
-        for rack300 in range(0, racks_needed_300uL):
-            # Find the next empty deck slot for the tip rack
-            rack_deck_slot = _OTProto.next_empty_slot(self._protocol)
-            # Load the tip rack
-            rack = _OTProto.load_labware(self._protocol, self._300uL_tip_type, rack_deck_slot, self.custom_labware_dir)
-            # Store the tip rack for future usage
-            tip_racks_300uL.append(rack)
-
-        ###################
-        # Set up pipettes #
-        ###################
-        p20 = self._protocol.load_instrument(self._p20_type, self._p20_position, tip_racks = tip_racks_20uL)
-        p20.starting_tip = tip_racks_20uL[0].well(self.starting_20uL_tip)
-        p300 = self._protocol.load_instrument(self._p300_type, self._p300_position, tip_racks = tip_racks_300uL)
-        p300.starting_tip = tip_racks_300uL[0].well(self.starting_300uL_tip)
-
-        ################
-        # Load labware #
-        ################
-        # Load transfomration plate onto temp module #
-        transformation_plate = _OTProto.load_labware(temperature_module, self._transformation_destination_type, custom_labware_dir = self.custom_labware_dir)
-
-        # Load all other labware #
-        LB_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        LB_labware = _OTProto.load_labware(self._protocol, self.LB_source_type, LB_labware_slot, self.custom_labware_dir)
-
-        dna_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        dna_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, dna_labware_slot, self.custom_labware_dir)
-
-        competent_cells_labware_slot = _OTProto.next_empty_slot(self._protocol)
-        competent_cells_labware = _OTProto.load_labware(self._protocol, self._competent_cells_source_type, competent_cells_labware_slot, self.custom_labware_dir)
-
-        # Calculate number of cell aliquots required #
-        cc_volume_required = len(self.dna) * self._competent_cell_volume_per_transformation # uL
-        cc_aliquots_required = _BMS.aliquot_calculator(cc_volume_required, self.competent_cells_source_volume_per_well)
-
-        # Specify competent cells location
-        competent_cells_source = competent_cells_labware.wells()[0:cc_aliquots_required]
-
-        # Calculate number of LB aliquots required #
-        LB_volume_per_transformation = self._transformation_volume - (self.dna_volume_per_transformation + self._competent_cell_volume_per_transformation)
-        LB_Volume_required = len(self.dna) * LB_volume_per_transformation
-        LB_aliquots_required = _BMS.aliquot_calculator(LB_Volume_required, self.LB_source_volume_per_well)
-
-        # Specify LB location
-        LB_source = LB_labware.wells()[0:LB_aliquots_required]
-
-        # Prompt user to check all liquids are correctly placed
-        self._protocol.pause("{} aliquot(s) of LB required".format(len(LB_source)))
-        self._protocol.pause("LB Location: {}".format(LB_source))
-        self._protocol.pause("{} aliquot(s) of cells required".format(len(competent_cells_source)))
-        self._protocol.pause("Competent cells location: {}".format(competent_cells_source))
-        self._protocol.pause("This protocol needs {} 20 uL tip racks".format(len(tip_racks_20uL)))
-        self._protocol.pause("This protocol needs {} 300 uL tip racks".format(len(tip_racks_300uL)))
-
-        for dna, source_well in zip(self.dna, self.dna_source_wells):
-            self._protocol.pause('Place {} in well {} at deck position {}'.format(dna, source_well, dna_labware_slot))
-
-        ##########################
-        # Liquid handling begins #
-        ##########################
-
-        ########################################################
-        # Set temperature to 4C and wait until temp is reached #
-        ########################################################
-        temperature_module.set_temperature(4)
-
-        ################################
-        # Add competent cells to plate #
-        ################################
-        # This is to switch which competent cells aliquot is being used as the source
-        cc_tube_index = 0
-
-        # Determine which tip is required and get it
-        if self._competent_cell_volume_per_transformation <= 20:
-            pipette = p20
-            pipette.pick_up_tip()
-        else:
-            pipette = p300
-            pipette.pick_up_tip()
-
-        for transformation_index in range(0, len(self.dna)):
-            # Determine which competent cell aliquot to take from
-            source = competent_cells_source[cc_tube_index]
-            # Set the next empty well in the transformation labware as the destination
-            destination = transformation_plate.wells()[transformation_index]
-            # Perform the transfer
-            pipette.transfer(self._competent_cell_volume_per_transformation, source, destination, new_tip = "never", mix_before = (5, self._competent_cell_volume_per_transformation), touch_tip = True, blow_out = True, blowout_location = "destination well")
-            # Iterate to the next competent cell aliquot, and check if need to go back to first aliquot
-            if cc_tube_index == len(competent_cells_source) - 1:
-                cc_tube_index = 0
-            else:
-                cc_tube_index += 1
-
-        # Drop tips which have been in use
-        if self._competent_cell_volume_per_transformation <= 20:
-            pipette = p20
-            pipette.drop_tip()
-        else:
-            pipette = p300
-            pipette.drop_tip()
-
-        ######################################
-        # Add DNA to competent cells and mix #
-        ######################################
-        # Determine which pipette should be used
-        if self.dna_volume_per_transformation <= 20:
-            pipette = p20
-        else:
-            pipette = p300
-
-        for transformation_index in range(0, len(self.dna)):
-            # Get the location of the dna to be added
-            source = dna_labware.wells_by_name()[self.dna_source_wells[transformation_index]]
-            # Get the 'well' to which the DNA should be added
-            destination = transformation_plate.wells()[transformation_index]
-            # Perform the transfer
-            pipette.transfer(self.dna_volume_per_transformation, source, destination, mix_after = (10, 10), touch_tip = True, blow_out = True, blowout_location = "destination well")
-
-        #####################
-        # Heat shock at 42C #
-        #####################
-        self._protocol.pause("Check that cells and DNA are collected at the bottom of the plate.")
-        # Set the temp to heat shock
-        temperature_module.set_temperature(self._heat_shock_temp)
-        # Wait for a bit
-        self._protocol.delay(seconds = self._heat_shock_time)
-        # Cool back to 4 - protocol won't continue until this is back at 4...
-        temperature_module.set_temperature(4)
-
-        #############################
-        # Add LB to transfomrations #
-        #############################
-        # Prompt user to open LB tubes
-        self._protocol.pause("Open up LB tubes")
-
-        # This is to switch which LB aliquot is being used as the source
-        LB_tube_index = 0
-
-        # Determine which pipette will be used
-        if media_per_transformation <= 20:
-            pipette = p20
-        else:
-            pipette = p300
-
-        for transformation_index in range(0, len(self.dna)):
-            # Determine which media aliquot to take from
-            source = LB_source[LB_tube_index]
-            # Set the next empty well in the transformation labware as the destination
-            destination = transformation_plate.wells()[transformation_index]
-            # Perform the transfer
-            pipette.transfer(media_per_transformation, source, destination)
-            # Iterate to the next media aliquot, and check if need to go back to first aliquot
-            if LB_tube_index == len(LB_source) - 1:
-                LB_tube_index = 0
-            else:
-                LB_tube_index += 1
-
-        for dna, well in zip(self.dna, transformation_plate.wells()):
-            self.transformation_locations.append([well, dna])
 
 class Design_Of_Experiments(_OTProto.OTProto_Template):
     def __init__(self,
@@ -1853,6 +1859,7 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
         # Destination Information #
         ###########################
         self.destination_content = Destination_Content
+        self.destination_layout = None
 
         ###########
         # Labware #
@@ -1952,12 +1959,12 @@ class Design_Of_Experiments(_OTProto.OTProto_Template):
                     for content_info in self.destination_content[sample_type]:
                         content = run.get_value_by_name(content_info[0])
                         content_volume = content_info[1]
-
                         Destination_Layout.add_content(destination_well, content, content_volume)
                     well_index += 1
 
         print("\n")
         Destination_Layout.print()
+        self.destination_layout = Destination_Layout
 
         #################################
         # Set up intermediate layout(s) #

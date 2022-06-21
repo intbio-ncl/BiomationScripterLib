@@ -1,5 +1,6 @@
 import BiomationScripter as _BMS
 import math
+from typing import List, Dict
 
 ########################
 
@@ -14,9 +15,12 @@ Source_Plate_Types = {
 
 class EchoProto_Template:
     def __init__(self,
-        Name,
-        Picklist_Save_Directory = ".",
-        Metadata = None
+        Name: str,
+        Source_Plates: List[_BMS.Labware_Layout],
+        Destination_Plate_Layout: _BMS.Labware_Layout,
+        Picklist_Save_Directory: str = ".",
+        Metadata: dict = None,
+        Merge: bool = False
     ):
 
         #####################
@@ -26,6 +30,7 @@ class EchoProto_Template:
         self.metadata = Metadata
         self.save_dir = Picklist_Save_Directory
         self._protocol = _BMS.EchoProto.Protocol(Name)
+        self.merge = Merge
 
         #################
         # Plate Layouts #
@@ -33,28 +38,39 @@ class EchoProto_Template:
         self.source_plate_layouts = []
         self.destination_plate_layouts = []
 
+        # Add source layouts to self.source_plate_layouts
+        for source in Source_Plates:
+            self.add_source_layout(source)
+
+        # Add the destination layout (more may be created later if needed)
+        #NOTE - This might break some things or cause unexpected behaviour
+        if not Destination_Plate_Layout.get_available_wells():
+            Destination_Plate_Layout.set_available_wells()
+        Destination_Plate_Layout.clear_content()
+        self.add_destination_layout(Destination_Plate_Layout)
+
     def create_picklists(self):
         _BMS.EchoProto.Generate_Actions(self._protocol)
-        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir)
+        _BMS.EchoProto.Write_Picklists(self._protocol, self.save_dir, Merge = self.merge)
 
     def add_source_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+        if type(Layout) is _BMS.Labware_Layout:
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
-            Layout = _BMS.Import_Plate_Layout(Layout)
+            Layout = _BMS.Import_Labware_Layout(Layout)
 
         self.source_plate_layouts.append(Layout)
         self._protocol.add_source_plates([Layout])
 
     def add_destination_layout(self, Layout):
         # Check if Layout is a Labware_Layout object; if not, attempt to use it as a file location
-        if type(Layout) is _BMS.Labware_Layout or type(Layout) is _BMS.PlateLayout:
+        if type(Layout) is _BMS.Labware_Layout:
             pass
         elif type(Layout) is str:
             # Import file as a Labware_Layout object
-            Layout = _BMS.Import_Plate_Layout(Layout)
+            Layout = _BMS.Import_Labware_Layout(Layout)
 
 
         self.destination_plate_layouts.append(Layout)
@@ -62,30 +78,43 @@ class EchoProto_Template:
 
 
 # This is redundant (BMS.Create_Plates_Needed seems to do the same thing)
-def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
-    plates_required = math.ceil(Wells_Required/Wells_Available)
-    plates = []
-    for plate_index in range(0, plates_required):
-        name = "{}_{}".format(Plate_Format.name, plate_index)
-        plates.append(Plate_Format.clone_format(name))
+# def Calculate_And_Create_Plates(Plate_Format, Wells_Required, Wells_Available):
+#     plates_required = math.ceil(Wells_Required/Wells_Available)
+#     plates = []
+#     for plate_index in range(0, plates_required):
+#         name = "{}_{}".format(Plate_Format.name, plate_index)
+#         plates.append(Plate_Format.clone_format(name))
+#
+#     return(plates)
 
-    return(plates)
+def Write_Picklists(Protocol, Save_Location = ".", Merge = False): # Writes a Picklist to a csv pick list - argument is a Picklist Class
+    if Merge:
+        # Group transfer lists by source plate type
+        Transfer_Lists = []
+        for source_plate_type in Source_Plate_Types.keys():
+            Transfer_Lists.append([TL[0] for TL in Protocol.transfer_lists if TL[0].source_plate.type == source_plate_type])
 
-def Write_Picklists(Protocol, Save_Location): # Writes a Picklist to a csv pick list - argument is a Picklist Class
-    for tl in Protocol.transfer_lists:
-        TL = tl[0]
-        Title = TL.title
-        SPType = TL.source_plate.type
+        while [] in Transfer_Lists:
+            Transfer_Lists.remove([])
+    else:
+        Transfer_Lists = [[TL[0]] for TL in Protocol.transfer_lists]
 
-        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title), "w")
+    for transfer_lists_for_picklist in Transfer_Lists:
+        Source_Plate_Names_Str = ""
+        for transfer_list in transfer_lists_for_picklist:
+            Source_Plate_Names_Str += "-({})".format(transfer_list.title)
+        Picklist_Title = "{}{}".format(transfer_lists_for_picklist[0].source_plate.type, Source_Plate_Names_Str)
+
+        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title), "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
-        for action in TL.get_actions():
-            UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
-            SPT = SPType + "_" + Cali
-            line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
-            PickList.write(line)
+        for transfer_list in transfer_lists_for_picklist:
+            for action in transfer_list.get_actions():
+                UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
+                SPT = transfer_list.source_plate.type + "_" + Cali
+                line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
+                PickList.write(line)
         PickList.close()
-        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Title))
+        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title))
 
 def Generate_Actions(Protocol):
     Exceptions = []
@@ -105,11 +134,12 @@ def Generate_Actions(Protocol):
     Missing_Reagents = Required_Reagents.difference(Available_Reagents)
 
     if len(Missing_Reagents) > 0:
-        raise ValueError("Cannot find the following reagents in a source plate: {}".format(Missing_Reagents))
+        raise _BMS.OutOFSourceMaterial("Cannot find the following reagents in a source plate: {}".format(Missing_Reagents))
 
     # Check if there is enough volume for each of the required reagents present in the source plates
     ## Also check that the storage volume is not above the maximum amount
     Exceptions = []
+    Wells_Below_Dead_Volume = {}
     for required_reagent in Required_Reagents:
         required_volume = 0
         required_reagent_locations = Protocol.get_reagent_destination_locations(required_reagent)
@@ -137,18 +167,32 @@ def Generate_Actions(Protocol):
 
             if total_source_volume - dead_volume < 0:
                 # If the available volume is below the dead volume, add nothing rather than adding a negative volume
-                continue
+                Wells_Below_Dead_Volume[well] = [plate.name, required_reagent, dead_volume-total_source_volume]
             else:
                 available_volume += total_source_volume - dead_volume
-                
         if available_volume < required_volume:
-            Exceptions.append([required_reagent, required_volume-available_volume])
+            extra_reagent_volume = required_volume-available_volume
+            Exceptions.append([required_reagent, extra_reagent_volume, well, plate.name])
+
+    for well in Wells_Below_Dead_Volume:
+        plate_name = Wells_Below_Dead_Volume[well][0]
+        reagent_name = Wells_Below_Dead_Volume[well][1]
+        volume_below_dead = Wells_Below_Dead_Volume[well][2]
+        print("Well {} of plate {} containing {} is {} uL below the dead volume.".format(well, plate_name, reagent_name, volume_below_dead))
 
     if len(Exceptions) > 0:
-        error_text = ""
+        error_text = "\n"
+        error_csv_text = "\nName,Well,Plate,Volume Needed\n"
         for e in Exceptions:
-            error_text += "Source plates do not contain enough volume of {}. {} uL more is required.\n".format(e[0], e[1])
-        raise ValueError(error_text)
+            extra_volume_to_add = e[1]
+            below_dead_volume_text = ".\n"
+            if e[2] in Wells_Below_Dead_Volume.keys():
+                if e[3] == Wells_Below_Dead_Volume[e[2]][0]:
+                    below_dead_volume_text = ". This well is also {} uL below the dead volume.\n".format(Wells_Below_Dead_Volume[e[2]][2])
+                    extra_volume_to_add = e[1] + Wells_Below_Dead_Volume[e[2]][2]
+            error_text += "Not enough volume of {}. {} uL more is required. Last well checked was {} of {}{}\n".format(e[0], e[1], e[2], e[3], below_dead_volume_text)
+            error_csv_text += "{},{},{},{}\n".format(e[0], e[2], e[3], extra_volume_to_add)
+        raise _BMS.OutOFSourceMaterial(error_text + error_csv_text)
 
     ###########################
     # Generate transfer lists #
@@ -240,9 +284,9 @@ def Generate_Actions(Protocol):
                             source_plate.update_volume_in_well(Protocol.get_reagent_volume(reagent, source_plate, source_well) - available_volume, reagent, source_well)
                             source_index += 1
                         else:
-                            raise ValueError("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
+                            raise _BMS.OutOFSourceMaterial("Internal transfer error: unhandled transfer situation for {}. Please raise this protocol as an issue on GitHub.".format(reagent))
                         if source_index == len(source_wells):
-                            raise ValueError("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
+                            raise _BMS.OutOFSourceMaterial("Internal calculation error: ran out of {} to transfer. Please raise this protocol as an issue on GitHub.".format(reagent))
 
 #################################
 
@@ -293,7 +337,7 @@ class Protocol:
         for plate in Destination_Plates:
             occupied_wells = plate.get_content().keys()
             for well in occupied_wells:
-                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                reagents_in_well = set( [reagent_info.name for reagent_info in plate.get_content()[well]] )
                 Required_Reagents = Required_Reagents.union(reagents_in_well)
 
         return(Required_Reagents)
@@ -308,7 +352,7 @@ class Protocol:
         for plate in Source_Plates:
             occupied_wells = plate.get_content().keys()
             for well in occupied_wells:
-                reagents_in_well = set( [reagent_info[0] for reagent_info in plate.get_content()[well]] )
+                reagents_in_well = set( [reagent_info.name for reagent_info in plate.get_content()[well]] )
                 Available_Reagents = Available_Reagents.union(reagents_in_well)
 
         return(Available_Reagents)
@@ -319,16 +363,16 @@ class Protocol:
         except KeyError:
             raise KeyError("Well {} not found when searching for {} in plate {}.\nPlate Content:\n{}".format(Well, Reagent_Name, Plate.name, Plate.get_content()))
         for reagent_info in Reagents:
-            if reagent_info[0] == Reagent_Name:
-                return(reagent_info[1])
+            if reagent_info.name == Reagent_Name:
+                return(reagent_info.volume)
 
         return(None)
 
     def get_reagent_info(self, Reagent_Name, Plate, Well):
         Reagents = Plate.get_content()[Well]
         for reagent_info in Reagents:
-            if reagent_info[0] == Reagent_Name:
-                return(reagent_info[1:])
+            if reagent_info.name == Reagent_Name:
+                return(reagent_info.get_info()[1:])
 
         return(None)
 
@@ -339,7 +383,7 @@ class Protocol:
             occupied_wells = plate.get_occupied_wells()
             for well in occupied_wells:
                 for reagent in plate.get_content()[well]:
-                    if reagent[0] == Reagent_Name:
+                    if reagent.name == Reagent_Name:
                         Locations.append([plate, well])
 
         if len(Locations) > 0:
@@ -354,7 +398,7 @@ class Protocol:
             occupied_wells = plate.get_occupied_wells()
             for well in occupied_wells:
                 for reagent in plate.get_content()[well]:
-                    if reagent[0] == Reagent_Name:
+                    if reagent.name == Reagent_Name:
                         Locations.append([plate, well])
 
         if len(Locations) > 0:
@@ -417,11 +461,11 @@ class Action:
         if isinstance(Volume, float):
             raise TypeError("Transfer Volume must be an integer")
         elif int(Volume) < 25:
-            raise ValueError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Transfer Volume must be more than 25 nL for Echo 525".format(self.reagent,Volume))
         elif source_plate_type == "384PP" and int(Volume) > 2000:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Maximum transfer volume from 384PP plates is 2000 nL".format(self.reagent,Volume))
         elif source_plate_type == "384LDV" and int(Volume) > 500:
-            raise ValueError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
+            raise _BMS.TransferError("Cannot transfer {} at {} nL; Maximum transfer volume from 384LDV plates is 500 nL".format(self.reagent,Volume))
         self._volume = int(Volume)
 
     def get_volume(self):
