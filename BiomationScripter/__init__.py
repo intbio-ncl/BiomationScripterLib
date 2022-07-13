@@ -469,10 +469,6 @@ class Labware_Layout:
             self.add_content(row[0], row[1], row[2], row[3])
         return(self)
 
-class PlateLayout(Labware_Layout):
-    def __init__(self, Name, Type):
-        raise ValueError("`PlateLayout` has been replaced by `Labware_Layout`")
-
 class Liquids:
     def __init__(self):
         self.liquids = {}
@@ -529,6 +525,7 @@ class Mastermix:
         self.name = Name
         self.reagents = Reagents
         self.wells = Wells
+
 ##########################################
 # Functions
 
@@ -664,12 +661,6 @@ def Import_Labware_Layout(Filename, path = "~", ext = ".xlsx"):
     labware_layout.import_labware(Filename, path = path, ext = ext)
     return(labware_layout)
 
-def Import_Plate_Layout(Filename, path = "~", ext = ".xlsx"):
-    raise ValueError("`Import_Plate_Layout` has been replaced by `Import_Labware_Layout`.")
-
-def Create_Plates_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
-    return(Create_Labware_Needed(Plate_Format, N_Wells_Needed, N_Wells_Available, Return_Original_Layout))
-
 def Create_Labware_Needed(Labware_Format, N_Wells_Needed, N_Wells_Available = "All", Return_Original_Layout = True):
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
@@ -780,37 +771,6 @@ def Group_Locations(Locations, Group_Populations):
         Grouped_Locations.append(Locations[start_index:end_index])
         start_index += group_pop
     return(Grouped_Locations)
-
-def serial_dilution_volumes(dilution_factors, total_volume):
-    # Note that total volume is the amount the dilution will be made up to
-    ## The total volume of all dilutions other than the final will be lower than this
-    sample_volumes = []
-    solution_volumes = []
-
-    # This the the dilution factor of the source material for the first serial dilution
-    ## This is always 1, as the initial sample is assumed to be undiluted
-    source_dilution_factor = 1
-
-    for df in dilution_factors:
-        # Get the dilution factor of the current serial dilution being performed
-        destination_dilution_factor = df
-
-        # Calculate the volume, in uL, of sample and solution required for each dilution factor
-        sample_volume = total_volume * (source_dilution_factor/destination_dilution_factor)
-        solution_volume = total_volume - sample_volume
-
-        # Store the volumes required for later use
-        sample_volumes.append(sample_volume)
-        solution_volumes.append(solution_volume)
-
-        # Set the current dilution as the source for the next serial dilution
-        source_dilution_factor = df
-
-    return(sample_volumes, solution_volumes)
-
-
-def _get_well_layout_index(well):
-    return(int(well.split("_")[0]))
 
 def Mastermix_Maker(Destination_Layouts, Mastermix_Layout, Maximum_Mastermix_Volume, Min_Transfer_Volume, Extra_Reactions, Excluded_Reagents = [], Excluded_Combinations = [], Preferential_Reagents = [], Seed = None):
 
@@ -1318,6 +1278,9 @@ def fmol_calculator(mass_ng, length_bp):
     return(((mass_ng * 1e-9)/((length_bp * 617.96) + 36.04)) * 1e15)
 
 ## Private ##
+def _get_well_layout_index(well):
+    return(int(well.split("_")[0]))
+
 def _Lrange(L1,L2): # Between L1 and L2 INCLUSIVE of L1 and L2
     L1 = ord(L1.upper())
     L2 = ord(L2.upper())
