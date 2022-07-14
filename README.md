@@ -1,6 +1,6 @@
 <center>
 <a href = "Docs/Home.md">
-<img src="Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300" style = "background-color:white;"/>
+<img src="Resources/Logo - Full Name - White BG.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 ---
