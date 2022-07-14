@@ -29,9 +29,9 @@ The BiomationScripter python library contains a set of packages to help programm
 
 If you are unsure where to start, see the guidance [here](#where-to-start).
 
-* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter)
-* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto)
-* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](https://github.com/intbio-ncl/BiomationScripterLib/wiki/EchoProto)
+* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](BiomationScripter.md)
+* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](OTProto.md)
+* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](EchoProto.md)
 * [CyBioFelix](https://www.analytik-jena.com/products/liquid-handling-automation/liquid-handling/flexible-benchtop-liquid-handling/cybio-felix-series/) - FelixProto - **Coming Soon**
 
 ---
@@ -64,7 +64,7 @@ The [EchoProto Templates documentation page](EchoProto_Templates.md) has explana
 
 **For Opentrons Liquid Handler**
 
-*Coming Soon*
+See the documentation [here](OTProto_Templates.md#using-otproto-templates).
 
 ### Making Templates
 
@@ -76,7 +76,7 @@ Check out the example walkthrough [here](Example_Code_Snippets/EchoProto/EchoPro
 
 **For Opentrons Liquid Handler**
 
-*Coming soon*
+See the documentation [here](OTProto_Templates.md#creating-custom-otprototemplates)
 
 ### Writing protocols without Templates
 
