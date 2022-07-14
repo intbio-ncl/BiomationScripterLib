@@ -1,6 +1,22 @@
+<center>
+<a href = "Docs/Home.md">
+<img src="Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+</a>
+
+---
+[Home](Docs/Home.md) |
+[Getting Started](Docs/Getting-Started.md) |
+[Generic Tools](Docs/BiomationScripter.md) |
+[EchoProto](Docs/EchoProto.md) |
+[EchoProto Templates](Docs/EchoProto_Templates.md) |
+[OTProto](Docs/OTProto.md) |
+[OTProto Templates](Docs/OTProto_Templates.md)
+---
+</center>
+
 # BiomationScripter
 
-This is a python package containg a set of tool to help with writing automation protocols for various liquid handling robots. There are also a set of generic tools which may help with writing protocols for multiple automation equipment
+This is a python package containing a set of tool to help with writing automation protocols for various liquid handling robots. There are also a set of generic tools which may help with writing protocols for multiple automation equipment
 
 ### Installation
 
