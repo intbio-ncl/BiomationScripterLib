@@ -1,6 +1,26 @@
+<center>
+<a href = "Home.md">
+<img src="../Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+</a>
+
+
+
+---
+[Home](Home.md) |
+[Getting Started](Getting-Started.md) |
+[Generic Tools](BiomationScripter.md) |
+[EchoProto](EchoProto.md) |
+[EchoProto Templates](EchoProto_Templates.md) |
+[OTProto](OTProto.md) |
+[OTProto Templates](OTProto_Templates.md)
+---
+</center>
+
 # BiomationScripter - Getting Started
 ---
-[Overview](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started#feature-overview) | [Installation](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started#installation)
+[Overview](Getting-Started.md#feature-overview) |
+[Where To Start](Getting-Started.md#where-to-start) |
+[Installation](Getting-Started.md#installation)
 
 ---
 ## Feature Overview
