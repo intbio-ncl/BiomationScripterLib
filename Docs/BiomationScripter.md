@@ -47,7 +47,7 @@ Begin by importing the BiomatonScripter package:\
 [`Liquids`](#class-liquids) |
 [`Mastermix`](#class-mastermix)
 
-### Class [`Assembly`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Class [`Assembly`](../BiomationScripter/__init__.py)
 
 This class is used to store basic information about a DNA assembly
 
@@ -67,7 +67,7 @@ This class is used to store basic information about a DNA assembly
   * Creates the `BiomatonScripter.Assembly` object
 
 
-### Class [`Labware_Content`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Class [`Labware_Content`](../BiomationScripter/__init__.py)
 
 This class is used by [`Labware_Layout`](#class-labware_layout) to store content information.
 
@@ -87,7 +87,7 @@ This class is used by [`Labware_Layout`](#class-labware_layout) to store content
 * `get_info(self)` returns `List[self.name, self.volume, self.liquid_class]`
   * Returns as a list `self.name`, `self.volume`, and `self.liquid_class`
 
-### Class: [`Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Class: [`Labware_Layout`](../BiomationScripter/__init__.py)
 
 This class is used to store information, such as number of wells and content, about plates or other labware which can later be retrieved. The `BMS.Labware_Layout` class is also intended to be universal within BiomationScripter, and not specific to any particular automation equipment.
 
@@ -205,7 +205,7 @@ This class is used to store information, such as number of wells and content, ab
   * Returns the next well positon as `str` which is specified as being empty
   * Returns in the order specified by `self.available_wells`, and checks `self.empty_wells` to see if the next available well is empty
 
-### Class: [`Liquids`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Class: [`Liquids`](../BiomationScripter/__init__.py)
 This class is used to store information about liquids and where they are stored.
 
 **Usage:**\
@@ -240,7 +240,7 @@ This class is used to store information about liquids and where they are stored.
 * `get_all_liquids(self)` returns `list[str]`
    * Returns a list of all keys in `self.liquids`
 
-### Class [`Mastermix`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Class [`Mastermix`](../BiomationScripter/__init__.py)
 
 This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to store information about a mastermix. It is not intended for use outside of this function. Even though the [`BMS.Mastermix_Maker`](#function-mastermix_maker) returns this class, it shouldn't ever need to be used or understood.
 
@@ -271,7 +271,7 @@ This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to stor
 [`well_range`](#function-well_range)
 
 
-### Function: [`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`Create_Labware_Needed`](../BiomationScripter/__init__.py)
 This function calculates how many plates of a certain type are required for a protocol and returns a list of [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects.
 
 **Usage:**\
@@ -287,7 +287,7 @@ This function calculates how many plates of a certain type are required for a pr
 [`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects will then be created using the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list. NOTE: if the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects which are returned. The original [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object is returned as the first element in the returned list.
 
 
-### Function: [`fmol_calculator`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`fmol_calculator`](../BiomationScripter/__init__.py)
 Calculates the number of fmols of a dsDNA molecule based on the mass (ng) and length (bp).
 
 **Usage:**
@@ -304,7 +304,7 @@ Calculates fmols of dsDNA molecules in a sample. Uses the following equation:
 ![((mass_ng * 1e^-9)/((length_bp * 617.96) + 36.04)) * 1e^15](https://latex.codecogs.com/svg.latex?fmol=\frac{mass\\_ng\times1e^-^9}{(length\\_bp\times617.96)+36.04}\times1e^1^5)
 
 
-### Function: [`Import_Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`Import_Labware_Layout`](../BiomationScripter/__init__.py)
 This function imports an Excel file with a standard layout and converts it to a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object.
 
 **Usage:**\
@@ -319,7 +319,7 @@ This function imports an Excel file with a standard layout and converts it to a 
 This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
 
 
-### Function: [`Mastermix_Maker`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`Mastermix_Maker`](../BiomationScripter/__init__.py)
 This function can be used to automatedly generate mastermixes based on source materials in a list of destination labware layout objects, and user-defined parameters.
 
 **Usage:**
@@ -344,7 +344,7 @@ This function can be used to automatically generate mastermixes for a given list
 The exact composition of the mastermixes generated can be influenced by through the use of arguments listed above. In some cases, these arguments may provide too many constraints and result in an impossible situation where mastermixes cannot be generated. To help ensure all possible combinations are attempted, there is some randomness within the function. This randomness can be removed by supplying a specific seed, and ensure that the same mastermixes are generated each time.
 
 
-### Function: [`Reagent_Finder`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`Reagent_Finder`](../BiomationScripter/__init__.py)
 Searches a directory containing labware layout files for a specified reagent.
 
 **Usage:**\
@@ -359,7 +359,7 @@ This function will search in the directories listed for files which appear to be
 
 
 
-### Function: [`well_range`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/__init__.py)
+### Function: [`well_range`](../BiomationScripter/__init__.py)
 This function returns a list of wells based on a specified well range and direction. Wells are always in the format of row followed by column, where row is a letter and column is an integer (e.g. A1, D6, C12, B7, etc.).
 
 **Usage:**

@@ -19,7 +19,7 @@
 # BiomationScripter - EchoProto - Templates
 ---
 
-[Overview](#overview) | [All Templates](#echo-template-documentation) | [EchoProto Template Superclass](#superclass-echoproto_template)
+[Overview](#overview) | [All Templates](#echo-templates) | [EchoProto Template Superclass](#superclass-echoproto_template)
 
 ---
 
@@ -37,7 +37,7 @@ Below you can find documentation for Echo Templates included with BiomationScrip
 
 [`Loop_Assembly`](#template-loop_assembly) | [`PCR`](#template-pcr)
 
-### Template: [`Loop_Assembly`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/Templates.py)
+### Template: [`Loop_Assembly`](../BiomationScripter/EchoProto/Templates.py)
 
 #### Overview:
 
@@ -114,7 +114,7 @@ BiomationScripter.EchoProto.Templates.Loop_Assembly(
     * Creates the Echo picklists for the protocol
 
 
-### Template: [`PCR`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/Templates.py)
+### Template: [`PCR`](../BiomationScripter/EchoProto/Templates.py)
 
 #### Overview:
 
@@ -123,7 +123,7 @@ This Template is used to generate an Echo protocol for preparing PCR reactions. 
 
 ---
 
-## Superclass: [`EchoProto_Template`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+## Superclass: [`EchoProto_Template`](../BiomationScripter/EchoProto/__init__.py)
 
 **Usage:**
 
@@ -141,6 +141,8 @@ class My_New_Template(BMS.EchoProto.EchoProto_Template):
   def run(self):
     pass
 ```
+
+[See the walkthrough here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
 
 **Attributes:**
 
