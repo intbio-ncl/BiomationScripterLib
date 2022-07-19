@@ -19,3 +19,35 @@
 # BiomationScripter - Standard Layout File
 
 For version 0.2.0.dev
+
+---
+[Overview](#overview) |
+[Features](#using-biomationscripter) |
+[Classes](#classes) |
+[Functions](#functions) |
+[Exceptions](#exceptions)
+
+---
+
+## Overview
+
+
+---
+
+## Specification
+
+
+
+---
+
+## Example Usage
+
+
+
+---
+
+## Resources
+
+
+
+---
