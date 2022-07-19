@@ -22,10 +22,9 @@ For version 0.2.0.dev
 
 ---
 [Overview](#overview) |
-[Features](#using-biomationscripter) |
-[Classes](#classes) |
-[Functions](#functions) |
-[Exceptions](#exceptions)
+[Specification](#specification) |
+[Examples](#example-usage) |
+[Resources](#resources) |
 
 ---
 
