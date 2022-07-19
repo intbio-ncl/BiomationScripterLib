@@ -40,7 +40,7 @@ If you are planning to automate a protocol for which there are no existing templ
 Due to large amounts of the OT-2's onboard computer being read only, the BiomationScripter package can not be installed as usual. Instead, follow the instructions below to get set up.
 
 1. Create a new directory called `Packages` in the writable section of the OT-2's onboard computer
-     * `/var/lib/jupyter/notebooks/` is suggested for convenience in the case of using Jupyter Notebook to run the OT2
+     * `/var/lib/jupyter/notebooks/` is an example of a writable directory
 2. Clone the [BiomationScripter repo](https://github.com/intbio-ncl/BiomationScripter) into this new directory
 3. The following code will need to be added to start of every protocol you wish to use BiomationScripter in:
      ```python
@@ -48,6 +48,8 @@ Due to large amounts of the OT-2's onboard computer being read only, the Biomati
      sys.path.insert(0, "<Directory>")
      ```
      Replace `<Directory>` with the path you cloned BiomationScripter into (e.g. `/var/lib/jupyter/notebooks/Packages/BiomationScripterLib`)
+
+NOTE: Version 6.0.0 of the Opentrons app added in a new analysis function. In order to make use of this function, BiomationScripter must also be installed in a specific location on the controlling PC. Instructions for doing this can be found [here](https://support.opentrons.com/s/article/Using-Python-packages-in-Python-API-protocols#modulenotfounderror). If these instructions are not followed, you will see a 'Protocol anlysis failure' popup box, with a message similar to 'No module named BiomationScripter'. Note that you can also choose to ignore this error and proceed to running the protocol.
 
 ---
 
