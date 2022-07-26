@@ -52,6 +52,18 @@ B. `cd` into the directory you just cloned, and run the following command to ins
 
 ## Where To Start
 
+To make use of this library, you will need to have some prior Python knowledge and experience. You wll need to understand how the following works in Python:
+* Variables
+* Data structures such as lists, dictionaries, and sets
+* How to call functions
+* How to use classes and class methods
+* For loops
+* If-Else statements
+
+You should also have some understanding of lab automation. A webinar can be found [here](https://video.igem.org/w/wCpNs3SGedhtKMESQEdJyR) which introduces the concepts of lab automation.
+
+If using the Opentrons, you may find it useful to visit [this tutorial](https://docs.opentrons.com/v2/tutorial.html) first, which gives a basic understanding of how Python protocols work for the OT2.
+
 ### Using Templates
 
 BiomationScripter contains Templates for certain protocols, such as PCR or transformation. These Templates can be supplied with user inputs to generate a protocol for the chosen automation equipment. For example, if you wished to use the Echo liquid handler to prepare a set of PCR reactions, you could use the EchoProto PCR Template. This Template can be supplied with information specific to your experiment, such as the type of polymerase and buffer to use, the template DNA and primers, and the final volume of the PCR reactions. The Template will then use the information provided to generate an automation protocol for the Echo.
