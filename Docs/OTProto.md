@@ -306,11 +306,11 @@ If `parent` is an [`opentrons.protocol_api.contexts.ProtocolContext`](https://do
 Generates an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object from a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) object
 
 **Usage:**\
-`OTProto.load_labware_from_layout(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Plate_Layout: BiomationScripter.Labware_Layout, deck_position: int = None, custom_labware_dir: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
+`OTProto.load_labware_from_layout(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Labware_Layout: BiomationScripter.Labware_Layout, deck_position: int = None, custom_labware_dir: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
 **Arguments:**
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
-* `Plate_Layout` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The Layout object to be used as the template for generating the [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object
+* `Labware_Layout` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The Layout object to be used as the template for generating the [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object
 * `deck_position` | `int = None`: An integer (from 1-11) stating which deck position the labware should be loaded on to - if no value is specified, the labware will be loaded onto the next available deck slot
 * `custom_labware_dir` | `str = None`: Location of a directory where any custom labware definition files are stored - if not specified then `../custom_labware` will be used if custom labware is being used
 
