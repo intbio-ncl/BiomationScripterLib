@@ -225,6 +225,15 @@ class Labware_Layout:
         self.empty_wells: List[str] = None
         self.well_labels: Dict[str, str] = {}
 
+
+    def get_total_volume_of_liquid(self, Liquid):
+        wells = self.get_wells_containing_liquid(Liquid)
+        total_volume = 0
+        for well in wells:
+            total_volume += self.get_volume_of_liquid_in_well(Liquid, well)
+
+        return(total_volume)
+
     def define_format(self, Rows: int, Columns: int):
         self.rows = Rows
         self.columns = Columns
