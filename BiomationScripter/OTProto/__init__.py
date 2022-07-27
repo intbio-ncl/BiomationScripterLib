@@ -756,9 +756,9 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells
     # Return the list of loaded labware
     return(labware, well_locations)
 
-def load_labware_from_layout(Protocol, Plate_Layout, deck_position = None, custom_labware_dir = None):
-    labware_type = Plate_Layout.type
-    labware_name = Plate_Layout.name
+def load_labware_from_layout(Protocol, Labware_Layout, deck_position = None, custom_labware_dir = None):
+    labware_type = Labware_Layout.type
+    labware_name = Labware_Layout.name
     labware = load_labware(Protocol, labware_type, deck_position = deck_position, custom_labware_dir = custom_labware_dir, label = labware_name)
 
     return(labware)
