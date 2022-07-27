@@ -847,6 +847,22 @@ def load_pipettes_and_tips(Protocol, Pipette_Type, Pipette_Position, Tip_Type, N
 
     return(pipette, tip_racks)
 
+def add_tip_boxes_to_pipettes(Protocol, Pipette_Type, Tip_Type, Tips_Needed, Starting_Tip = "A1"):
+    if Tips_Needed == 0:
+        return(None)
+    pipette = get_pipette(Protocol, Pipette_Type)
+    if pipette == None:
+        raise _BMS.RobotConfigurationError("The specified pipette type, {}, has not been loaded.".format(Pipette_Type))
+    tip_boxes_needed = tip_racks_needed(Tips_Needed, Starting_Tip)
+    for tip_box in range(0, tip_boxes_needed):
+        tip_box_deck_slot = next_empty_slot(Protocol)
+        tip_box = load_labware(Protocol, Tip_Type, tip_box_deck_slot)
+
+        pipette.tip_racks.append(tip_box)
+    pipette.starting_tip = pipette.tip_racks[0].well(Starting_Tip)
+
+
+
 # Functions less likely to be useful to users
 
 def get_p20(protocol):
