@@ -188,6 +188,8 @@ This class is used to store information, such as number of wells and content, ab
 * `update_volume_in_well(self, Volume: float/int, Reagent: str, Well: str)` returns `None`
   * Changes the current volume of `Reagent` in well `Well` to `Volume`
   * If `Well` does not exist in `self.content`, an error will be raised
+* `get_total_volume_of_liquid(self, Liquid: str)` returns `float`
+  * Returns the total volume of the specified liquid across all wells of the labware
 * `print(self)` returns `str`
   * Pretty prints all content stored in `self.content`
   * Returns a `str` with the same content which is printed

@@ -61,7 +61,7 @@ import BiomationScripter.OTProto as OTProto
 
 ### Functions
 
-
+[`add_tip_boxes_to_pipettes`](#function-add_tip_boxes_to_pipettes) |
 [`calculate_and_load_labware`](#function-calculate_and_load_labware) |
 [`calculate_tips_needed`](#function-calculate_tips_needed) |
 [`dispense_from_aliquots`](#function-dispense_from_aliquots) |
@@ -83,6 +83,25 @@ import BiomationScripter.OTProto as OTProto
 
 <br>
 <br>
+
+### Function: [`add_tip_boxes_to_pipettes`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+This functions calculates how many tip boxes of a specific tip type are required, and then loads that many boxes to the Opentrons deck.
+
+**Usage**
+
+`OTProto.add_tip_boxes_to_pipettes(protocol: opentrons.protocol_api.contexts.ProtocolContext, Pipette_Type: str, Tip_Type: str, Tips_Needed: int, Starting_Tip: str)` returns `float`
+
+**Arguments:**
+
+* `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
+* `Pipette_Type` | `str`: The type of pipette which will use the tips being loaded (either `"p20"`, `"p300"`, or `"p1000"`)
+* `Tip_Type` | `str`: The labware api name for the type of tip to load (e.g. `"opentrons_96_tiprack_20ul"`)
+* `Tips_Needed` | `int`: Number of tips needed for the entire protocol of the specific tip type
+* `Starting_Tip` | `str = "A1"`: The starting tip position in the first tip box, will default to the first position ("A1")
+
+**Behaviour:**
+
+This function will calculate the number of boxes of the specified tip type needed based on the number of tips needed. The boxes will then be loaded to the Opentrons deck, and associated with the specified pipette type.
 
 ### Function: [`calculate_and_load_labware`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 This function calculates how many of a certain labware type is required for a protocol, and then loads the labware to the deck
