@@ -203,6 +203,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Competent_Cells_Aliquot_Volume,
         Wait_Before_Shock,
         Replicates,
+        Modules=["temperature module gen2"],
         **kwargs
     ):
 
@@ -216,6 +217,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self.heat_shock_temp = Heat_Shock_Temp # celcius
         self.wait_before_shock = Wait_Before_Shock # seconds
         self.replicates = Replicates
+        self.modules = Modules
 
         ####################
         # Source materials #
@@ -236,7 +238,9 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ##################################################
         # Protocol Metadata and Instrument Configuration #
         ##################################################
-        self._temperature_module = "temperature module gen2"
+        # TODO: configure modules here if possible
+        # self._temperature_module = "temperature module gen2"
+
         super().__init__(**kwargs)
 
     def run(self):
@@ -245,10 +249,32 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         #################
         self.load_pipettes()
 
-        ###########################
-        # Load temperature_module #
-        ###########################
-        temperature_module = self._protocol.load_module(self._temperature_module, 4)
+        ################
+        # Load Modules #
+        ################
+        destination_module=None
+        cells_module=None
+        tc_module=None
+        temperature_module1=None
+        temperature_module2=None
+        if self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") >= 1:
+            tc_module = self._protocol.load_module("Thermocycler Module")
+            destination_module = tc_module
+            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+            cells_module = temperature_module1
+        elif self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") < 1:
+            tc_module = self._protocol.load_module("Thermocycler Module")
+            destination_module = tc_module
+        elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") > 1:
+            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+            cells_module = temperature_module1
+            temperature_module2 = self._protocol.load_module(self._temperature_module, 7)
+            destination_module = temperature_module2
+        elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") == 1:
+            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+            destination_module = temperature_module1
+        else:
+            self._protocol.pause("Error. Default module does not meet requirements")
 
         ################################
         # Create transfer volume lists #
@@ -294,13 +320,15 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             )
 
         # Media
-        Media_Aliquots_Required = math.ceil(sum(Media_Transfer_Volumes)/self.media_aliquot_volume)
-        Media_Source_Labware, Media_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.media_source_type, Media_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+        # if media arguments are set to None, the media transfer steps are skipped
+        if self.media_aliquot_volume is not None:
+            Media_Aliquots_Required = math.ceil(sum(Media_Transfer_Volumes)/self.media_aliquot_volume)
+            Media_Source_Labware, Media_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.media_source_type, Media_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
 
         ############################
         # Load Destination Labware #
         ############################
-        Destination_Labware = _OTProto.load_labware(temperature_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
+        Destination_Labware = _OTProto.load_labware(destination_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
         Destination_Locations = Destination_Labware.wells()[:Num_Transformations]
 
         print("Transformation Mapping")
@@ -315,15 +343,22 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         for dna_name, location in  zip([layout.get_liquids_in_well(well)[0] for layout in self.dna_source_layouts for well in layout.get_occupied_wells()], DNA_Source_Locations):
             self._protocol.pause("Place DNA Sample {} at {}".format(dna_name, location))
 
-        self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, self.media_aliquot_volume, Media_Source_Locations))
+        if self.media_aliquot_volume is not None:
+            self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, self.media_aliquot_volume, Media_Source_Locations))
+        else:
+            self._protocol.pause("Media Aliquot Volume was set to None, media transfer steps shall be skipped")
         self._protocol.pause("This protocol uses {} aliquots of {} uL competent cells, located at {}".format(Cell_Aliquots_Required, self.comp_cells_aliquot_volume, Cell_Source_Locations))
 
         ##########################
         # Liquid handling begins #
         ##########################
 
-        # Set temperature to 4C and wait until temp is reached
-        temperature_module.set_temperature(4)
+        # Set temperature to 4C
+        if tc_module is not None:
+            tc_module.set_block_temperature(4)
+            tc_module.open_lid()
+        else:
+            destination_module.start_set_temperature(4)
 
         # Add comp cells
 
@@ -375,38 +410,49 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         # Wait for a bit
         self._protocol.delay(seconds = self.wait_before_shock)
         # Set the temp to heat shock
-        temperature_module.set_temperature(self.heat_shock_temp)
-        # Wait for a bit
-        self._protocol.delay(seconds = self.heat_shock_time)
-        # Cool back to 4 - protocol won't continue until this is back at 4...
-        temperature_module.set_temperature(4)
+        if tc_module is not None:
+            # close thermocycler lid
+            tc_module.close_lid()
+            # heat shock as user specified
+            tc_module.set_block_temperature(self.heat_shock_temp, hold_time_seconds=self.heat_shock_time)
+            # hold at 4 for 2 minutes
+            tc_module.set_block_temperature(4, hold_time_seconds=120)
+            # open the lid
+            tc_module.open_lid()
+        else:
+            destination_module.set_temperature(self.heat_shock_temp)
+            # Wait for a bit
+            self._protocol.delay(seconds = self.heat_shock_time)
+            # Cool back to 4 - protocol won't continue until this is back at 4...
+            destination_module.set_temperature(4)
 
         # Add media
-        # Prompt user to open LB tubes
-        self._protocol.pause("Open up LB tubes")
+        if self.media_aliquot_volume is not None:
+            # Prompt user to open LB tubes
+            self._protocol.pause("Open up LB tubes")
 
-        _OTProto.dispense_from_aliquots(
-            self._protocol,
-            Media_Transfer_Volumes,
-            Media_Source_Locations,
-            Destination_Locations,
-            Min_Transfer = None,
-            Calculate_Only = False,
-            Dead_Volume_Proportion = 1,
-            Aliquot_Volumes = self.media_aliquot_volume,
-            new_tip = True,
-            mix_after = None,
-            mix_before = None,
-            mix_speed_multiplier = 1,
-            aspirate_speed_multiplier = 1,
-            dispense_speed_multiplier = 1,
-            blowout_speed_multiplier = 1,
-            touch_tip_source = False,
-            touch_tip_destination = True,
-            blow_out = True,
-            blowout_location = "destination well",
-            move_after_dispense = None
-        )
+            _OTProto.dispense_from_aliquots(
+                self._protocol,
+                Media_Transfer_Volumes,
+                Media_Source_Locations,
+                Destination_Locations,
+                Min_Transfer = None,
+                Calculate_Only = False,
+                Dead_Volume_Proportion = 1,
+                Aliquot_Volumes = self.media_aliquot_volume,
+                new_tip = True,
+                mix_after = None,
+                mix_before = None,
+                mix_speed_multiplier = 1,
+                aspirate_speed_multiplier = 1,
+                dispense_speed_multiplier = 1,
+                blowout_speed_multiplier = 1,
+                touch_tip_source = False,
+                touch_tip_destination = True,
+                blow_out = True,
+                blowout_location = "destination well",
+                move_after_dispense = None
+            )
 
 class Primer_Mixing(_OTProto.OTProto_Template):
     def __init__(self,
