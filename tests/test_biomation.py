@@ -9,6 +9,8 @@ import BiomationScripter as bms
 from BiomationScripter import EchoProto as ep
 from BiomationScripter import OTProto as otp
 
+from BiomationScripter.EchoProto import Templates as echo_templates
+
 
 def test_create_labware():
     num_pcr_reactions = 234
@@ -416,11 +418,11 @@ class TestEchoProtocol:
         )
         ep.Generate_Actions(protocol_cp)
 
-        expected_fname = "/tmp/Example Protocol-384PP-(DNA_Source_Plate).csv"
+        expected_fname = "Resources/for_tests/Example Protocol-384PP-(DNA_Source_Plate).csv"
         if os.path.isfile(expected_fname):
             os.remove(expected_fname)
 
-        ep.Write_Picklists(protocol_cp, Save_Location="/tmp", Merge=False)
+        ep.Write_Picklists(protocol_cp, Save_Location="Resources/for_tests", Merge=False)
 
         assert os.path.isfile(expected_fname)
         os.remove(expected_fname)
@@ -489,3 +491,5 @@ class TestOTProto:
 
         for pos in range(2, 12):
             assert protocol.deck[pos] is None
+
+class TestEchoProtoLoopAssembly:
