@@ -1,8 +1,11 @@
+from fileinput import filename
 import json
 import BiomationScripter as _BMS
 import math
 from opentrons import protocol_api
 import warnings
+from random import shuffle
+import datetime
 
 BiomationScripter_Install_Dir = "/var/lib/jupyter/notebooks/Packages/BiomationScripterLib/BiomationScripter/OTProto/"
 Pre_Loaded_Custom_Labware_Dir = BiomationScripter_Install_Dir + "Opentrons_Custom_Labware_Definitions/"
@@ -920,3 +923,23 @@ def load_custom_labware(parent, file, deck_position = None, label = None):
         labware = parent.load_labware_from_definition(labware_file, label)
 
     return(labware)
+
+def shuffle_locations(protocol, Locations, outdir=None, outfile="Locations"):
+    old_locations = Locations
+    # shuffle the locations
+    new_locations = shuffle(Locations)
+    # add the locations to the robot command line to be logged and seen by the user
+    protocol.comment(f"Locations given were {old_locations}")
+    protocol.comment(f"Shuffled locations are {new_locations}")
+    # export to file (if outdir provided)
+    # recommend user to provide outdir="/data/user_storage/<USER_DIR>"
+    # this function will overwrite any existing file with the same path
+    if outdir is not None:
+        fw = open(outdir+outfile+".csv", "w")
+        dt = datetime.datetime.now()
+        fw.write(dt.strftime("%c"))
+        fw.write("Old Location,New Location,\n")
+        for o,n in zip(old_locations,new_locations):
+            fw.write(f"{o},{n},\n")
+        fw.close()
+    return new_locations
