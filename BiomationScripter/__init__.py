@@ -53,7 +53,7 @@ def get_template_module(module_name: Literal["OTProto", "EchoProto"]):
         import BiomationScripter.EchoProto.Templates as EchoProto_Templates
 
         return EchoProto_Templates
-    
+
     raise ValueError(f"invald module_name ({module_name!r}) passed to get_template_module")
 
 
@@ -340,14 +340,19 @@ class Labware_Layout:
         columns = self.columns
         plate_copy = Labware_Layout(name, type)
         plate_copy.define_format(rows, columns)
-        plate_copy.available_wells = self.available_wells.copy()
-        plate_copy.empty_wells = plate_copy.available_wells.copy()
         return plate_copy
 
+    def bulk_add_content(self, Wells, Reagents, Volumes, Liquid_Classes = None):
+        if type(Volumes) is int or type(Volumes) is float:
+            Volumes = [Volumes] * len(Wells)
+        if Liquid_Classes is None:
+            for well, reagent, volume in zip(Wells, Reagents, Volumes):
+                self.add_content(well, reagent, volume)
+        else:
+            for well, reagent, volume, liquid_class in zip(Wells, Reagents, Volumes, Liquid_Classes):
+                self.add_content(well, reagent, volume, liquid_class)
+
     def add_content(self, Well, Reagent, Volume, Liquid_Class=None):
-        # TODO: * Check if Well exists in the plate
-        #       * Allow well ranges to span multiple columns
-        #       * Don't overwrite current content if a well range is specified
         if Volume < 0:
             raise NegativeVolumeError
 
