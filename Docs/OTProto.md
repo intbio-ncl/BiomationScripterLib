@@ -78,6 +78,7 @@ import BiomationScripter.OTProto as OTProto
 [`load_pipettes_and_tips`](#function-load_pipettes_and_tips) |
 [`next_empty_slot`](#function-next_empty_slot) |
 [`select_pipette_by_volume`](#function-select_pipette_by_volume) |
+[`shuffle_locations`](#function-shuffle_locations) |
 [`tip_racks_needed`](#function-tip_racks_needed) |
 [`transfer_liquids`](#function-transfer_liquids)
 
@@ -413,6 +414,20 @@ If `Volume` is above the volume range of the largest pipette, the pipette with t
 If `Volume` is below 1 uL, an error will be raised as the Opentrons cannot pipette below this volume.
 
 If not pipettes are loaded which are suitable for the specified volume, an error will be raised.
+
+### Function: [`shuffle_locations`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+Takes a list and shuffles the elements within. This generates a message to the robot showing the previous order of the list and the new order of the list. If an output directory is specified, this function will write the lists to a .csv file.
+
+**Usage:**\
+`OTProto.shuffle_locations(Locations: list[], outdir: str = None, outfile: str = "Locations")` returns `list[]`
+
+**Arguments:**
+* `Locations` | `list[]`: A list containing any elements. Typically, this should contain [`opentrons.protocol_api.labware.Well`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Well) objects. May also be invoked upon a list of Wells as strings.
+* `outdir` | `str = None`: The path to the output directory where the .csv file will be written. Recommended location is "/data/user_storage/<USER_DIRECTORY>". If this is not specified, the .csv file will not be created.
+* `outfile` | `str = "Locations"`: The name that will be used for the .csv file. If this is not specified, the .csv file will be named "Locations" by default.
+
+**Behaviour:**\
+This function takes a list and shuffles any elements contained within. The new locations will be logged by the robot and shown to the user via the application command line. If an output directory is specified, this information will be written to a .csv file.
 
 ### Function: [`tip_racks_needed`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 Determines the number of tip racks needed based on the number of tips needed, and the first tip available for partially used tip racks
