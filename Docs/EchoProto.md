@@ -1,7 +1,25 @@
+<center>
+<a href = "Home.md">
+<img src="../Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+</a>
+
+
+
+---
+[Home](Home.md) |
+[Getting Started](Getting-Started.md) |
+[Generic Tools](BiomationScripter.md) |
+[EchoProto](EchoProto.md) |
+[EchoProto Templates](EchoProto_Templates.md) |
+[OTProto](OTProto.md) |
+[OTProto Templates](OTProto_Templates.md)
+---
+</center>
+
 # BiomationScripter - EchoProto
 ---
 
-[Overview](#feature-overview) | [Importing Picklists](#importing-picklists-via-plate-reformat) | [Using EchoProto](#using-echoproto) | [EchoProto Templates](#using-echoprototemplates) | [All Templates](#template-classes)
+[Overview](#feature-overview) | [Importing Picklists](#importing-picklists-via-plate-reformat) | [Using EchoProto](#using-echoproto) | [EchoProto Templates](#using-echoprototemplates)
 
 ---
 
@@ -25,17 +43,17 @@ Plate Refomrat is the proprietary of choice for importing custom picklists into 
 
 A dialog box should appear to Connect to an Instrument. The instrument can be connected to via its IP address or there is an option to Work Offline.
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture1.png)
+![](../Resources/.wiki-images/Picture1.png)
 
 Working offline may be useful for testing out protocols for simple errors without the need of inserting plates into the machine. After the connection is established, the software GUI should open.
 
 Set-up a new protocol by clicking the new protocol button, this will open the Protocol Setup wizard.
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture2.png)
+![](../Resources/.wiki-images/Picture2.png)
 
 Select the source plate type, the destination plate type and set the mapping type to custom. Click Ok to confirm and generate a new protocol file.
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture3.png)
+![](../Resources/.wiki-images/Picture3.png)
 
 Now, the custom picklist can be imported to the new protocol. This is done using the "Import region definitions" option from the file menu. Import the custom picklist using the wizard. The import wizard will assist in retrieving the correct attributes using the file headers. Ensure that the following have been selected for import and that they map to the correct columns in the csv file:
 * Source Plate Name
@@ -45,17 +63,17 @@ Now, the custom picklist can be imported to the new protocol. This is done using
 * Destination Well
 * Transfer Volume
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture4.png)
+![](../Resources/.wiki-images/Picture4.png)
 
 The wizard will show a preview of the custom picklist file being imported, this is useful for proof checking the file before importing. There is a check box to remove duplicate line entries - it is recommended to uncheck this. There is also an option to Preview the import before finalising this. Select Import to import the picklist.
 
 Now that the file has been imported, there should be two of each source and destination plate. The first of each will be the original blank plate from creating the protocol - this should be deleted. The second will contain the transfer steps from the picklist.
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture5.png)
+![](../Resources/.wiki-images/Picture5.png)
 
 The protocol can be simulated and ran from the same software. This is done using the run button, represented by a blue play button.
 
-![](https://github.com/intbio-ncl/BiomationScripter/blob/main/Resources/.wiki-images/Picture6.png)
+![](../Resources/.wiki-images/Picture6.png)
 
 
 ---
@@ -66,14 +84,14 @@ Begin by importing the EchoProto module:
 `import BiomationScripter.EchoProto as EchoProto`
 
 The EchoProto module has the following architecture:
-<img src="https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Resources/.wiki-images/EchoProto_Architecture.png" alt = "EchoProto_Architecture: Protocol contains 1 to many Transfer Lists. Transfer List contains 1 to many Actions." width = "900"/>
+<img src="../Resources/.wiki-images/EchoProto_Architecture.png" alt = "EchoProto_Architecture: Protocol contains 1 to many Transfer Lists. Transfer List contains 1 to many Actions." width = "900"/>
 
 The [BiomationScripter.EchoProto.Protocol](#class-protocol) object is populated with [BiomationScripter.EchoProto.TransferList](#class-transferlist)s and [BiomationScripter.EchoProto.Action](#class-action)s through the use of the [BiomationScripter.EchoProto.Generate_Actions](#function-generate_actions) function. A populated [Protocol](#class-protocol) is used to generate CSV picklists by calling the [BiomationScripter.EchoProto.write_picklists](#function-write_picklists) function.
 
 ---
 
 ### Classes
-### Class: [`Protocol`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+### Class: [`Protocol`](../BiomationScripter/EchoProto/__init__.py)
 This class is used to store information about a protocol, and can be used to generate CSV picklist files.
 
 **Usage:**
@@ -115,7 +133,7 @@ This class is used to store information about a protocol, and can be used to gen
 * `get_source_plates(self)` returns `list[BiomationScripter.Labware_Layout]`
    * Returns a list of all [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) stored in `self.source_plates`
 
-### Class: [`TransferList`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+### Class: [`TransferList`](../BiomationScripter/EchoProto/__init__.py)
 This class is used to group and store liquid transfer actions based on source plate, and acts as the basis for generating CSV picklist files. Each `TransferList` is associated with just one source plate, represented by a `BiomationScripter.Labware_Layout` object.
 
 **Usage:**
@@ -160,7 +178,7 @@ This class is used to group and store liquid transfer actions based on source pl
    * The source plate is taken from `self.source_plate`
 
 
-### Class: [`Action`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+### Class: [`Action`](../BiomationScripter/EchoProto/__init__.py)
 This class is used to store information about a single liquid transfer event. Multiple [`BiomationScripter.EchoProto.Action`](#class-action) objects make up a [`BiomationScripter.EchoProto.TransferList`](#class-transferlist)
 
 **Usage:**
@@ -208,7 +226,7 @@ This class is used to store information about a single liquid transfer event. Mu
 
 ### Functions
 
-### Function: [`Generate_Actions`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+### Function: [`Generate_Actions`](../BiomationScripter/EchoProto/__init__.py)
 This function is used to automatically generate liquid transfer instructions for a [`BiomationScripter.EchoProto.Protocol`](#class-protocol) object.
 
 **Usage:**
@@ -221,7 +239,7 @@ The [`Generate_Actions`](#function-generate_actions) function first generates an
 
 This function can only be called if the [`Protocol`](#class-protocol) object has destination plate(s) which define the final output of the automation protocol, and source plate(s) which contain the required reagents.
 
-### Function: [`Write_Picklists`](https://github.com/intbio-ncl/BiomationScripter/blob/main/BiomationScripter/EchoProto/__init__.py)
+### Function: [`Write_Picklists`](../BiomationScripter/EchoProto/__init__.py)
 This function is used to generate picklists as CSV files from a [`BiomationScripter.EchoProto.Protocol`](#class-protocol) object. The [`Protocol`](#class-protocol) object must have defined source plates, destination plates, and transferlists. The transferlists must also be populated with liquid transfer events.
 
 **Usage:**

@@ -1,3 +1,21 @@
+<center>
+<a href = "Home.md">
+<img src="../Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+</a>
+
+
+
+---
+[Home](Home.md) |
+[Getting Started](Getting-Started.md) |
+[Generic Tools](BiomationScripter.md) |
+[EchoProto](EchoProto.md) |
+[EchoProto Templates](EchoProto_Templates.md) |
+[OTProto](OTProto.md) |
+[OTProto Templates](OTProto_Templates.md)
+---
+</center>
+
 # **BiomationScripter - Library**
 ### A Python library to assist with writing bio-automation protocols.
 
@@ -8,12 +26,12 @@ This documentation is for the currently unreleased BiomationScripter version 0.1
 
 ---
 
-* [**Getting Started**](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started)
-   * [**Installation**](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started#installation)
-* [**BiomationScripter Generic Tools**](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter)
-* [**OTProto**](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto)
+* [**Getting Started**](Getting-Started.md)
+   * [**Installation**](Getting-Started.md#installation)
+* [**BiomationScripter Generic Tools**](BiomationScripter.md)
+* [**OTProto**](OTProto.md)
   * Writing protocols for [Opentrons-2](https://www.opentrons.com/ot-2/)
-* [**EchoProto**](https://github.com/intbio-ncl/BiomationScripter/wiki/EchoProto)
+* [**EchoProto**](EchoProto.md)
   * Writing protocols for [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525)
 * **FelixProto** (Coming Soon)
   * Writing protocols for [CyBioFelix](https://www.analytik-jena.com/products/liquid-handling-automation/liquid-handling/flexible-benchtop-liquid-handling/cybio-felix-series/)

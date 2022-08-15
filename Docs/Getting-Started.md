@@ -1,6 +1,26 @@
+<center>
+<a href = "Home.md">
+<img src="../Resources/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+</a>
+
+
+
+---
+[Home](Home.md) |
+[Getting Started](Getting-Started.md) |
+[Generic Tools](BiomationScripter.md) |
+[EchoProto](EchoProto.md) |
+[EchoProto Templates](EchoProto_Templates.md) |
+[OTProto](OTProto.md) |
+[OTProto Templates](OTProto_Templates.md)
+---
+</center>
+
 # BiomationScripter - Getting Started
 ---
-[Overview](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started#feature-overview) | [Installation](https://github.com/intbio-ncl/BiomationScripter/wiki/Getting-Started#installation)
+[Overview](Getting-Started.md#feature-overview) |
+[Where To Start](Getting-Started.md#where-to-start) |
+[Installation](Getting-Started.md#installation)
 
 ---
 ## Feature Overview
@@ -9,9 +29,9 @@ The BiomationScripter python library contains a set of packages to help programm
 
 If you are unsure where to start, see the guidance [here](#where-to-start).
 
-* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter)
-* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](https://github.com/intbio-ncl/BiomationScripter/wiki/OTProto)
-* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](https://github.com/intbio-ncl/BiomationScripterLib/wiki/EchoProto)
+* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](BiomationScripter.md)
+* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](OTProto.md)
+* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](EchoProto.md)
 * [CyBioFelix](https://www.analytik-jena.com/products/liquid-handling-automation/liquid-handling/flexible-benchtop-liquid-handling/cybio-felix-series/) - FelixProto - **Coming Soon**
 
 ---
@@ -32,6 +52,18 @@ B. `cd` into the directory you just cloned, and run the following command to ins
 
 ## Where To Start
 
+To make use of this library, you will need to have some prior Python knowledge and experience. You wll need to understand how the following works in Python:
+* Variables
+* Data structures such as lists, dictionaries, and sets
+* How to call functions
+* How to use classes and class methods
+* For loops
+* If-Else statements
+
+You should also have some understanding of lab automation. A webinar can be found [here](https://video.igem.org/w/wCpNs3SGedhtKMESQEdJyR) which introduces the concepts of lab automation.
+
+If using the Opentrons, you may find it useful to visit [this tutorial](https://docs.opentrons.com/v2/tutorial.html) first, which gives a basic understanding of how Python protocols work for the OT2.
+
 ### Using Templates
 
 BiomationScripter contains Templates for certain protocols, such as PCR or transformation. These Templates can be supplied with user inputs to generate a protocol for the chosen automation equipment. For example, if you wished to use the Echo liquid handler to prepare a set of PCR reactions, you could use the EchoProto PCR Template. This Template can be supplied with information specific to your experiment, such as the type of polymerase and buffer to use, the template DNA and primers, and the final volume of the PCR reactions. The Template will then use the information provided to generate an automation protocol for the Echo.
@@ -44,7 +76,7 @@ The [EchoProto Templates documentation page](EchoProto_Templates.md) has explana
 
 **For Opentrons Liquid Handler**
 
-*Coming Soon*
+See the documentation [here](OTProto_Templates.md#using-otproto-templates).
 
 ### Making Templates
 
@@ -56,7 +88,7 @@ Check out the example walkthrough [here](Example_Code_Snippets/EchoProto/EchoPro
 
 **For Opentrons Liquid Handler**
 
-*Coming soon*
+See the documentation [here](OTProto_Templates.md#creating-custom-otprototemplates)
 
 ### Writing protocols without Templates
 
