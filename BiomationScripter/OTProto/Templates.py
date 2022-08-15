@@ -190,11 +190,9 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
 
 class Heat_Shock_Transformation(_OTProto.OTProto_Template):
     def __init__(self,
-        DNA: list,
-        DNA_Source_Wells: list,
-        Competent_Cells_Source_Type: str,
+        DNA_Source_Layouts,
+        Competent_Cells_Source_Type,
         Transformation_Destination_Type,
-        DNA_Source_Type,
         Media_Source_Type,
         DNA_Volume_Per_Transformation,
         Competent_Cell_Volume_Per_Transformation,
@@ -204,6 +202,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Media_Aliquot_Volume,
         Competent_Cells_Aliquot_Volume,
         Wait_Before_Shock,
+        Replicates,
         **kwargs
     ):
 
@@ -216,13 +215,12 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self.heat_shock_time = Heat_Shock_Time # seconds
         self.heat_shock_temp = Heat_Shock_Temp # celcius
         self.wait_before_shock = Wait_Before_Shock # seconds
+        self.replicates = Replicates
 
         ####################
         # Source materials #
         ####################
-        self.dna = DNA
-        self.dna_source_type = DNA_Source_Type
-        self.dna_source_wells = DNA_Source_Wells
+        self.dna_source_layouts = DNA_Source_Layouts
 
         self.comp_cells_source_type = Competent_Cells_Source_Type
         self.comp_cells_aliquot_volume = Competent_Cells_Aliquot_Volume
@@ -255,9 +253,11 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ################################
         # Create transfer volume lists #
         ################################
-        Cell_Transfer_Volumes = [self.cells_per_transformation] * len(self.dna)
-        DNA_Transfer_Volumes = [self.dna_per_transformation] * len(self.dna)
-        Media_Transfer_Volumes = [self.final_volume - self.dna_per_transformation - self.cells_per_transformation] * len(self.dna)
+        Num_Transformations = sum([len(dl.get_occupied_wells()) for dl in self.dna_source_layouts]) * self.replicates
+
+        Cell_Transfer_Volumes = [self.cells_per_transformation] * Num_Transformations
+        DNA_Transfer_Volumes = [self.dna_per_transformation] * Num_Transformations
+        Media_Transfer_Volumes = [self.final_volume - self.dna_per_transformation - self.cells_per_transformation] * Num_Transformations
 
         #########################################################################
         # Calculate the number of tips and tip racks required for this protocol #
@@ -276,11 +276,22 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
 
         # DNA
-        DNA_Source_Labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
-        DNA_Source_Locations = _OTProto.get_locations(
-                        Labware = DNA_Source_Labware,
-                        Wells = self.dna_source_wells
-        )
+        DNA_Source_Labware = [
+            _OTProto.load_labware_from_layout(
+                Protocol = self._protocol,
+                Labware_Layout = dl,
+                custom_labware_dir = self.custom_labware_dir
+            )
+            for dl in self.dna_source_layouts
+        ]
+
+        DNA_Source_Locations = []
+
+        for layout, labware in zip(self.dna_source_layouts, DNA_Source_Labware):
+            DNA_Source_Locations += _OTProto.get_locations(
+                Labware = labware,
+                Wells = layout.get_occupied_wells()
+            )
 
         # Media
         Media_Aliquots_Required = math.ceil(sum(Media_Transfer_Volumes)/self.media_aliquot_volume)
@@ -290,14 +301,18 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         # Load Destination Labware #
         ############################
         Destination_Labware = _OTProto.load_labware(temperature_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
-        Destination_Locations = Destination_Labware.wells()[:len(self.dna)]
+        Destination_Locations = Destination_Labware.wells()[:Num_Transformations]
+
+        print("Transformation Mapping")
+        for dna, destination in zip([f"{layout.name}: {layout.get_liquids_in_well(well)[0]} ({well})" for layout in self.dna_source_layouts for well in layout.get_occupied_wells()], Destination_Locations):
+            print(f"{dna} -> {destination}")
 
         ######################
         # User Setup Prompts #
         ######################
         self.tip_racks_prompt()
 
-        for dna_name, location in  zip(self.dna, DNA_Source_Locations):
+        for dna_name, location in  zip([layout.get_liquids_in_well(well)[0] for layout in self.dna_source_layouts for well in layout.get_occupied_wells()], DNA_Source_Locations):
             self._protocol.pause("Place DNA Sample {} at {}".format(dna_name, location))
 
         self._protocol.pause("This protocol uses {} aliquots of {} uL media, located at {}".format(Media_Aliquots_Required, self.media_aliquot_volume, Media_Source_Locations))
