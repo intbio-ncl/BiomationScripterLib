@@ -124,6 +124,9 @@ def run(protocol):
     Heat_Shock_Temp = 42 # celcius
     Wait_Before_Shock = 300 # seconds
     Reps = 1
+
+    # Available Modules #
+    Modules = ["temperature module gen2", "Thermocycler Module"]
     
     # Starting Tips #
     
@@ -155,6 +158,7 @@ def run(protocol):
         Competent_Cells_Aliquot_Volume=Competent_Cells_Aliquot_Vol,
         Wait_Before_Shock=Wait_Before_Shock,
         Replicates=Reps,
+        Modules=Modules,
         Starting_20uL_Tip = Starting_20uL_Tip,
         Starting_300uL_Tip = Starting_300uL_Tip,
     )

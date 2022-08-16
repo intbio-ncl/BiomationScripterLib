@@ -725,12 +725,16 @@ def load_labware(parent, labware_api_name, deck_position = None, custom_labware_
 
     return(labware)
 
-def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells_available = "all", custom_labware_dir = None, label = None):
+def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells_available = "all", modules=None, custom_labware_dir = None, label = None):
     # Determine amount of labware required #
     labware = []
     ## Load first labware to get format - assume always at least one required
-    labware_slot = next_empty_slot(protocol)
-    loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir, label = label)
+    # load directly onto modules if available
+    if modules is None:
+        labware_slot = next_empty_slot(protocol)
+        loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir, label = label)
+    else:
+        loaded_labware = load_labware(modules[0], labware_api_name, custom_labware_dir = custom_labware_dir, label = label)
     labware.append(loaded_labware)
     ## Determine space in labware
     if wells_available == "all":
@@ -741,9 +745,14 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells
     n_labware = math.ceil(wells_required/wells_in_labware)
     ## Load more labware if required
     for lw in range(0, n_labware - 1):
-        labware_slot = next_empty_slot(protocol)
-        loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir, label = label)
-        labware.append(loaded_labware)
+        # load directly onto modules if available
+        if modules is not None and len(modules) > lw:
+            loaded_labware = load_labware(modules[lw+1], labware_api_name, custom_labware_dir = custom_labware_dir, label = label)
+            labware.append(loaded_labware)
+        else:
+            labware_slot = next_empty_slot(protocol)
+            loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir, label = label)
+            labware.append(loaded_labware)
 
     well_locations = []
     labware_index = 0

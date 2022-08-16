@@ -239,7 +239,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         # Protocol Metadata and Instrument Configuration #
         ##################################################
         # TODO: configure modules here if possible
-        # self._temperature_module = "temperature module gen2"
+        self._temperature_module = "temperature module gen2"
+        self._tc_module = "Thermocycler Module"
 
         super().__init__(**kwargs)
 
@@ -258,12 +259,12 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         temperature_module1=None
         temperature_module2=None
         if self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") >= 1:
-            tc_module = self._protocol.load_module("Thermocycler Module")
+            tc_module = self._protocol.load_module(self._tc_module)
             destination_module = tc_module
             temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
             cells_module = temperature_module1
         elif self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") < 1:
-            tc_module = self._protocol.load_module("Thermocycler Module")
+            tc_module = self._protocol.load_module(self._tc_module)
             destination_module = tc_module
         elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") > 1:
             temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
@@ -299,11 +300,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         #######################
         # Competent Cells
         Cell_Aliquots_Required = math.ceil(sum(Cell_Transfer_Volumes)/self.comp_cells_aliquot_volume)
-        #TODO: make it possible to load cell labware on to temperature module
-        if cells_module is not None:
-            Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(cells_module, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
-        else:
-            Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+        Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, modules=[cells_module], custom_labware_dir = self.custom_labware_dir)
 
         # DNA
         DNA_Source_Labware = [
@@ -363,6 +360,9 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             tc_module.open_lid()
         else:
             destination_module.start_set_temperature(4)
+        # Set cells module temperature to 4C
+        if cells_module is not None:
+            cells_module.start_set_temperature(4)
 
         # Add comp cells
 
