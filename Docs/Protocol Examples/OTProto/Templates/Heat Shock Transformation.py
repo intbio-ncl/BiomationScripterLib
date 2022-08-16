@@ -160,32 +160,3 @@ def run(protocol):
     )
     Transformation.custom_labware_dir = Custom_Labware_Dir
     Transformation.run()
-
-
-# In[6]:
-
-
-######################################################################
-# Use this cell if simulating the protocol, otherwise comment it out #
-######################################################################
-
-##########################################################################################################
-# IMPORTANT - the protocol will not upload to the opentrons if this cell is not commented out or removed #
-##########################################################################################################
-
-from opentrons import simulate as OT2 # This line simulates the protocol
-# Get the correct api version
-protocol = OT2.get_protocol_api('2.11')
-# Home the pipetting head
-protocol.home()
-# Call the 'run' function to run the protocol
-run(protocol)
-for line in protocol.commands():
-    print(line)
-
-
-# In[ ]:
-
-
-
-
