@@ -299,7 +299,11 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         #######################
         # Competent Cells
         Cell_Aliquots_Required = math.ceil(sum(Cell_Transfer_Volumes)/self.comp_cells_aliquot_volume)
-        Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+        #TODO: make it possible to load cell labware on to temperature module
+        if cells_module is not None:
+            Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(cells_module, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
+        else:
+            Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, custom_labware_dir = self.custom_labware_dir)
 
         # DNA
         DNA_Source_Labware = [
