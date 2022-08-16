@@ -734,6 +734,8 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells
         labware_slot = next_empty_slot(protocol)
         loaded_labware = load_labware(protocol, labware_api_name, labware_slot, custom_labware_dir = custom_labware_dir, label = label)
     else:
+        if type(modules) is not list:
+            modules = [modules]
         loaded_labware = load_labware(modules[0], labware_api_name, custom_labware_dir = custom_labware_dir, label = label)
     labware.append(loaded_labware)
     ## Determine space in labware
