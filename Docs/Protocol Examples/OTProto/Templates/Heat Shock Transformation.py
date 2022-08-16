@@ -124,6 +124,14 @@ def run(protocol):
     Heat_Shock_Temp = 42 # celcius
     Wait_Before_Shock = 300 # seconds
     Reps = 1
+
+    # Available Modules #
+
+    Modules = ["temperature module gen2", "Thermocycler Module"]
+
+    # Shuffle Function Parameters #
+
+    # Shuffle = ["/data/user_storage/Bradle/TransfomrationExample/","DNA_Locations"]
     
     # Starting Tips #
     
@@ -155,11 +163,12 @@ def run(protocol):
         Competent_Cells_Aliquot_Volume=Competent_Cells_Aliquot_Vol,
         Wait_Before_Shock=Wait_Before_Shock,
         Replicates=Reps,
+        Modules=Modules,
         Starting_20uL_Tip = Starting_20uL_Tip,
         Starting_300uL_Tip = Starting_300uL_Tip,
+        # Shuffle=Shuffle,
+        # Cells_Mix_Before = None,
+        # DNA_Mix_After = None
     )
     Transformation.custom_labware_dir = Custom_Labware_Dir
     Transformation.run()
-
-
-
