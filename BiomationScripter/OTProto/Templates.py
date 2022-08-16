@@ -204,6 +204,11 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Wait_Before_Shock,
         Replicates,
         Modules=["temperature module gen2"],
+        Shuffle=False,
+        Cells_Mix_Before=(5,"transfer_volume"),
+        Cells_Mix_After=None,
+        DNA_Mix_Before=None,
+        DNA_Mix_After=(10,"transfer_volume"),
         **kwargs
     ):
 
@@ -218,6 +223,11 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self.wait_before_shock = Wait_Before_Shock # seconds
         self.replicates = Replicates
         self.modules = Modules
+        self.shuffle = Shuffle
+        self.cells_mix_before = Cells_Mix_Before
+        self.cells_mix_after = Cells_Mix_After
+        self.dna_mix_before = DNA_Mix_Before
+        self.dna_mix_after = DNA_Mix_After
 
         ####################
         # Source materials #
@@ -238,7 +248,6 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ##################################################
         # Protocol Metadata and Instrument Configuration #
         ##################################################
-        # TODO: configure modules here if possible
         self._temperature_module = "temperature module gen2"
         self._tc_module = "Thermocycler Module"
 
@@ -320,6 +329,12 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                 Wells = layout.get_occupied_wells()
             )
 
+        # Shuffle DNA locations
+        if self.shuffle is not False:
+            outD = self.shuffle[0]
+            outF = self.shuffle[1]
+            DNA_Source_Locations = _OTProto.shuffle_locations(self._protocol, DNA_Source_Locations, outdir=outD, outfile=outF)
+
         # Media
         # if media arguments are set to None, the media transfer steps are skipped
         if self.media_aliquot_volume is not None:
@@ -332,6 +347,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Destination_Labware = _OTProto.load_labware(destination_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
         Destination_Locations = Destination_Labware.wells()[:Num_Transformations]
 
+        # TODO: This mapping is incorrect, pls fix it #
         print("Transformation Mapping")
         for dna, destination in zip([f"{layout.name}: {layout.get_liquids_in_well(well)[0]} ({well})" for layout in self.dna_source_layouts for well in layout.get_occupied_wells()], Destination_Locations):
             print(f"{dna} -> {destination}")
@@ -376,8 +392,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             Dead_Volume_Proportion = 1,
             Aliquot_Volumes = self.comp_cells_aliquot_volume,
             new_tip = False,
-            mix_after = None,
-            mix_before = (5,"transfer_volume"),
+            mix_after = self.cells_mix_after,
+            mix_before = self.cells_mix_before,
             mix_speed_multiplier = 1.5,
             aspirate_speed_multiplier = 1,
             dispense_speed_multiplier = 1,
@@ -396,8 +412,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             DNA_Source_Locations,
             Destination_Locations,
             new_tip = True,
-            mix_after = (10,"transfer_volume"),
-            mix_before = None,
+            mix_after = self.dna_mix_after,
+            mix_before = self.dna_mix_before,
             mix_speed_multiplier = 2,
             aspirate_speed_multiplier = 1,
             dispense_speed_multiplier = 1,

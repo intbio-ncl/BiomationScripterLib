@@ -126,7 +126,12 @@ def run(protocol):
     Reps = 1
 
     # Available Modules #
+
     Modules = ["temperature module gen2", "Thermocycler Module"]
+
+    # Shuffle Function Parameters #
+
+    # Shuffle = ["/data/user_storage/Bradle/TransfomrationExample/","DNA_Locations"]
     
     # Starting Tips #
     
@@ -161,6 +166,9 @@ def run(protocol):
         Modules=Modules,
         Starting_20uL_Tip = Starting_20uL_Tip,
         Starting_300uL_Tip = Starting_300uL_Tip,
+        # Shuffle=Shuffle,
+        # Cells_Mix_Before = None,
+        # DNA_Mix_After = None
     )
     Transformation.custom_labware_dir = Custom_Labware_Dir
     Transformation.run()

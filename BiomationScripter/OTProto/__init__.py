@@ -934,9 +934,10 @@ def load_custom_labware(parent, file, deck_position = None, label = None):
     return(labware)
 
 def shuffle_locations(protocol, Locations, outdir=None, outfile="Locations"):
-    old_locations = Locations
+    old_locations = Locations.copy()
     # shuffle the locations
-    new_locations = shuffle(Locations)
+    shuffle(Locations)
+    new_locations = Locations
     # add the locations to the robot command line to be logged and seen by the user
     protocol.comment(f"Locations given were {old_locations}")
     protocol.comment(f"Shuffled locations are {new_locations}")
@@ -947,7 +948,7 @@ def shuffle_locations(protocol, Locations, outdir=None, outfile="Locations"):
         fw = open(outdir+outfile+".csv", "w")
         dt = datetime.datetime.now()
         fw.write(dt.strftime("%c"))
-        fw.write("Old Location,New Location,\n")
+        fw.write("\nOld Location,New Location,\n")
         for o,n in zip(old_locations,new_locations):
             fw.write(f"{o},{n},\n")
         fw.close()
