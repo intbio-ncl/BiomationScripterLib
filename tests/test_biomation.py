@@ -184,40 +184,40 @@ def test_labware_layout_class_content():
     ]
 
 
-def test_serial_dilution_volumes():
-    final_volume = 100
-    dilution_factors = [1, 2, 4, 8, 16, 32]
+# def test_serial_dilution_volumes():
+#     final_volume = 100
+#     dilution_factors = [1, 2, 4, 8, 16, 32]
 
-    sample_volumes, solution_volumes = bms.serial_dilution_volumes(
-        dilution_factors=dilution_factors, total_volume=final_volume
-    )
+#     sample_volumes, solution_volumes = bms.serial_dilution_volumes(
+#         dilution_factors=dilution_factors, total_volume=final_volume
+#     )
 
-    assert sample_volumes == [100.0, 50.0, 50.0, 50.0, 50.0, 50.0]
-    assert solution_volumes == [0.0, 50.0, 50.0, 50.0, 50.0, 50.0]
+#     assert sample_volumes == [100.0, 50.0, 50.0, 50.0, 50.0, 50.0]
+#     assert solution_volumes == [0.0, 50.0, 50.0, 50.0, 50.0, 50.0]
 
-    dilution_factors = [1, 2, 10, 50, 75, 100, 200]
+#     dilution_factors = [1, 2, 10, 50, 75, 100, 200]
 
-    sample_volumes, solution_volumes = bms.serial_dilution_volumes(
-        dilution_factors=dilution_factors, total_volume=final_volume
-    )
-    assert sample_volumes == [
-        100.0,
-        50.0,
-        20.0,
-        20.0,
-        66.66666666666666,
-        75.0,
-        50.0,
-    ]
-    assert solution_volumes == [
-        0.0,
-        50.0,
-        80.0,
-        80.0,
-        33.33333333333334,
-        25.0,
-        50.0,
-    ]
+#     sample_volumes, solution_volumes = bms.serial_dilution_volumes(
+#         dilution_factors=dilution_factors, total_volume=final_volume
+#     )
+#     assert sample_volumes == [
+#         100.0,
+#         50.0,
+#         20.0,
+#         20.0,
+#         66.66666666666666,
+#         75.0,
+#         50.0,
+#     ]
+#     assert solution_volumes == [
+#         0.0,
+#         50.0,
+#         80.0,
+#         80.0,
+#         33.33333333333334,
+#         25.0,
+#         50.0,
+#     ]
 
 
 def test_assembly_class():
