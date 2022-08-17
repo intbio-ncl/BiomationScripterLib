@@ -1,3 +1,5 @@
+[![Python application](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)
+
 <center>
 <a href = "Docs/Home.md">
 <img src="Resources/Logo - Full Name - White BG.png" alt = "BiomationScripter Logo" width = "300"/>
