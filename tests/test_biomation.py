@@ -1,6 +1,7 @@
 import os
 from itertools import product
 from copy import deepcopy
+import tempfile
 
 import pytest
 from opentrons import simulate as OT2
@@ -11,6 +12,8 @@ from BiomationScripter import OTProto as otp
 
 from BiomationScripter.EchoProto import Templates as echo_templates
 from BiomationScripter.OTProto import Templates as otproto_templates
+
+
 
 
 def test_create_labware():
@@ -419,11 +422,12 @@ class TestEchoProtocol:
         )
         ep.Generate_Actions(protocol_cp)
 
-        expected_fname = "Resources/for_tests/Example Protocol-384PP-(DNA_Source_Plate).csv"
+        dirname = tempfile.mkdtemp()
+        expected_fname = f"{dirname}/Example Protocol-384PP-(DNA_Source_Plate).csv"
         if os.path.isfile(expected_fname):
             os.remove(expected_fname)
 
-        ep.Write_Picklists(protocol_cp, Save_Location="Resources/for_tests", Merge=False)
+        ep.Write_Picklists(protocol_cp, Save_Location=dirname, Merge=False)
 
         assert os.path.isfile(expected_fname)
         os.remove(expected_fname)
@@ -752,7 +756,9 @@ class Test_Heat_Shock_Transformation:
 
         assert protocol.commands().count("Setting Temperature Module temperature to 4.0 °C (rounded off to nearest integer)") == 3
 
-        assert "Pausing robot operation: This protocol uses 7 aliquots of 40 uL competent cells, located at [A1 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, B1 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, C1 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, D1 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, A2 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, B2 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3, C2 of 3dprinted 24 Tube Rack 1500 ÂµL on Temperature Module GEN2 on 3]" in protocol.commands()
+        assert str(protocol.deck[1]) == "Temperature Module GEN2 on 1"
+        assert str(protocol.deck[3]) == "Temperature Module GEN2 on 3"
+
 
     def test_with_thermocycler(self):
 
