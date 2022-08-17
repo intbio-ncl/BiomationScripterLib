@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 ####################################################
 # Import BiomationScripter to help write protocols #
 ####################################################
@@ -11,10 +5,6 @@ import sys
 sys.path.insert(0, "/var/lib/jupyter/notebooks/Packages/BiomationScripterLib")
 import BiomationScripter as BMS
 import BiomationScripter.OTProto.Templates as Templates
-
-
-# In[2]:
-
 
 ##################################
 # Record the protocol's metadata #
@@ -29,14 +19,6 @@ metadata = {
     'apiLevel': '2.11',
     'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
 }
-
-
-# In[5]:
-
-
-##############################################################
-# Use this cell to call the Transformation protocol template #
-##############################################################
 
 def run(protocol):
     
@@ -125,10 +107,6 @@ def run(protocol):
     Wait_Before_Shock = 300 # seconds
     Reps = 1
 
-    # Available Modules #
-
-    Modules = ["temperature module gen2", "Thermocycler Module"]
-
     # Shuffle Function Parameters #
 
     # Shuffle = ["/data/user_storage/Bradle/TransfomrationExample/","DNA_Locations"]
@@ -163,12 +141,9 @@ def run(protocol):
         Competent_Cells_Aliquot_Volume=Competent_Cells_Aliquot_Vol,
         Wait_Before_Shock=Wait_Before_Shock,
         Replicates=Reps,
-        Modules=Modules,
         Starting_20uL_Tip = Starting_20uL_Tip,
         Starting_300uL_Tip = Starting_300uL_Tip,
-        # Shuffle=Shuffle,
-        # Cells_Mix_Before = None,
-        # DNA_Mix_After = None
+        #Shuffle=Shuffle
     )
     Transformation.custom_labware_dir = Custom_Labware_Dir
     Transformation.run()
