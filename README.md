@@ -41,6 +41,3 @@ https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/EchoProto.md
 
 ## OTProto
 https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/OTProto.md
-
-## FelixProto
-Coming soon.
