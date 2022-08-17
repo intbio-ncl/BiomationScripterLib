@@ -668,7 +668,7 @@ def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
         # Check if the capacities set has more than one volume
         ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
         if not len(capacities) == 1:
-            raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
+            raise _BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
         capacity = capacities.pop()
         return(capacity)
 
@@ -684,7 +684,7 @@ def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
                 # Check if the capacities set has more than one volume
                 ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
                 if not len(capacities) == 1:
-                    raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
+                    raise _BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
                 capacity = capacities.pop()
                 return(capacity)
         except FileNotFoundError:
@@ -698,7 +698,7 @@ def get_labware_well_capacity(labware_api_name, custom_labware_dir = None):
                 # Check if the capacities set has more than one volume
                 ## If it does, raise an error becuase I can't think of an easy way to deal with that atm
                 if not len(capacities) == 1:
-                    raise BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
+                    raise _BMS.LabwareError("Labware {} has slots/wells with different volume capacities; BMS cannot currently deal with this.")
                 capacity = capacities.pop()
                 return(capacity)
 

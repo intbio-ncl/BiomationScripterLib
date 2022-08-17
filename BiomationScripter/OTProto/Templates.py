@@ -1547,7 +1547,7 @@ class Standard_iGEM_Calibration(_OTProto.OTProto_Template):
                 else:
                     # Otherwise, create a new source layout and select that as the current source layout
                     source_layout_name = "Source_Labware_{}_{}".format(labware_type, len([layout for layout in self.source_layouts if layout.type == labware_type]))
-                    source_layout_type = self.source_labware_types[source_material_type]
+                    source_layout_type = labware_type
                     source_layout = _BMS.Labware_Layout(source_layout_name, source_layout_type)
                     source_rows, source_cols = _OTProto.get_labware_format(
                         source_layout.type,

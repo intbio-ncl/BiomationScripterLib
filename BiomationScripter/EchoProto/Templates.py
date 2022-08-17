@@ -422,7 +422,7 @@ class PCR(_EchoProto.EchoProto_Template):
                         current_destination_plate.add_well_label(current_destination_well, "{}-{}-{}-DNA_Vol({})-{}".format(reaction[0], reaction[1], reaction[2], dna_amount, rep))
                     # Raise a more relevant error message if NegativeVolumeError occurs
                     except _BMS.NegativeVolumeError:
-                        raise _BMS.NegativeVolumeError("This assembly is above the reaction volume: {}, {}".format(assembly, ratio))
+                        raise _BMS.NegativeVolumeError("This reaction is above the reaction volume: {}".format(reaction))
 
                     # Iterate to the next destination well
                     destination_well_index += 1

@@ -32,7 +32,6 @@ If you are unsure where to start, see the guidance [here](#where-to-start).
 * [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](BiomationScripter.md)
 * [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](OTProto.md)
 * [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](EchoProto.md)
-* [CyBioFelix](https://www.analytik-jena.com/products/liquid-handling-automation/liquid-handling/flexible-benchtop-liquid-handling/cybio-felix-series/) - FelixProto - **Coming Soon**
 
 ---
 

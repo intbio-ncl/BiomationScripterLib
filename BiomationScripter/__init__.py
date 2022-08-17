@@ -4,11 +4,6 @@ import math as _math
 import random
 from typing import Dict, List, Literal
 
-# from BiomationScripter import FeliXProto
-# from BiomationScripter import PIXLProto
-# from BiomationScripter import AttuneProto
-# from BiomationScripter import ClarioProto
-
 # Exception classes #
 class BiomationError(Exception):
     """A general exception for BiomationScripter"""

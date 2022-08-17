@@ -33,5 +33,3 @@ This documentation is for the currently unreleased BiomationScripter version 0.1
   * Writing protocols for [Opentrons-2](https://www.opentrons.com/ot-2/)
 * [**EchoProto**](EchoProto.md)
   * Writing protocols for [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525)
-* **FelixProto** (Coming Soon)
-  * Writing protocols for [CyBioFelix](https://www.analytik-jena.com/products/liquid-handling-automation/liquid-handling/flexible-benchtop-liquid-handling/cybio-felix-series/)
