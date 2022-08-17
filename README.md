@@ -1,4 +1,4 @@
-[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)
+[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main&event=push)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)
 
 <center>
 <a href = "Docs/Home.md">
