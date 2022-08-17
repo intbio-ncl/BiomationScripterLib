@@ -203,7 +203,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Competent_Cells_Aliquot_Volume,
         Wait_Before_Shock,
         Replicates,
-        Modules=["temperature module gen2"],
+        Heat_Shock_Modules=["temperature module gen2"],
+        Cooled_Cells_Modules=[],
         Shuffle=False,
         Cells_Mix_Before=(5,"transfer_volume"),
         Cells_Mix_After=None,
@@ -222,12 +223,14 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self.heat_shock_temp = Heat_Shock_Temp # celcius
         self.wait_before_shock = Wait_Before_Shock # seconds
         self.replicates = Replicates
-        self.modules = Modules
         self.shuffle = Shuffle
         self.cells_mix_before = Cells_Mix_Before
         self.cells_mix_after = Cells_Mix_After
         self.dna_mix_before = DNA_Mix_Before
         self.dna_mix_after = DNA_Mix_After
+
+        self.heat_shock_modules = Heat_Shock_Modules
+        self.cooled_cells_modules = Cooled_Cells_Modules
 
         ####################
         # Source materials #
@@ -251,6 +254,8 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self._temperature_module = "temperature module gen2"
         self._tc_module = "Thermocycler Module"
 
+        self._module_positions = [1, 3, 4, 6, 7, 9, 10]
+
         super().__init__(**kwargs)
 
     def run(self):
@@ -262,29 +267,66 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ################
         # Load Modules #
         ################
-        destination_module=None
-        cells_module=None
-        tc_module=None
-        temperature_module1=None
-        temperature_module2=None
-        if self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") >= 1:
-            tc_module = self._protocol.load_module(self._tc_module)
-            destination_module = tc_module
-            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-            cells_module = temperature_module1
-        elif self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") < 1:
-            tc_module = self._protocol.load_module(self._tc_module)
-            destination_module = tc_module
-        elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") > 1:
-            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-            cells_module = temperature_module1
-            temperature_module2 = self._protocol.load_module(self._temperature_module, 7)
-            destination_module = temperature_module2
-        elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") == 1:
-            temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-            destination_module = temperature_module1
-        else:
-            self._protocol.pause("Error. Default module does not meet requirements")
+
+        # Load the destination modules
+        destination_modules = []
+
+        # Check if the thermocycler will be used - load it first if it will be
+        if self._tc_module in self.heat_shock_modules:
+            destination_modules.append(self._protocol.load_module(self._tc_module))
+            self._module_positions = [1, 3, 4, 6, 10]
+
+        # Then load any remaining destination (heat shock) modules
+        for hs_mod in self.heat_shock_modules:
+            # Check that it isn't the thermocyler (if applicable)
+            if not self._tc_module == hs_mod:
+                # Get a suitable deck position
+                deck_slot = _OTProto.next_empty_slot(self._protocol)
+                while not deck_slot in self._module_positions and not deck_slot in self._module_positions:
+                    deck_slot += 1
+                    if deck_slot >= 12:
+                        raise _BMS.LabwareError("Not enough deck positions on the robot.")
+                # Load the module
+                destination_modules.append(self._protocol.load_module(hs_mod, deck_slot))
+
+        # Load the source modules
+        source_modules = []
+        for cc_mod in self.cooled_cells_modules:
+            # Get a suitable deck position
+            deck_slot = _OTProto.next_empty_slot(self._protocol)
+            while not deck_slot in self._module_positions:
+                deck_slot += 1
+                if deck_slot >= 12:
+                    raise _BMS.LabwareError("Not enough deck positions on the robot.")
+            # Load the module
+            source_modules.append(self._protocol.load_module(cc_mod, deck_slot))
+
+        if len(source_modules) == 0:
+            source_modules = None
+
+        # destination_module=None
+        # cells_module=None
+        # tc_module=None
+        # temperature_module1=None
+        # temperature_module2=None
+        # if self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") >= 1:
+        #     tc_module = self._protocol.load_module(self._tc_module)
+        #     destination_module = tc_module
+        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+        #     cells_module = temperature_module1
+        # elif self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") < 1:
+        #     tc_module = self._protocol.load_module(self._tc_module)
+        #     destination_module = tc_module
+        # elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") > 1:
+        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+        #     cells_module = temperature_module1
+        #     temperature_module2 = self._protocol.load_module(self._temperature_module, 7)
+        #     destination_module = temperature_module2
+        # elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") == 1:
+        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
+        #     destination_module = temperature_module1
+        # else:
+        #     self._protocol.pause("Error. Default module does not meet requirements")
 
         ################################
         # Create transfer volume lists #
@@ -309,7 +351,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         #######################
         # Competent Cells
         Cell_Aliquots_Required = math.ceil(sum(Cell_Transfer_Volumes)/self.comp_cells_aliquot_volume)
-        Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, modules=cells_module, custom_labware_dir = self.custom_labware_dir)
+        Cell_Source_Labware, Cell_Source_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.comp_cells_source_type, Cell_Aliquots_Required, modules=source_modules, custom_labware_dir = self.custom_labware_dir)
 
         # DNA
         DNA_Source_Labware = [
@@ -344,8 +386,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ############################
         # Load Destination Labware #
         ############################
-        Destination_Labware = _OTProto.load_labware(destination_module, self.destination_type, custom_labware_dir = self.custom_labware_dir, label = "Destination Labware")
-        Destination_Locations = Destination_Labware.wells()[:Num_Transformations]
+        Destination_Labware, Destination_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.destination_type, Num_Transformations, modules=destination_modules, custom_labware_dir = self.custom_labware_dir)
 
         # TODO: This mapping is incorrect, pls fix it #
         print("Transformation Mapping")
@@ -371,14 +412,28 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ##########################
 
         # Set temperature to 4C
-        if tc_module is not None:
-            tc_module.set_block_temperature(4)
-            tc_module.open_lid()
-        else:
-            destination_module.start_set_temperature(4)
-        # Set cells module temperature to 4C
-        if cells_module is not None:
-            cells_module.start_set_temperature(4)
+        for hs_mod in destination_modules:
+            if hs_mod._module.model() == "thermocyclerModuleV1":
+                hs_mod.set_block_temperature(4)
+                hs_mod.open_lid()
+            else:
+                hs_mod.start_set_temperature(4)
+
+        if source_modules:
+            for cc_mod in source_modules:
+                cc_mod.start_set_temperature(4)
+
+
+        # if tc_module is not None:
+        #     tc_module.set_block_temperature(4)
+        #     tc_module.open_lid()
+        # else:
+        #     destination_module.start_set_temperature(4)
+
+
+        # # Set cells module temperature to 4C
+        # if cells_module is not None:
+        #     cells_module.start_set_temperature(4)
 
         # Add comp cells
 
@@ -429,22 +484,44 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
 
         # Wait for a bit
         self._protocol.delay(seconds = self.wait_before_shock)
-        # Set the temp to heat shock
-        if tc_module is not None:
-            # close thermocycler lid
-            tc_module.close_lid()
-            # heat shock as user specified
-            tc_module.set_block_temperature(self.heat_shock_temp, hold_time_seconds=self.heat_shock_time)
-            # hold at 4 for 2 minutes
-            tc_module.set_block_temperature(4, hold_time_seconds=120)
-            # open the lid
-            tc_module.open_lid()
-        else:
-            destination_module.set_temperature(self.heat_shock_temp)
-            # Wait for a bit
-            self._protocol.delay(seconds = self.heat_shock_time)
-            # Cool back to 4 - protocol won't continue until this is back at 4...
-            destination_module.set_temperature(4)
+
+        for hs_mod in destination_modules:
+            if hs_mod._module.model() == "thermocyclerModuleV1":
+                # close thermocycler lid
+                hs_mod.close_lid()
+                # heat shock as user specified
+                hs_mod.set_block_temperature(self.heat_shock_temp, hold_time_seconds=self.heat_shock_time)
+                # hold at 4 for 2 minutes
+                hs_mod.set_block_temperature(4)
+                # open the lid
+                hs_mod.open_lid()
+            else:
+                hs_mod.set_temperature(self.heat_shock_temp)
+                # Wait for a bit
+                self._protocol.delay(seconds = self.heat_shock_time)
+                # Cool back to 4
+                hs_mod.start_set_temperature(4)
+
+        # Ensure all modules get held at 4c for 2 mins
+        self._protocol.delay(seconds = 120)
+
+
+        # # Set the temp to heat shock
+        # if tc_module is not None:
+        #     # close thermocycler lid
+        #     tc_module.close_lid()
+        #     # heat shock as user specified
+        #     tc_module.set_block_temperature(self.heat_shock_temp, hold_time_seconds=self.heat_shock_time)
+        #     # hold at 4 for 2 minutes
+        #     tc_module.set_block_temperature(4, hold_time_seconds=120)
+        #     # open the lid
+        #     tc_module.open_lid()
+        # else:
+        #     destination_module.set_temperature(self.heat_shock_temp)
+        #     # Wait for a bit
+        #     self._protocol.delay(seconds = self.heat_shock_time)
+        #     # Cool back to 4 - protocol won't continue until this is back at 4...
+        #     destination_module.set_temperature(4)
 
         # Add media
         if self.media_aliquot_volume is not None:
