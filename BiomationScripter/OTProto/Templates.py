@@ -304,29 +304,6 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         if len(source_modules) == 0:
             source_modules = None
 
-        # destination_module=None
-        # cells_module=None
-        # tc_module=None
-        # temperature_module1=None
-        # temperature_module2=None
-        # if self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") >= 1:
-        #     tc_module = self._protocol.load_module(self._tc_module)
-        #     destination_module = tc_module
-        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-        #     cells_module = temperature_module1
-        # elif self.modules.count("Thermocycler Module") >= 1 and self.modules.count("temperature module gen2") < 1:
-        #     tc_module = self._protocol.load_module(self._tc_module)
-        #     destination_module = tc_module
-        # elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") > 1:
-        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-        #     cells_module = temperature_module1
-        #     temperature_module2 = self._protocol.load_module(self._temperature_module, 7)
-        #     destination_module = temperature_module2
-        # elif self.modules.count("Thermocycler Module") < 1 and self.modules.count("temperature module gen2") == 1:
-        #     temperature_module1 = self._protocol.load_module(self._temperature_module, 4)
-        #     destination_module = temperature_module1
-        # else:
-        #     self._protocol.pause("Error. Default module does not meet requirements")
 
         ################################
         # Create transfer volume lists #
@@ -363,6 +340,11 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             for dl in self.dna_source_layouts
         ]
 
+        layout_labware_mapping = {}
+
+        for layout, labware in zip(self.dna_source_layouts, DNA_Source_Labware):
+            layout_labware_mapping[labware] = layout
+
         DNA_Source_Locations = []
 
         for layout, labware in zip(self.dna_source_layouts, DNA_Source_Labware):
@@ -390,7 +372,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
 
         # TODO: This mapping is incorrect, pls fix it #
         print("Transformation Mapping")
-        for dna, destination in zip([f"{layout.name}: {layout.get_liquids_in_well(well)[0]} ({well})" for layout in self.dna_source_layouts for well in layout.get_occupied_wells()], Destination_Locations):
+        for dna, destination in zip([f"{layout_labware_mapping[location.parent].get_liquids_in_well(location.well_name)[0]} ({location})" for location in DNA_Source_Locations], Destination_Locations):
             print(f"{dna} -> {destination}")
 
         ######################
@@ -424,19 +406,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                 cc_mod.start_set_temperature(4)
 
 
-        # if tc_module is not None:
-        #     tc_module.set_block_temperature(4)
-        #     tc_module.open_lid()
-        # else:
-        #     destination_module.start_set_temperature(4)
-
-
-        # # Set cells module temperature to 4C
-        # if cells_module is not None:
-        #     cells_module.start_set_temperature(4)
-
         # Add comp cells
-
         _OTProto.dispense_from_aliquots(
             self._protocol,
             Cell_Transfer_Volumes,
