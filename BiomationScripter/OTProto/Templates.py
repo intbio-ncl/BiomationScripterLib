@@ -3,28 +3,25 @@ import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
 import warnings
+from typing import List, NewType, Tuple, Union
+from collections import namedtuple
 # import smtplib, ssl
-
-
-
-
-
 
 class DNA_fmol_Dilution(_OTProto.OTProto_Template):
     def __init__(self,
-        Final_fmol,
-        DNA,
-        DNA_Concentration,
-        DNA_Length,
-        DNA_Source_Type,
-        Keep_In_Current_Wells,
-        Water_Source_Labware_Type,
-        Water_Per_Well,
-        DNA_Source_Wells = None,
-        Final_Volume = None,
-        Current_Volume = None,
-        Destination_Labware_Type = None,
-        Destination_Labware_Wells = None,
+        Final_fmol: float,
+        DNA: List[str],
+        DNA_Concentration: List[float],
+        DNA_Length: List[int],
+        DNA_Source_Type: str,
+        Keep_In_Current_Wells: bool,
+        Water_Source_Labware_Type: str,
+        Water_Aliquot_Volume: float,
+        DNA_Source_Wells: list[str] = None,
+        Final_Volume: float = None,
+        Current_Volume: List[float] = None,
+        Destination_Labware_Type: str = None,
+        Destination_Labware_Wells: List[str] = None,
         **kwargs
     ):
 
@@ -33,7 +30,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
         ########################################
         self.final_fmol = Final_fmol
         self._keep_in_current_wells = Keep_In_Current_Wells
-        self._final_volume = Final_Volume
+        self.final_volume = Final_Volume
 
         ####################
         # Source materials #
@@ -47,7 +44,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
         self.dna_length = DNA_Length
         ## Water ##
         self.water_source_labware_type = Water_Source_Labware_Type
-        self.water_per_well = Water_Per_Well
+        self.water_aliquot_volume = Water_Aliquot_Volume
 
         #######################
         # Destination Labware #
@@ -99,7 +96,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             DNA_labware = _OTProto.load_labware(self._protocol, self.dna_source_type, custom_labware_dir = self.custom_labware_dir, label = "DNA Source Labware")
             ## Calculate number of water aliquots required
             total_water_required = sum(water_to_add)
-            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            aliquots_required = math.ceil(total_water_required/self.water_aliquot_volume)
             ## Load required water source labware
             water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
 
@@ -126,7 +123,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             water_to_add = []
             dna_to_add = []
             for dilution_factor in dna_dilution_factor:
-                final_volume = self._final_volume
+                final_volume = self.final_volume
                 dna_volume = final_volume * dilution_factor
                 water_volume = final_volume - dna_volume
                 water_to_add.append(water_volume)
@@ -146,7 +143,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             # Load source labware #
             ## Calculate number of water aliquots required
             total_water_required = sum(water_to_add)
-            aliquots_required = math.ceil(total_water_required/self.water_per_well)
+            aliquots_required = math.ceil(total_water_required/self.water_aliquot_volume)
             ## Load required water source labware
             water_source_labware, water_source_locations = _OTProto.calculate_and_load_labware(self._protocol, self.water_source_labware_type, aliquots_required, custom_labware_dir = self.custom_labware_dir)
 
@@ -177,7 +174,7 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
             if not _OTProto.get_p1000 == None:
                 self._protocol.pause("This protocol uses {} 1000 uL tip boxes".format(_OTProto.tip_racks_needed(self.tips_needed["p1000"], self.starting_tips["p1000"])))
 
-            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(water_source_locations), self.water_per_well, water_source_locations))
+            self._protocol.pause("This protocol uses {} aliquots of {} uL water, located at {}".format(len(water_source_locations), self.water_aliquot_volume, water_source_locations))
 
             for dna, location, volume in zip(self.dna, DNA_Locations, dna_to_add):
                 self._protocol.pause("Place DNA sample {} at {}. {} uL will be used".format(dna, location, volume))
@@ -190,26 +187,26 @@ class DNA_fmol_Dilution(_OTProto.OTProto_Template):
 
 class Heat_Shock_Transformation(_OTProto.OTProto_Template):
     def __init__(self,
-        DNA_Source_Layouts,
-        Competent_Cells_Source_Type,
-        Transformation_Destination_Type,
-        Media_Source_Type,
-        DNA_Volume_Per_Transformation,
-        Competent_Cell_Volume_Per_Transformation,
-        Transformation_Final_Volume,
-        Heat_Shock_Time,
-        Heat_Shock_Temp,
-        Media_Aliquot_Volume,
-        Competent_Cells_Aliquot_Volume,
-        Wait_Before_Shock,
-        Replicates,
-        Heat_Shock_Modules=["temperature module gen2"],
-        Cooled_Cells_Modules=[],
-        Shuffle=False,
-        Cells_Mix_Before=(5,"transfer_volume"),
-        Cells_Mix_After=None,
-        DNA_Mix_Before=None,
-        DNA_Mix_After=(10,"transfer_volume"),
+        DNA_Source_Layouts: List[_BMS.Labware_Layout],
+        Competent_Cells_Source_Type: str,
+        Transformation_Destination_Type: str,
+        Media_Source_Type: str,
+        DNA_Volume_Per_Transformation: float,
+        Competent_Cell_Volume_Per_Transformation: float,
+        Transformation_Final_Volume: float,
+        Heat_Shock_Time: int,
+        Heat_Shock_Temp: int,
+        Media_Aliquot_Volume: float,
+        Competent_Cells_Aliquot_Volume: float,
+        Wait_Before_Shock: int,
+        Replicates: int,
+        Heat_Shock_Modules: List[str] = ["temperature module gen2"],
+        Cooled_Cells_Modules: List[str] = [],
+        Shuffle: Union[Tuple[str, str] , None] = None,
+        Cells_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (5,"transfer_volume"),
+        Cells_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
+        DNA_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
+        DNA_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10,"transfer_volume"),
         **kwargs
     ):
 
@@ -354,7 +351,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
             )
 
         # Shuffle DNA locations
-        if self.shuffle is not False:
+        if self.shuffle is not None:
             outD = self.shuffle[0]
             outF = self.shuffle[1]
             DNA_Source_Locations = _OTProto.shuffle_locations(self._protocol, DNA_Source_Locations, outdir=outD, outfile=outF)
@@ -523,21 +520,20 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
 
 class Primer_Mixing(_OTProto.OTProto_Template):
     def __init__(self,
-        DNA,
-        DNA_Source_Type,
-        DNA_Source_Wells,
-        Primers,
-        Primer_Source_Wells,
-        Primer_Source_Type,
-        DNA_Primer_Mixtures,
-        Destination_Type,
-        # Defaults for LightRun Tubes
-        DNA_Volume = 5,
-        Primer_Volume = 5,
-        Final_Volume = 10,
-        Water_Source_Type = None,
-        Water_Aliquot_Volume = 0,
-        DNA_Primers_Same_Source = False,
+        DNA: List[str],
+        DNA_Source_Type: str,
+        DNA_Source_Wells: List[str],
+        Primers: List[str],
+        Primer_Source_Wells: List[str],
+        Primer_Source_Type: str,
+        DNA_Primer_Mixtures: List[ List[str] ],
+        Destination_Type: str,
+        DNA_Volume: float,
+        Primer_Volume: float,
+        Final_Volume: float,
+        Water_Source_Type: Union[str, None],
+        Water_Aliquot_Volume: float,
+        DNA_Primers_Same_Source: bool = False,
         **kwargs
     ):
 
@@ -793,26 +789,27 @@ class Primer_Mixing(_OTProto.OTProto_Template):
 
 class Protocol_From_Layouts(_OTProto.OTProto_Template):
     def __init__(self,
-        Source_Layouts,
-        Destination_Layouts,
-        Import_From_Files = False,
+        Sources: List[ Union[_BMS.Labware_Layout, str] ],
+        Destinations: List[ Union[_BMS.Labware_Layout, str] ],
         **kwargs
     ):
         ########################################
         # User defined aspects of the protocol #
         ########################################
-        self._import_from_files = Import_From_Files
+        self.source_layouts = []
+        self.destination_layouts = []
 
-        if self._import_from_files:
-            self.source_files = Source_Layouts
-            self.destination_files = Destination_Layouts
-            self.source_layouts = []
-            self.destination_layouts = []
-        else:
-            self.source_files = None
-            self.destination_files = None
-            self.source_layouts = Source_Layouts
-            self.destination_layouts = Destination_Layouts
+        for source in Sources:
+            if type(source) is str:
+                self.source_layouts.append(_BMS.Import_Labware_Layout(source))
+            else:
+                self.source_layouts.append(source)
+
+        for destination in Destinations:
+            if type(destination) is str:
+                self.destination_layouts.append(_BMS.Import_Labware_Layout(destination))
+            else:
+                self.destination_layouts.append(destination)
 
         ##################################################
         # Protocol Metadata and Instrument Configuration #
@@ -824,22 +821,6 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
         # Load pipettes #
         #################
         self.load_pipettes()
-
-        ###################################################
-        # Load source labware type(s) and current content #
-        ###################################################
-        # If Import_From_Files is specified, import and create the layouts from file locations
-        if self._import_from_files:
-            for source_file in self.source_files:
-                self.source_layouts.append(_BMS.Import_Plate_Layout(source_file))
-
-        #########################################################
-        # Load destination labware type(s) and intended content #
-        #########################################################
-        # If Import_From_Files is specified, import and create the layouts from file locations
-        if self._import_from_files:
-            for destination_file in self.destination_files:
-                self.destination_layouts.append(_BMS.Import_Plate_Layout(destination_file))
 
         ###########################################
         # Create and load PlateLayouts as labware #
@@ -927,18 +908,18 @@ class Protocol_From_Layouts(_OTProto.OTProto_Template):
 
 class Spot_Plating(_OTProto.OTProto_Template):
     def __init__(self,
-        Cells,
-        Cells_Source_Wells,
-        Cells_Source_Type,
-        Agar_Labware_Type,
-        Plating_Volumes,
-        Repeats,
-        Media_Source_Type = None,
-        Media_Aliquot_Volume = None,
-        Dilution_Factors = [1],
-        Dilution_Volume = None,
-        Dilution_Labware_Type = None,
-        Pause_Before_Plating = True,
+        Cells: List[str],
+        Cells_Source_Wells: List[str],
+        Cells_Source_Type: str,
+        Agar_Labware_Type: str,
+        Plating_Volumes: List[float],
+        Repeats: int,
+        Media_Source_Type: Union[str, None] = None,
+        Media_Aliquot_Volume: Union[float, None] = None,
+        Dilution_Factors: str[int] = [1],
+        Dilution_Volume: Union[float, None] = None,
+        Dilution_Labware_Type: Union[str, None] = None,
+        Pause_Before_Plating: bool = True,
         **kwargs
     ):
 
@@ -1257,41 +1238,41 @@ class Standard_iGEM_Calibration(_OTProto.OTProto_Template):
     # Always do microspheres
     # Any amount of other calibrants
     def __init__(self,
-        Calibrants,
-        Calibrants_Stock_Concs,
-        Calibrants_Initial_Concs,
-        Calibrants_Solvents,
-        Calibrant_Aliquot_Volumes,
-        Solvent_Aliquot_Volumes,
-        Volume_Per_Well,
-        Repeats,
-        Calibrant_Labware_Type,
-        Solvent_Labware_Type,
-        Destination_Labware_Type,
-        Trash_Labware_Type,
-        Solvent_Mix_Before = None,
-        Solvent_Mix_After = None,
-        Solvent_Source_Touch_Tip = True,
-        Solvent_Destination_Touch_Tip = True,
-        Solvent_Move_After_Dispense = "well_bottom",
-        Solvent_Blowout = "destination well",
-        First_Dilution_Mix_Before = (10, "transfer_volume"),
-        First_Dilution_Mix_After = (10, "transfer_volume"),
-        First_Dilution_Source_Touch_Tip = True,
-        First_Dilution_Destination_Touch_Tip = True,
-        First_Dilution_Move_After_Dispense = False,
-        First_Dilution_Blowout = "destination well",
+        Calibrants: List[Calibrant],
+        Calibrants_Stock_Concs: List[float],
+        Calibrants_Initial_Concs: List[float],
+        Calibrants_Solvents: List[str],
+        Calibrant_Aliquot_Volumes: List[float],
+        Solvent_Aliquot_Volumes: List[float],
+        Volume_Per_Well: float,
+        Repeats: int,
+        Calibrant_Labware_Type: str,
+        Solvent_Labware_Type: str,
+        Destination_Labware_Type: str,
+        Trash_Labware_Type: str,
+        Solvent_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
+        Solvent_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
+        Solvent_Source_Touch_Tip: bool = True,
+        Solvent_Destination_Touch_Tip: bool = True,
+        Solvent_Move_After_Dispense: Union["well_bottom", "well_top", None] = "well_bottom",
+        Solvent_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
+        First_Dilution_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10, "transfer_volume"),
+        First_Dilution_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10, "transfer_volume"),
+        First_Dilution_Source_Touch_Tip: bool = True,
+        First_Dilution_Destination_Touch_Tip: bool = True,
+        First_Dilution_Move_After_Dispense: Union["well_bottom", "well_top", None] = None,
+        First_Dilution_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
         Dilution_Mix_Before = (10, "transfer_volume"),
         Dilution_Mix_After = (10, "transfer_volume"),
-        Dilution_Source_Touch_Tip = True,
-        Dilution_Destination_Touch_Tip = True,
-        Dilution_Move_After_Dispense = False,
-        Dilution_Blowout = "destination well",
-        Mix_Speed_Multipler = 2,
-        Aspirate_Speed_Multipler = 1,
-        Dispense_Speed_Multipler = 1,
-        Blowout_Speed_Multiplier = 1,
-        Dead_Volume_Proportion = 0.95,
+        Dilution_Source_Touch_Tip: bool = True,
+        Dilution_Destination_Touch_Tip: bool = True,
+        Dilution_Move_After_Dispense: Union["well_bottom", "well_top", None] = None,
+        Dilution_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
+        Mix_Speed_Multipler: float = 2,
+        Aspirate_Speed_Multipler: float = 1,
+        Dispense_Speed_Multipler: float = 1,
+        Blowout_Speed_Multiplier: float = 1,
+        Dead_Volume_Proportion: float = 0.95,
         **kwargs
     ):
 
@@ -1829,13 +1810,6 @@ class Standard_iGEM_Calibration(_OTProto.OTProto_Template):
                 blowout_location = self.dilution_blowout_location,
                 move_after_dispense = None
             )
-
-
-
-
-
-
-
 
 
 ##############
