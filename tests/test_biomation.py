@@ -1018,3 +1018,251 @@ class Test_OTProto_Heat_Shock_Transformation:
         assert len(protocol.commands()) == 3800
 
         assert protocol.commands().count("Setting Temperature Module temperature to 4.0 °C (rounded off to nearest integer)") == 4
+
+class Test_EchoProto_Loop_Assembly:
+
+    def test_unmerged(self):
+        protocol = OT2.get_protocol_api('2.11')
+        protocol.home()
+
+        Protocol_Name = "Unmerged Example Loop Assembly"
+
+        Metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = False
+
+        Picklist_Save_Directory = tempfile.mkdtemp()
+
+        Source_Plate_Directory = "Resources/data/"
+
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        Assembly_Plate_Layout = bms.Labware_Layout("Assembly Plate", "384 OptiAmp Plate")
+        Assembly_Plate_Layout.define_format(16,24)
+        Assembly_Plate_Layout.set_available_wells()
+
+        Final_Volume = 5 # uL
+        Backbone_to_Part_Ratios = ["1:1", "1:3", "2:1"]
+        Repeats = 1
+        Enzyme = "BsaI" # For level 1 assemblies
+        Buffer = "T4 Ligase Buffer"
+
+        Promoters = [
+            "J23100",
+            "J23119",
+            "J23101",
+            "J23102",
+            "J23103",
+            "J23104",
+            "J23105",
+            "J23106",
+            "J23107",
+            "J23108",
+            "J23109",
+            "J23110",
+            "J23111",
+            "J23112",
+            "J23113",
+            "J23114",
+            "J23115",
+            "J23116",
+            "J23117",
+            "J23118"
+        ]
+
+        RBSs = [
+            "B0034",
+            "B0030",
+            "B0031",
+            "B0032"
+        ]
+
+        Assemblies = []
+
+
+        for promoter in Promoters:
+            for RBS in RBSs:
+                Assemblies.append(
+                    bms.Assembly(
+                        Name = "{}-{}-GFP".format(promoter, RBS),
+                        Backbone = "pOdd1",
+                        Parts = [promoter, RBS, "GFP", "B0015"]
+                    )
+                )
+
+        Loop_Protocol = echo_templates.Loop_Assembly(
+            Enzyme=Enzyme,
+            Buffer=Buffer,
+            Volume=Final_Volume,
+            Assemblies=Assemblies,
+            Backbone_to_Part=Backbone_to_Part_Ratios,
+            Repeats=Repeats,
+            Name=Protocol_Name,
+            Source_Plates=Source_Plates,
+            Destination_Plate_Layout=Assembly_Plate_Layout,
+            Picklist_Save_Directory=Picklist_Save_Directory,
+            Metadata=Metadata,
+            Merge=Merge_Picklists
+        )
+
+        Loop_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(Loop_Protocol.save_dir) if Loop_Protocol.name in f]
+
+        assert len(picklist_filenames) == 4
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Unmerged Example Loop Assembly-384PP-(Example DNA Stocks).csv",
+            "Unmerged Example Loop Assembly-384PP-(Example Plasmid Stocks).csv",
+            "Unmerged Example Loop Assembly-6RES-(Water and Buffer Plate).csv",
+            "Unmerged Example Loop Assembly-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+
+    def test_merged(self):
+        protocol = OT2.get_protocol_api('2.11')
+        protocol.home()
+
+        Protocol_Name = "Merged Example Loop Assembly"
+
+        Metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = True
+
+        Picklist_Save_Directory = tempfile.mkdtemp()
+
+        Source_Plate_Directory = "Resources/data/"
+
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        Assembly_Plate_Layout = bms.Labware_Layout("Assembly Plate", "384 OptiAmp Plate")
+        Assembly_Plate_Layout.define_format(16,24)
+        Assembly_Plate_Layout.set_available_wells()
+
+        Final_Volume = 5 # uL
+        Backbone_to_Part_Ratios = ["1:1", "1:3", "2:1"]
+        Repeats = 1
+        Enzyme = "BsaI" # For level 1 assemblies
+        Buffer = "T4 Ligase Buffer"
+
+        Promoters = [
+            "J23100",
+            "J23119",
+            "J23101",
+            "J23102",
+            "J23103",
+            "J23104",
+            "J23105",
+            "J23106",
+            "J23107",
+            "J23108",
+            "J23109",
+            "J23110",
+            "J23111",
+            "J23112",
+            "J23113",
+            "J23114",
+            "J23115",
+            "J23116",
+            "J23117",
+            "J23118"
+        ]
+
+        RBSs = [
+            "B0034",
+            "B0030",
+            "B0031",
+            "B0032"
+        ]
+
+        Assemblies = []
+
+
+        for promoter in Promoters:
+            for RBS in RBSs:
+                Assemblies.append(
+                    bms.Assembly(
+                        Name = "{}-{}-GFP".format(promoter, RBS),
+                        Backbone = "pOdd1",
+                        Parts = [promoter, RBS, "GFP", "B0015"]
+                    )
+                )
+
+        Loop_Protocol = echo_templates.Loop_Assembly(
+            Enzyme=Enzyme,
+            Buffer=Buffer,
+            Volume=Final_Volume,
+            Assemblies=Assemblies,
+            Backbone_to_Part=Backbone_to_Part_Ratios,
+            Repeats=Repeats,
+            Name=Protocol_Name,
+            Source_Plates=Source_Plates,
+            Destination_Plate_Layout=Assembly_Plate_Layout,
+            Picklist_Save_Directory=Picklist_Save_Directory,
+            Metadata=Metadata,
+            Merge=Merge_Picklists
+        )
+
+        Loop_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(Loop_Protocol.save_dir) if Loop_Protocol.name in f]
+
+        assert len(picklist_filenames) == 3
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Merged Example Loop Assembly-384PP.csv",
+            "Merged Example Loop Assembly-6RES-(Water and Buffer Plate).csv",
+            "Merged Example Loop Assembly-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
