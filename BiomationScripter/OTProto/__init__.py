@@ -517,7 +517,7 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
             if Aliquot_Volumes[Aliquot_Index] >= transfer_volume:
                 # Check that the vol being left behind isn't below the min transfer (unless this is the last transfer event)
                 if not event_index == len(Transfer_Volumes) - 1:
-                    if Aliquot_Volumes[Aliquot_Index] - transfer_volume >= Min_Transfer or not Aliquot_Volumes[Aliquot_Index] - transfer_volume == 0: # second condition ensures that an aliquot can still be depleted
+                    if Aliquot_Volumes[Aliquot_Index] - transfer_volume >= Min_Transfer or Aliquot_Volumes[Aliquot_Index] - transfer_volume == 0: # second condition ensures that an aliquot can still be depleted
                         # print("Check", Aliquot_Volumes[Aliquot_Index] - transfer_volume, ">=", Min_Transfer)
                         # If all is fine, then continue
                         Aliquot_Volumes[Aliquot_Index] -= transfer_volume

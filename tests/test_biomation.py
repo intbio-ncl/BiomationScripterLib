@@ -623,7 +623,7 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 898
+        assert len(protocol.commands()) == 754
 
     def test_with_cooled_cells(self):
         protocol = OT2.get_protocol_api('2.11')
@@ -752,7 +752,7 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 899
+        assert len(protocol.commands()) == 755
 
         assert protocol.commands().count("Setting Temperature Module temperature to 4.0 °C (rounded off to nearest integer)") == 3
 
@@ -885,7 +885,7 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 903
+        assert len(protocol.commands()) == 759
 
         assert "Opening Thermocycler lid" in protocol.commands()
 
