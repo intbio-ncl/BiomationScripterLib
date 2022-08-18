@@ -64,8 +64,8 @@ class NEBridge_Loop_Assembly(_EchoProto.EchoProto_Template):
         n_assemblies = (len(self.assemblies) * len(self.ratios)) * self.repeats
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_assemblies,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
@@ -199,8 +199,8 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         n_assemblies = (len(self.assemblies) * len(self.ratios)) * self.repeats
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_assemblies,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
@@ -354,8 +354,8 @@ class PCR(_EchoProto.EchoProto_Template):
         n_reactions = len(self.reactions) * self.repeats * len(self.dna_amounts)
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_reactions,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
