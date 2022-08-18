@@ -206,6 +206,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Heat_Shock_Modules=["temperature module gen2"],
         Cooled_Cells_Modules=[],
         Shuffle=False,
+        Patience=1200, # how long in seconds will the protocol wait for temp modules to cool
         Cells_Mix_Before=(5,"transfer_volume"),
         Cells_Mix_After=None,
         DNA_Mix_Before=None,
@@ -224,6 +225,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         self.wait_before_shock = Wait_Before_Shock # seconds
         self.replicates = Replicates
         self.shuffle = Shuffle
+        self.patience = Patience
         self.cells_mix_before = Cells_Mix_Before
         self.cells_mix_after = Cells_Mix_After
         self.dna_mix_before = DNA_Mix_Before
@@ -288,16 +290,24 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                         raise _BMS.LabwareError("Not enough deck positions on the robot.")
                 # Load the module
                 destination_modules.append(self._protocol.load_module(hs_mod, deck_slot))
-
+        
         # Load the source modules
         source_modules = []
         for cc_mod in self.cooled_cells_modules:
             # Get a suitable deck position
             deck_slot = _OTProto.next_empty_slot(self._protocol)
+            labware = self._protocol.deck[deck_slot]
             while not deck_slot in self._module_positions:
                 deck_slot += 1
                 if deck_slot >= 12:
                     raise _BMS.LabwareError("Not enough deck positions on the robot.")
+                labware = self._protocol.deck[deck_slot]
+                # check that the deck slot is empty
+                while labware is not None:
+                    deck_slot += 1
+                    if deck_slot >= 12:
+                        raise _BMS.LabwareError("Not enough deck positions on the robot.")
+                    labware = self._protocol.deck[deck_slot]
             # Load the module
             source_modules.append(self._protocol.load_module(cc_mod, deck_slot))
 
@@ -370,7 +380,6 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         ############################
         Destination_Labware, Destination_Locations = _OTProto.calculate_and_load_labware(self._protocol, self.destination_type, Num_Transformations, modules=destination_modules, custom_labware_dir = self.custom_labware_dir)
 
-        # TODO: This mapping is incorrect, pls fix it #
         print("Transformation Mapping")
         for dna, destination in zip([f"{layout_labware_mapping[location.parent].get_liquids_in_well(location.well_name)[0]} ({location})" for location in DNA_Source_Locations], Destination_Locations):
             print(f"{dna} -> {destination}")
@@ -404,7 +413,6 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         if source_modules:
             for cc_mod in source_modules:
                 cc_mod.start_set_temperature(4)
-
 
         # Add comp cells
         _OTProto.dispense_from_aliquots(
@@ -462,7 +470,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                 # heat shock as user specified
                 hs_mod.set_block_temperature(self.heat_shock_temp, hold_time_seconds=self.heat_shock_time)
                 # hold at 4 for 2 minutes
-                hs_mod.set_block_temperature(4)
+                hs_mod.set_block_temperature(4, 120)
                 # open the lid
                 hs_mod.open_lid()
             else:
@@ -473,6 +481,12 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                 hs_mod.start_set_temperature(4)
 
         # Ensure all modules get held at 4c for 2 mins
+        for hs_mod in destination_modules:
+            if hs_mod._module.model() != "thermocyclerModuleV1":
+                timer = 0
+                while hs_mod._module.status == "cooling" and timer < self.patience:
+                    self._protocol.delay(seconds = 5)
+                    timer += 5
         self._protocol.delay(seconds = 120)
 
 

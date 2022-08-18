@@ -627,10 +627,17 @@ def dispense_from_aliquots(Protocol, Transfer_Volumes, Aliquot_Source_Locations,
         )
 
 def next_empty_slot(protocol):
-    for slot in protocol.deck:
-        labware = protocol.deck[slot]
-        if not labware: # if no labware loaded into slot
-            return(slot)
+    # temporary workaround if Thermocycler is loaded
+    if str(protocol.deck[7]) == "Thermocycler Module on 7":
+        for slot in [1,2,3,4,5,6,9]:
+            labware = protocol.deck[slot]
+            if labware is None: # if no labware loaded into slot
+                return(slot)
+    else:
+        for slot in protocol.deck:
+            labware = protocol.deck[slot]
+            if labware is None: # if no labware loaded into slot
+                return(slot)
     raise IndexError('No Deck Slots Remaining')
 
 def get_labware_format(labware_api_name, custom_labware_dir = None):
@@ -748,7 +755,7 @@ def calculate_and_load_labware(protocol, labware_api_name, wells_required, wells
     ## Load more labware if required
     for lw in range(0, n_labware - 1):
         # load directly onto modules if available
-        if modules is not None and len(modules) > lw:
+        if modules is not None and len(modules) > lw+1:
             loaded_labware = load_labware(modules[lw+1], labware_api_name, custom_labware_dir = custom_labware_dir, label = label)
             labware.append(loaded_labware)
         else:
