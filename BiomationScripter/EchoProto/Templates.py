@@ -1,7 +1,8 @@
 import BiomationScripter as _BMS
 import BiomationScripter.EchoProto as _EchoProto
 import math
-from typing import List, NewType, Dict
+from typing import List, NewType, Dict, Tuple
+from decimal import Decimal
 
 #### PROTOCOL TEMPLATES ####
 
@@ -282,7 +283,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
         Volume: float,
-        Reactions: List[str],
+        Reactions: Tuple[str, str, str],
         Polymerase: str = None,
         Polymerase_Buffer: str = None,
         Polymerase_Buffer_Stock_Conc: float = None,
@@ -331,8 +332,9 @@ class PCR(_EchoProto.EchoProto_Template):
         # Default DNA and primer amounts #
         ##################################
         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
+        self._default_dna_amount = 1 # uL
         if not DNA_Amounts:
-            self.dna_amounts = [1 * self.volume/self.__default_volume]
+            self.dna_amounts = [self._default_dna_amount * (self.volume/self.__default_volume)]
         else:
             self.dna_amounts = DNA_Amounts
 
@@ -395,7 +397,7 @@ class PCR(_EchoProto.EchoProto_Template):
                     dNTPs_amount = self._dNTPs_amount * volume_factor
                     buffer_amount = self._buffer_amount * volume_factor
                     polymerase_amount = self._polymerase_amount * volume_factor
-                    reagent_amount = dNTPs_amount + buffer_amount + polymerase_amount + dna_amount + (2 * primer_amount)
+                    reagent_amount = float(Decimal(str(dNTPs_amount)) + Decimal(str(buffer_amount)) + Decimal(str(polymerase_amount)) + Decimal(str(dna_amount)) + (2 * Decimal(str(primer_amount))))
 
                 water_amount = self.volume - reagent_amount
 
