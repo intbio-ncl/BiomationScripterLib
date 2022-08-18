@@ -56,7 +56,7 @@ def test_create_labware():
 def test_import_labware():
     dna_stocks_filename = "Example DNA Stocks"
     # NOTE: This will fail if the path doesn't end in a / -- use Pathlib
-    dna_stocks_path = "Resources/For Docs/Labware_Layout_Files/"
+    dna_stocks_path = "Resources/data/"
     dna_stocks_ext = ".xlsx"
 
     dna_stocks_layout = bms.Import_Labware_Layout(
@@ -253,7 +253,7 @@ class TestEchoProtoTemplateSuperclass:
         colour_source_plates = [
             bms.Import_Labware_Layout(
                 "Coloured_Solutions",
-                path="Resources/For Docs/Labware_Layout_Files/",
+                path="Resources/data/",
             )
         ]
         mixuture_plate_layout = bms.Labware_Layout(
@@ -498,7 +498,7 @@ class TestOTProto:
             assert protocol.deck[pos] is None
 
 
-class Test_Heat_Shock_Transformation:
+class Test_OTProto_Heat_Shock_Transformation:
 
     def test_with_temp_module(self):
         protocol = OT2.get_protocol_api('2.11')
@@ -516,7 +516,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -641,7 +641,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -777,7 +777,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -907,7 +907,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
