@@ -1,0 +1,127 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A1,50,Q5 Polymerase
+1,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A2,50,Q5 Polymerase
+2,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A3,50,Q5 Polymerase
+3,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A4,50,Q5 Polymerase
+4,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A5,50,Q5 Polymerase
+5,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A6,50,Q5 Polymerase
+6,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A7,50,Q5 Polymerase
+7,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A8,50,Q5 Polymerase
+8,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A9,50,Q5 Polymerase
+9,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A10,50,Q5 Polymerase
+10,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A11,50,Q5 Polymerase
+11,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A12,50,Q5 Polymerase
+12,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A13,50,Q5 Polymerase
+13,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A14,50,Q5 Polymerase
+14,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A15,50,Q5 Polymerase
+15,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A16,50,Q5 Polymerase
+16,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A17,50,Q5 Polymerase
+17,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A18,50,Q5 Polymerase
+18,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A19,50,Q5 Polymerase
+19,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A20,50,Q5 Polymerase
+20,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A21,50,Q5 Polymerase
+21,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A22,50,Q5 Polymerase
+22,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A23,50,Q5 Polymerase
+23,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,A24,50,Q5 Polymerase
+24,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B1,50,Q5 Polymerase
+25,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B2,50,Q5 Polymerase
+26,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B3,50,Q5 Polymerase
+27,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B4,50,Q5 Polymerase
+28,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B5,50,Q5 Polymerase
+29,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B6,50,Q5 Polymerase
+30,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B7,50,Q5 Polymerase
+31,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B8,50,Q5 Polymerase
+32,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B9,50,Q5 Polymerase
+33,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B10,50,Q5 Polymerase
+34,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B11,50,Q5 Polymerase
+35,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B12,50,Q5 Polymerase
+36,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B13,50,Q5 Polymerase
+37,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B14,50,Q5 Polymerase
+38,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B15,50,Q5 Polymerase
+39,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B16,50,Q5 Polymerase
+40,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B17,50,Q5 Polymerase
+41,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B18,50,Q5 Polymerase
+42,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B19,50,Q5 Polymerase
+43,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B20,50,Q5 Polymerase
+44,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B21,50,Q5 Polymerase
+45,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B22,50,Q5 Polymerase
+46,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B23,50,Q5 Polymerase
+47,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,B24,50,Q5 Polymerase
+48,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C1,50,Q5 Polymerase
+49,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C2,50,Q5 Polymerase
+50,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C3,50,Q5 Polymerase
+51,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C4,50,Q5 Polymerase
+52,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C5,50,Q5 Polymerase
+53,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C6,50,Q5 Polymerase
+54,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C7,50,Q5 Polymerase
+55,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C8,50,Q5 Polymerase
+56,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C9,50,Q5 Polymerase
+57,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C10,50,Q5 Polymerase
+58,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C11,50,Q5 Polymerase
+59,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C12,50,Q5 Polymerase
+60,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C13,50,Q5 Polymerase
+61,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C14,50,Q5 Polymerase
+62,Reagents,384LDV_AQ_SP,B1,PCR Plate,384 OptiAmp Plate,C15,50,Q5 Polymerase
+63,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A1,100,dNTPs
+64,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A2,100,dNTPs
+65,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A3,100,dNTPs
+66,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A4,100,dNTPs
+67,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A5,100,dNTPs
+68,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A6,100,dNTPs
+69,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A7,100,dNTPs
+70,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A8,100,dNTPs
+71,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A9,100,dNTPs
+72,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A10,100,dNTPs
+73,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A11,100,dNTPs
+74,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A12,100,dNTPs
+75,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A13,100,dNTPs
+76,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A14,100,dNTPs
+77,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A15,100,dNTPs
+78,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A16,100,dNTPs
+79,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A17,100,dNTPs
+80,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A18,100,dNTPs
+81,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A19,100,dNTPs
+82,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A20,100,dNTPs
+83,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A21,100,dNTPs
+84,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A22,100,dNTPs
+85,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A23,100,dNTPs
+86,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,A24,100,dNTPs
+87,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B1,100,dNTPs
+88,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B2,100,dNTPs
+89,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B3,100,dNTPs
+90,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B4,100,dNTPs
+91,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B5,100,dNTPs
+92,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B6,100,dNTPs
+93,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B7,100,dNTPs
+94,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B8,100,dNTPs
+95,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B9,100,dNTPs
+96,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B10,100,dNTPs
+97,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B11,100,dNTPs
+98,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B12,100,dNTPs
+99,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B13,100,dNTPs
+100,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B14,100,dNTPs
+101,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B15,100,dNTPs
+102,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B16,100,dNTPs
+103,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B17,100,dNTPs
+104,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B18,100,dNTPs
+105,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B19,100,dNTPs
+106,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B20,100,dNTPs
+107,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B21,100,dNTPs
+108,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B22,100,dNTPs
+109,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B23,100,dNTPs
+110,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,B24,100,dNTPs
+111,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C1,100,dNTPs
+112,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C2,100,dNTPs
+113,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C3,100,dNTPs
+114,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C4,100,dNTPs
+115,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C5,100,dNTPs
+116,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C6,100,dNTPs
+117,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C7,100,dNTPs
+118,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C8,100,dNTPs
+119,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C9,100,dNTPs
+120,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C10,100,dNTPs
+121,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C11,100,dNTPs
+122,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C12,100,dNTPs
+123,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C13,100,dNTPs
+124,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C14,100,dNTPs
+125,Reagents,384LDV_AQ_SP,A1,PCR Plate,384 OptiAmp Plate,C15,100,dNTPs

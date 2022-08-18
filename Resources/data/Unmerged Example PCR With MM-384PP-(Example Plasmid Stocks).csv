@@ -1,0 +1,4 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Example Plasmid Stocks,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C13,100,pOdd1
+1,Example Plasmid Stocks,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C14,500,pOdd1
+2,Example Plasmid Stocks,384PP_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C15,1000,pOdd1
