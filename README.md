@@ -1,18 +1,18 @@
-[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main&event=push)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)
+[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main&event=push)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
 
 <center>
-<a href = "Docs/Home.md">
-<img src="Resources/.wiki-images/Logo - Full Name - White BG.png" alt = "BiomationScripter Logo" width = "300"/>
+<a href = "docs/index.md">
+<img src="docs/wiki-images/Logo - Full Name - White BG.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 ---
-[Home](Docs/Home.md) |
-[Getting Started](Docs/Getting-Started.md) |
-[Generic Tools](Docs/BiomationScripter.md) |
-[EchoProto](Docs/EchoProto.md) |
-[EchoProto Templates](Docs/EchoProto_Templates.md) |
-[OTProto](Docs/OTProto.md) |
-[OTProto Templates](Docs/OTProto_Templates.md)
+[Home](docs/index.md) |
+[Getting Started](docs/Getting-Started.md) |
+[Generic Tools](docs/BiomationScripter.md) |
+[EchoProto](docs/EchoProto.md) |
+[EchoProto Templates](docs/EchoProto_Templates.md) |
+[OTProto](docs/OTProto.md) |
+[OTProto Templates](docs/OTProto_Templates.md)
 ---
 </center>
 
@@ -33,13 +33,13 @@ B. `cd` into the directory you just cloned, and run the following command to ins
     `python setup.py install`
 
 ## Getting Started
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/Getting-Started.md
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Getting-Started.md
 
 ## BiomationScripter - Generic Tools
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/BiomationScripter.md
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/BiomationScripter.md
 
 ## EchoProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/EchoProto.md
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/EchoProto.md
 
 ## OTProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/Docs/OTProto.md
+https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/OTProto.md

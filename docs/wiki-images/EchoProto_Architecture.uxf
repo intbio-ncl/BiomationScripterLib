@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>550</x>
+      <y>210</y>
+      <w>360</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.EchoProto.Protocol*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>290</y>
+      <w>300</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.PlateLayout*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>910</x>
+      <y>290</y>
+      <w>300</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.PlateLayout*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>290</x>
+      <y>240</y>
+      <w>280</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=source_plates: 1...n</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0;260.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>900</x>
+      <y>230</y>
+      <w>270</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=destination_plates: 1...n</panel_attributes>
+    <additional_attributes>250.0;60.0;250.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>260</y>
+      <w>140</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+transferlists: 1...n</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>550</x>
+      <y>400</y>
+      <w>360</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.EchoProto.TransferList*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>290</x>
+      <y>420</y>
+      <w>280</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=source_plate: 1</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0;260.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>250</x>
+      <y>480</y>
+      <w>300</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.PlateLayout*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>450</y>
+      <w>110</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+actions: 1...n</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>530</x>
+      <y>590</y>
+      <w>400</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>
+*BiomationScripter.EchoProto.Action*
+
+-
+o __uid | int: Unique ID
+o reagent | str: Name of the reagent to transfer
+o sourcePlateName | str: Name of the plate to transfer from
+o calibration | str: Acoustic calibration to be used for transfer
+o sourceWell | str: Well containing the reagent
+o destinationPlateName | str: Name of the plate to transfer to
+o destinationPlateType | str: Type of plate to transfer to
+o destinationWell | str: Well to transfer the reagent to
+o _volume | float: Amount of reagent to transfer</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
