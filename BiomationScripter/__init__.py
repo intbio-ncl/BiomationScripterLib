@@ -2,7 +2,13 @@
 # from BiomationScripter import OTProto
 import math as _math
 import random
+import warnings
 from typing import Dict, List, Literal
+
+try:
+    import pandas as pd
+except ImportError:
+    warnings.warn("No pandas, continue at your own zoological peril 🐼")
 
 # Exception classes #
 class BiomationError(Exception):
@@ -500,8 +506,6 @@ class Labware_Layout:
 
     # create a dummy PlateLayout object before running this method
     def import_plate(self, filename, path="~", ext=".xlsx"):
-        import pandas as pd
-
         # check if filename contains the extension
         # NOTE: this only checks for a "." so could easily throw errors if given atypical input
         if "." in filename:
