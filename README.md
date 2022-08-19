@@ -36,13 +36,17 @@ B. `cd` into the directory you just cloned, and run the following command to ins
     `python setup.py install`
 
 ## Getting Started
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Getting-Started.md
+https://biomationscripterlib.readthedocs.io/en/latest/Getting-Started
 
 ## BiomationScripter - Generic Tools
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/BiomationScripter.md
+https://biomationscripterlib.readthedocs.io/en/latest/BiomationScripter
 
 ## EchoProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/EchoProto.md
+https://biomationscripterlib.readthedocs.io/en/latest/EchoProto
+
+https://biomationscripterlib.readthedocs.io/en/latest/EchoProto_Templates
 
 ## OTProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/OTProto.md
+https://biomationscripterlib.readthedocs.io/en/latest/OTProto
+
+https://biomationscripterlib.readthedocs.io/en/latest/OTProto_Templates
