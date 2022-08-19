@@ -1,4 +1,4 @@
-[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main&event=push)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
+[![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
 
 <center>
 <a href = "docs/index.md">
@@ -36,13 +36,17 @@ B. `cd` into the directory you just cloned, and run the following command to ins
     `python setup.py install`
 
 ## Getting Started
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Getting-Started.md
+https://biomationscripterlib.readthedocs.io/en/latest/Getting-Started
 
 ## BiomationScripter - Generic Tools
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/BiomationScripter.md
+https://biomationscripterlib.readthedocs.io/en/latest/BiomationScripter
 
 ## EchoProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/EchoProto.md
+https://biomationscripterlib.readthedocs.io/en/latest/EchoProto
+
+https://biomationscripterlib.readthedocs.io/en/latest/EchoProto_Templates
 
 ## OTProto
-https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/OTProto.md
+https://biomationscripterlib.readthedocs.io/en/latest/OTProto
+
+https://biomationscripterlib.readthedocs.io/en/latest/OTProto_Templates
