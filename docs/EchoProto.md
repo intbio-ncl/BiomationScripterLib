@@ -24,9 +24,11 @@
 ---
 
 ## Feature Overview
+
 EchoProto is a module within the BiomationScripter package which contains tools specifically aimed at writing protocols for the Echo525. EchoProto enables users to write python scripts which can then generate a set of CSV picklists. The picklists contain a list of transfer actions for the Echo to perform. There is one picklist generated per source plate, and all of the picklists together form the entire protocol. Instructions for importing the picklists to the Echo can be found [here](#importing-picklists-via-plate-reformat).
 
 EchoProto contains two submodules:
+
 * **EchoProto:** A set of functions and classes which are used to capture information about an Echo protocol, and convert this information into a set of picklists
 * **EchoProto.Templates:** A set of classes which generate picklists for common protocols, such as Loop assembly and Q5 PCR, based on user inputs
 
@@ -39,6 +41,7 @@ If you are planning to automate a protocol for which there are no existing templ
 ---
 
 ## Importing picklists via Plate Reformat
+
 Plate Refomrat is the proprietary of choice for importing custom picklists into the Echo 525 liquid handling robot. To get started simply launch the software "Labcyte Echo Plate Reformat". Please not that custom picklists should be correctly formatted and saved as a .csv file before continuing this process.
 
 A dialog box should appear to Connect to an Instrument. The instrument can be connected to via its IP address or there is an option to Work Offline.
@@ -56,6 +59,7 @@ Select the source plate type, the destination plate type and set the mapping typ
 ![](wiki-images/Picture3.png)
 
 Now, the custom picklist can be imported to the new protocol. This is done using the "Import region definitions" option from the file menu. Import the custom picklist using the wizard. The import wizard will assist in retrieving the correct attributes using the file headers. Ensure that the following have been selected for import and that they map to the correct columns in the csv file:
+
 * Source Plate Name
 * Source Plate Type
 * Source Well

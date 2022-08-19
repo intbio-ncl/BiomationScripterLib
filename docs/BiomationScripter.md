@@ -34,7 +34,8 @@ The BiomationScripter package contains a set of generic tools which can be used 
 
 ---
 ## Using BiomationScripter
-Begin by importing the BiomatonScripter package:\
+Begin by importing the BiomatonScripter package:
+
 `import BiomationScripter as BMS`
 
 ---
@@ -100,6 +101,7 @@ This class is used to store information, such as number of wells and content, ab
 [See examples of this class in use here.](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Example_Code_Snippets/BMS/BMS-Labware_Layout-Class.ipynb)
 
 **Attributes:**
+
 * `name` | `str`: A readable name for the plate/labware.
 * `type` | `str`: The type for the plate/labware.
 * `rows` | `int`: Number of rows.
@@ -117,6 +119,7 @@ This class is used to store information, such as number of wells and content, ab
   * The label is used as the value
 
 **Methods:**
+
 * `__init__(self, Name: str, Type: str)` returns `BiomationScripter.Labware_Layout`
   * Creates a `BiomationScripter.Labware_Layout` object with a name and labware type.
   * `Name` is stored as `self.name` and is required with no default value.
@@ -210,10 +213,12 @@ This class is used to store information, such as number of wells and content, ab
 ### Class: [`Liquids`](../BiomationScripter/__init__.py)
 This class is used to store information about liquids and where they are stored.
 
-**Usage:**\
+**Usage:**
+
 `BMS.Liquids()` returns `BiomationScripter.Liquids` object
 
 **Attributes:**
+
 * `liquids` | `dict{str: list[str/obj, str]}`: dictionary storing information about the liquids
    * Dictionary key is the name of the liquid
    * Dictionary values take the form of a list, formatted as [`labware`, `source_well`]
@@ -221,6 +226,7 @@ This class is used to store information about liquids and where they are stored.
    * 'source_well' is a string (e.g. "A1")
 
 **Methods:**
+
 * `__init__(self)` returns `BiomationScripter.Liquids`
    * Creates a 'BiomationScripter.Liquids' object
    * `self.liquids` is initiated as an empty dictionary
@@ -276,7 +282,8 @@ This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to stor
 ### Function: [`Create_Labware_Needed`](../BiomationScripter/__init__.py)
 This function calculates how many plates of a certain type are required for a protocol and returns a list of [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects.
 
-**Usage:**\
+**Usage:**
+
 `BMS.Create_Labware_Needed(Plate_Format: BiomationScripterLabware_Layout, N_Wells_Needed: int, N_Wells_Available: int/str = "All", Return_Original_Layout: bool = True)` returns `list[BiomationScripterLabware_Layout]`
 
 **Arguments:**
@@ -285,7 +292,8 @@ This function calculates how many plates of a certain type are required for a pr
 * `N_Wells_Available` | `int/str = "All"`: Either the number of wells/slots available per plate/labware (`int`), or `"All"`, which specifies that all wells/slots in the labware are available (`str`)
 * `Return_Original_Layout` | `bool = True`: Specifies whether the layout given in `Labware_Format` should be returned or not
 
-**Behaviour:**\
+**Behaviour:**
+
 [`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects will then be created using the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list. NOTE: if the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects which are returned. The original [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object is returned as the first element in the returned list.
 
 
@@ -300,7 +308,8 @@ Calculates the number of fmols of a dsDNA molecule based on the mass (ng) and le
 * `mass_ng` | `float`: The mass of the dsDNA sample in nanograms
 * `length_bp` | `int`: The length of the dsDNA molecule in base pairs
 
-**Behaviour:**\
+**Behaviour:**
+
 Calculates fmols of dsDNA molecules in a sample. Uses the following equation:
 
 ![((mass_ng * 1e^-9)/((length_bp * 617.96) + 36.04)) * 1e^15](https://latex.codecogs.com/svg.latex?fmol=\frac{mass\\_ng\times1e^-^9}{(length\\_bp\times617.96)+36.04}\times1e^1^5)
@@ -309,15 +318,18 @@ Calculates fmols of dsDNA molecules in a sample. Uses the following equation:
 ### Function: [`Import_Labware_Layout`](../BiomationScripter/__init__.py)
 This function imports an Excel file with a standard layout and converts it to a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object.
 
-**Usage:**\
+**Usage:**
+
 `BMS.Import_Labware_Layout(Filename: str, path: str = "~", ext: str = ".xlsx")` returns [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout)
 
 **Arguments:**
+
 * `Filename` | `str`: Location of an Excel file (relative to home directory) specifying the desired labware layout
 * `path` | `str = "~"`: The path to prepend to the file location passed to `Filename`, default is the home directoy (`"~"`)
 * `ext` | `str = ".xlsx"`: The file extension for the file passed to `Filename`, default is an excel file (`".xlsx"`)
 
-**Behaviour:**\
+**Behaviour:**
+
 This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
 
 
@@ -329,6 +341,7 @@ This function can be used to automatedly generate mastermixes based on source ma
 `BMS.Mastermix_Maker(Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layout = BMS.Labware_Layout, Maximum_Mastermix_Volume: float, Min_Transfer_Volume: float, Extra_Reactions: float, Excluded_Reagents: List[str] = [], Excluded_Combinations: List[List[str]] = [], Preferential_Reagents: List[str] = [], Seed: int = None)` returns `(Mastermixes: List[BMS.Mastermix], Seed: int, Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layouts: List[BMS.Labware_Layout])`
 
 **Arguments:**
+
 * `Destination_Layouts` | `List[BMS.Labware_Layout]`: List of [`BMS.Labware_Layout`](#class-labware_layout) objects representing the final state of the destination labware to prepare mastermixes for - must be fully populated with all source material required in each well
 * `Mastermix_Layout` | `BMS.Labware_Layout`: A [`BMS.Labware_Layout`](#class-labware_layout) object representing the labware for the mastermixes - should be empty (i.e. not content specified), but the labware format should be given
 * `Maximum_Mastermix_Volume` | `float`: Maximum volume (in microlitres) for each mastermix - should not be more than the maximum well capacity for the mastermix labware
@@ -349,14 +362,16 @@ The exact composition of the mastermixes generated can be influenced by through 
 ### Function: [`Reagent_Finder`](../BiomationScripter/__init__.py)
 Searches a directory containing labware layout files for a specified reagent.
 
-**Usage:**\
+**Usage:**
+
 `BMS.Reagent_Finder(Reagents: List[str], Directories: List[str])` returns `None`
 
 **Arguments:**
 * `Reagents` | `List[str]`: A list of reagent names to search for
 * `Directories` | `List[str]`: A list of directories containing labware layout files
 
-**Behaviour:**\
+**Behaviour:**
+
 This function will search in the directories listed for files which appear to be BMS labware layout files. Any labware layout files found will then be searched for the specified reagents. The name of all reagents are then printed to OUT, along with the name of the labware layout they appear in and the well(s) they occupy.
 
 
@@ -365,15 +380,18 @@ This function will search in the directories listed for files which appear to be
 This function returns a list of wells based on a specified well range and direction. Wells are always in the format of row followed by column, where row is a letter and column is an integer (e.g. A1, D6, C12, B7, etc.).
 
 **Usage:**
+
 `BMS.well_range(Wells: str, Labware_Format: BiomationScripterLabware_Layout = None, Direction: str = "Horizontal", Box = True)` returns `list[str]`
 
 **Arguments:**
+
 * `Wells` | `str`: A string specifying the range of wells to return - must always have the following format: `"{}{}:{}{}".format(Starting Well Row, Starting Well Column, End Well Row, End Well Column)`, e.g. `"A1:B4"`
 * `Labware_Format` | [`BiomationScripterLabware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout)/list[`str`] = `None`: Plate/labware type to give context to the well range being returned, or a list specifying the number of rows and columns in the labware (e.g. [8, 12])
 * `Direction` | `str = "Horizontal"`: Direction to use when calculating wells in the specified well range - must be either `"Horizontal"` or `"Vertical"`
 * `Box` | `bool = True`: Determines the well range 'shape' - can only be `False` if `Labware_Format` is specified
 
 **Behaviour:**
+
 [`BiomationScripter.well_range`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#function-well_range) returns a list of wells based on the well range specified by `Wells`. The exact wells which are returned, and the order they are placed in the list, is determined by the `Direction`, `Labware_Format`, and `Box` arguments.
 
 The `Direction` argument determines the order in which wells are counted. If `Direction = "Horizontal"`, wells are added to the list starting with those on the same row, before moving to the next row. For example, the well range A2:B4 would begin by adding wells in row 'A' (A2, A3, A4,...), and then move on to row 'B'. If `Direction = "Vertical"`, wells will instead be added to the list starting with those in the same column (A1, B1, C1,...), and then move on to subsequent columns (A2, B2, C2,...).

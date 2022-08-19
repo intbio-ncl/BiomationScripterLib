@@ -25,6 +25,7 @@
 OTProto is a module within the BiomationScripter package which contains tools specifically aimed at assisting with scripting protocols for the Opentrons-2. This module makes use of the [OT2 API V2](https://docs.opentrons.com/v2/index.html) python protocol.
 
 OTProto contains two submodules:
+
 * [**OTProto:**](#using-otproto) A set of functions and classes which abstract out some parts of the protocol writing, such as determining how many tips are required, and switching loading custom labware
 * [**OTProto.Templates:**](#templates) A set of classes which generate OT-2 instructions for common protocols, such as plasmid purification and transformation, based on user inputs
 
@@ -139,6 +140,7 @@ This function determines how many tips of each size (20uL, 300uL, and 1000uL) ar
 `OTProto.calculate_tips_needed(Protocol: opentrons.protocol_api.contexts.ProtocolContext, transfers: list[float], template: BMS.OTProto.Template = None, new_tip: bool = True)` returns `float` and `float` and `float`
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `transfers` | `list[float]`: List of volumes to be transferred by the Opentrons
 * `template` | `BMS.OTProto.template = None`: This argument must refer to an OTProto template object - the tips needed will be added to the template's `tips_needed` attribute as well as returned
@@ -254,6 +256,7 @@ Converts well positions in a specified labware to [`opentrons.protocol_api.labwa
 `OTProto.get_locations(Labware: opentrons.protocol_api.labware.Labware, Wells: list[str]/str, Direction: str = None)` returns `list[opentrons.protocol_api.labware.Well]`
 
 **Arguments:**
+
 * `Labware` | [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware): Labware to generate locations for
 * `Wells` | `list[str]/str`: The wells in the specified labware to convert to locations - this can either be a list of wells (`["A1", "D5", "E7"]`), or a well range (`"C2:E4"`)
 * `Direction` | `str = None`: Used to specify the direction ("Horizontal" or "Vertical") to generate locations when a well range is specified - required when `Wells` is a well range, ignored when `Wells` is a list of wells - see [`BiomationScripter.well_range`](https://github.com/intbio-ncl/BiomationScripterLib/wiki/BiomationScripter#function-well_range) for more information about how directionality works with well ranges
@@ -272,6 +275,7 @@ Returns the p1000 pipette from the supplied [`opentrons.protocol_api.contexts.Pr
 `OTProto.get_p1000(protocol: opentrons.protocol_api.contexts.ProtocolContext)` returns [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 
 **Behaviour:**
@@ -300,6 +304,7 @@ Returns the p300 pipette from the supplied [`opentrons.protocol_api.contexts.Pro
 `OTProto.get_p300(protocol: opentrons.protocol_api.contexts.ProtocolContext)` returns [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 
 **Behaviour:**
@@ -334,6 +339,7 @@ This function loads a custom labware from a specified `.json` labware file creat
 `OTProto.load_custom_labware(parent: opentrons.protocol_api.contexts.ProtocolContext/opentrons.protocol_api.contexts.TemperatureModuleContext/opentrons.protocol_api.contexts.ThermocyclerContext/https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext, file: str, deck_position: int = None, label: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
 **Arguments:**
+
 * `parent` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext)/[`opentrons.protocol_api.contexts.TemperatureModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.TemperatureModuleContext)/[`opentrons.protocol_api.contexts.ThermocyclerContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ThermocyclerContext)/[`opentrons.protocol_api.contexts.MagneticModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext): Specifies onto what the labware should be loaded - `ProtocolContext` is used to load onto the Opentrons deck, and a `ModuleContext` is used to load the labware onto a hardware module (e.g. temperature module), rather than the deck
 * `file` | `str`: The location of the `.json` labware file (should be the full path to the file, including the file name and file extension)
 * `deck_position` | `int = None`: The deck position to load the labware to
@@ -355,6 +361,7 @@ Generates an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.c
 `OTProto.load_labware_from_layout(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Labware_Layout: BiomationScripter.Labware_Layout, deck_position: int = None, custom_labware_dir: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `Labware_Layout` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout): The Layout object to be used as the template for generating the [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object
 * `deck_position` | `int = None`: An integer (from 1-11) stating which deck position the labware should be loaded on to - if no value is specified, the labware will be loaded onto the next available deck slot
@@ -394,6 +401,7 @@ Loads a specified pipette, and creates tip racks which are assigned to that pipe
 `OTProto.load_pipettes_and_tips(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Pipette_Type: str, Pipette_Position: str, Tip_Type: str, Number_Tips_Required: int = None, Starting_Tip: str = "A1")` returns [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext) and [`list[opentrons.protocol_api.labware.Labware]`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `Pipette_Type` | `str`: The API name for the pipette type to load (see [here](https://docs.opentrons.com/v2/new_pipette.html#pipette-models) for pipette types)
 * `Pipette_Position` | `str`: The position in which the pipette is loaded (either `"left"` or `"right"`)
@@ -458,6 +466,7 @@ Takes a list and shuffles the elements within. This generates a message to the r
 `OTProto.shuffle_locations(Locations: list[], outdir: str = None, outfile: str = "Locations")` returns `list[]`
 
 **Arguments:**
+
 * `Locations` | `list[]`: A list containing any elements. Typically, this should contain [`opentrons.protocol_api.labware.Well`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Well) objects. May also be invoked upon a list of Wells as strings.
 * `outdir` | `str = None`: The path to the output directory where the .csv file will be written. Recommended location is "/data/user_storage/<USER_DIRECTORY>". If this is not specified, the .csv file will not be created.
 * `outfile` | `str = "Locations"`: The name that will be used for the .csv file. If this is not specified, the .csv file will be named "Locations" by default.
@@ -474,6 +483,7 @@ Determines the number of tip racks needed based on the number of tips needed, an
 `OTProto.tip_racks_needed(tips_needed: int, starting_tip_position: str = "A1")` returns `int`
 
 **Arguments:**
+
 * `tips_needed` | `int`: Number of tips needed
 * `starting_tip_position` | `str = "A1"`: The first available tip in the first tip rack
 
@@ -514,6 +524,7 @@ returns `None`
 
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `Transfer_Volumes` | `list[float]/float`: A list of transfer volumes (in microlitres), or a single transfer volume
 * `Source_Locations` | `list[opentrons.protocol_api.labware.Well]`/[`opentrons.protocol_api.labware.Well`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Well): A list of locations which liquid will be transferred from (can also be a single location)
