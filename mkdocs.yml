@@ -1,6 +1,30 @@
 site_name: BiomationScripterLib
 
+repo_url: https://github.com/intbio-ncl/BiomationScripterLib
+repo_name: BiomationScripter
+
 docs_dir: "docs"
 
 theme:
-    name: readthedocs
+    icon:
+      repo: fontawesome/brands/github
+    name: "material"
+    palette:
+
+      - scheme: default
+        toggle:
+          icon: material/lightbulb
+          name: Switch to dark mode
+        primary: indigo
+        accent: deep purple
+
+      - scheme: slate
+        toggle:
+          icon: material/lightbulb-outline
+          name: Switch to light mode
+        primary: indigo
+        accent: deep purple
+
+plugins:
+  - mkdocs-jupyter
+  - search
