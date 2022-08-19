@@ -2,6 +2,8 @@ import BiomationScripter as _BMS
 import math
 from typing import List, Dict
 
+from pathlib import Path
+
 ########################
 
 Source_Plate_Types = {
@@ -100,21 +102,27 @@ def Write_Picklists(Protocol, Save_Location = ".", Merge = False): # Writes a Pi
         Transfer_Lists = [[TL[0]] for TL in Protocol.transfer_lists]
 
     for transfer_lists_for_picklist in Transfer_Lists:
-        Source_Plate_Names_Str = ""
-        for transfer_list in transfer_lists_for_picklist:
-            Source_Plate_Names_Str += "-({})".format(transfer_list.title)
-        Picklist_Title = "{}{}".format(transfer_lists_for_picklist[0].source_plate.type, Source_Plate_Names_Str)
 
-        PickList = open("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title), "w")
+        if len(transfer_lists_for_picklist) > 1:
+            Source_Plate_Names_Str = ""
+        else:
+            Source_Plate_Names_Str = f"-({transfer_lists_for_picklist[0].title})"
+
+
+        Picklist_Title = f"{transfer_lists_for_picklist[0].source_plate.type}{Source_Plate_Names_Str}"
+
+        filepath = Path(f"{Save_Location}/{Protocol.title}-{Picklist_Title}.csv")
+
+        PickList = open(filepath, "w")
         PickList.write("UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent\n")
         for transfer_list in transfer_lists_for_picklist:
             for action in transfer_list.get_actions():
                 UID, Rea, SPN, Cali, SW, DPN, DPT, DW, Vol = action.get_all()
                 SPT = transfer_list.source_plate.type + "_" + Cali
-                line = "{},{},{},{},{},{},{},{},{}\n".format(UID,SPN,SPT,SW,DPN,DPT,DW,Vol,Rea)
+                line = f"{UID},{SPN},{SPT},{SW},{DPN},{DPT},{DW},{Vol},{Rea}\n"
                 PickList.write(line)
         PickList.close()
-        print("{}/{}-{}.csv".format(Save_Location, Protocol.title, Picklist_Title))
+        print(filepath)
 
 def Generate_Actions(Protocol):
     Exceptions = []

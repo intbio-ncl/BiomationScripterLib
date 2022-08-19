@@ -5,6 +5,5 @@ setup(name='BiomationScripter',
       description='Tools for scripting bio-automation protocols',
       author='Bradley Brown',
       author_email='bradley.brown4@hotmail.co.uk',
-      packages=['BiomationScripter', 'BiomationScripter.EchoProto', 'BiomationScripter.OTProto'],
+      packages=['BiomationScripter', 'BiomationScripter.EchoProto', 'BiomationScripter.OTProto', 'BiomationScripter.EchoProto.Templates', 'BiomationScripter.OTProto.Templates'],
      )
-
