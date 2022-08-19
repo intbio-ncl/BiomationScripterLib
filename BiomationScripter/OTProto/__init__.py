@@ -60,16 +60,21 @@ class OTProto_Template:
         }
         self.__pipettes_loaded = False
 
+    def pipettes_loaded(self):
+        return(self.__pipettes_loaded)
+
     def custom_labware_directory(self, Directory):
         self.custom_labware_dir = Directory
 
     def pipette_config(self, Pipette_Type, Position):
         if self.__pipettes_loaded:
             raise _BMS.BMSTemplateError("Pipettes have already been loaded. Please modify pipette configuration before loading pipettes. Changes to configuration have NOT been saved.")
-        try:
-            self._pipettes[Position.lower()] = Pipette_Type
-        except KeyError:
+
+        if not Position.lower() in ["left", "right"]:
             raise _BMS.RobotConfigurationError("{} is an invalid pipette positon. Please specify either 'right' or 'left'".format(Position))
+
+        self._pipettes[Position.lower()] = Pipette_Type
+
 
     def load_pipettes(self):
         for pipette_position in self._pipettes.keys():
@@ -85,7 +90,6 @@ class OTProto_Template:
             self.tip_types[Pipette] = Tip_Type
         except KeyError:
             raise _BMS.RobotConfigurationError("{} is not a known pipette class. Please specify either p20, p300, or p1000".format(Pipette))
-
 
     def starting_tip_position(self, Pipette, Tip_Position):
         try:

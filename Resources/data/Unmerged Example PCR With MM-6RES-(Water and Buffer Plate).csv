@@ -1,127 +1,127 @@
 UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
-0,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A1,1000,Q5 Buffer
-1,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A2,1000,Q5 Buffer
-2,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A3,1000,Q5 Buffer
-3,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A4,1000,Q5 Buffer
-4,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A5,1000,Q5 Buffer
-5,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A6,1000,Q5 Buffer
-6,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A7,1000,Q5 Buffer
-7,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A8,1000,Q5 Buffer
-8,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A9,1000,Q5 Buffer
-9,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A10,1000,Q5 Buffer
-10,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A11,1000,Q5 Buffer
-11,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A12,1000,Q5 Buffer
-12,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A13,1000,Q5 Buffer
-13,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A14,1000,Q5 Buffer
-14,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A15,1000,Q5 Buffer
-15,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A16,1000,Q5 Buffer
-16,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A17,1000,Q5 Buffer
-17,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A18,1000,Q5 Buffer
-18,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A19,1000,Q5 Buffer
-19,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A20,1000,Q5 Buffer
-20,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A21,1000,Q5 Buffer
-21,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A22,1000,Q5 Buffer
-22,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A23,1000,Q5 Buffer
-23,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A24,1000,Q5 Buffer
-24,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B1,1000,Q5 Buffer
-25,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B2,1000,Q5 Buffer
-26,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B3,1000,Q5 Buffer
-27,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B4,1000,Q5 Buffer
-28,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B5,1000,Q5 Buffer
-29,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B6,1000,Q5 Buffer
-30,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B7,1000,Q5 Buffer
-31,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B8,1000,Q5 Buffer
-32,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B9,1000,Q5 Buffer
-33,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B10,1000,Q5 Buffer
-34,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B11,1000,Q5 Buffer
-35,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B12,1000,Q5 Buffer
-36,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B13,1000,Q5 Buffer
-37,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B14,1000,Q5 Buffer
-38,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B15,1000,Q5 Buffer
-39,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B16,1000,Q5 Buffer
-40,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B17,1000,Q5 Buffer
-41,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B18,1000,Q5 Buffer
-42,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B19,1000,Q5 Buffer
-43,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B20,1000,Q5 Buffer
-44,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B21,1000,Q5 Buffer
-45,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B22,1000,Q5 Buffer
-46,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B23,1000,Q5 Buffer
-47,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B24,1000,Q5 Buffer
-48,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C1,1000,Q5 Buffer
-49,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C2,1000,Q5 Buffer
-50,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C3,1000,Q5 Buffer
-51,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C4,1000,Q5 Buffer
-52,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C5,1000,Q5 Buffer
-53,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C6,1000,Q5 Buffer
-54,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C7,1000,Q5 Buffer
-55,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C8,1000,Q5 Buffer
-56,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C9,1000,Q5 Buffer
-57,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C10,1000,Q5 Buffer
-58,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C11,1000,Q5 Buffer
-59,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C12,1000,Q5 Buffer
-60,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C13,1000,Q5 Buffer
-61,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C14,1000,Q5 Buffer
-62,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C15,1000,Q5 Buffer
-63,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A1,3250,Water
-64,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A2,2850,Water
-65,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A3,2350,Water
-66,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A4,3250,Water
-67,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A5,2850,Water
-68,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A6,2350,Water
-69,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A7,3250,Water
-70,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A8,2850,Water
-71,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A9,2350,Water
-72,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A10,3250,Water
-73,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A11,2850,Water
-74,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A12,2350,Water
-75,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A13,3250,Water
-76,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A14,2850,Water
-77,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A15,2350,Water
-78,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A16,3250,Water
-79,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A17,2850,Water
-80,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A18,2350,Water
-81,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A19,3250,Water
-82,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A20,2850,Water
-83,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A21,2350,Water
-84,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A22,3250,Water
-85,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A23,2850,Water
-86,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A24,2350,Water
-87,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B1,3250,Water
-88,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B2,2850,Water
-89,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B3,2350,Water
-90,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B4,3250,Water
-91,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B5,2850,Water
-92,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B6,2350,Water
-93,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B7,3250,Water
-94,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B8,2850,Water
-95,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B9,2350,Water
-96,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B10,3250,Water
-97,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B11,2850,Water
-98,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B12,2350,Water
-99,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B13,3250,Water
-100,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B14,2850,Water
-101,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B15,2350,Water
-102,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B16,3250,Water
-103,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B17,2850,Water
-104,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B18,2350,Water
-105,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B19,3250,Water
-106,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B20,2850,Water
-107,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B21,2350,Water
-108,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B22,3250,Water
-109,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B23,2850,Water
-110,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B24,2350,Water
-111,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C1,3250,Water
-112,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C2,2850,Water
-113,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C3,2350,Water
-114,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C4,3250,Water
-115,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C5,2850,Water
-116,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C6,2350,Water
-117,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C7,3250,Water
-118,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C8,2850,Water
-119,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C9,2350,Water
-120,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C10,3250,Water
-121,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C11,2850,Water
-122,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C12,2350,Water
-123,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C13,3250,Water
-124,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C14,2850,Water
-125,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C15,2350,Water
+0,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A1,3250,Water
+1,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A2,2850,Water
+2,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A3,2350,Water
+3,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A4,3250,Water
+4,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A5,2850,Water
+5,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A6,2350,Water
+6,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A7,3250,Water
+7,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A8,2850,Water
+8,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A9,2350,Water
+9,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A10,3250,Water
+10,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A11,2850,Water
+11,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A12,2350,Water
+12,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A13,3250,Water
+13,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A14,2850,Water
+14,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A15,2350,Water
+15,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A16,3250,Water
+16,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A17,2850,Water
+17,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A18,2350,Water
+18,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A19,3250,Water
+19,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A20,2850,Water
+20,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A21,2350,Water
+21,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A22,3250,Water
+22,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A23,2850,Water
+23,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,A24,2350,Water
+24,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B1,3250,Water
+25,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B2,2850,Water
+26,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B3,2350,Water
+27,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B4,3250,Water
+28,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B5,2850,Water
+29,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B6,2350,Water
+30,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B7,3250,Water
+31,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B8,2850,Water
+32,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B9,2350,Water
+33,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B10,3250,Water
+34,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B11,2850,Water
+35,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B12,2350,Water
+36,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B13,3250,Water
+37,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B14,2850,Water
+38,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B15,2350,Water
+39,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B16,3250,Water
+40,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B17,2850,Water
+41,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B18,2350,Water
+42,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B19,3250,Water
+43,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B20,2850,Water
+44,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B21,2350,Water
+45,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B22,3250,Water
+46,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B23,2850,Water
+47,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,B24,2350,Water
+48,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C1,3250,Water
+49,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C2,2850,Water
+50,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C3,2350,Water
+51,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C4,3250,Water
+52,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C5,2850,Water
+53,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C6,2350,Water
+54,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C7,3250,Water
+55,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C8,2850,Water
+56,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C9,2350,Water
+57,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C10,3250,Water
+58,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C11,2850,Water
+59,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C12,2350,Water
+60,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C13,3250,Water
+61,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C14,2850,Water
+62,Water and Buffer Plate,6RES_AQ_BP,A1,PCR Plate,384 OptiAmp Plate,C15,2350,Water
+63,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A1,1000,Q5 Buffer
+64,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A2,1000,Q5 Buffer
+65,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A3,1000,Q5 Buffer
+66,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A4,1000,Q5 Buffer
+67,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A5,1000,Q5 Buffer
+68,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A6,1000,Q5 Buffer
+69,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A7,1000,Q5 Buffer
+70,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A8,1000,Q5 Buffer
+71,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A9,1000,Q5 Buffer
+72,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A10,1000,Q5 Buffer
+73,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A11,1000,Q5 Buffer
+74,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A12,1000,Q5 Buffer
+75,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A13,1000,Q5 Buffer
+76,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A14,1000,Q5 Buffer
+77,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A15,1000,Q5 Buffer
+78,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A16,1000,Q5 Buffer
+79,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A17,1000,Q5 Buffer
+80,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A18,1000,Q5 Buffer
+81,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A19,1000,Q5 Buffer
+82,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A20,1000,Q5 Buffer
+83,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A21,1000,Q5 Buffer
+84,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A22,1000,Q5 Buffer
+85,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A23,1000,Q5 Buffer
+86,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,A24,1000,Q5 Buffer
+87,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B1,1000,Q5 Buffer
+88,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B2,1000,Q5 Buffer
+89,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B3,1000,Q5 Buffer
+90,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B4,1000,Q5 Buffer
+91,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B5,1000,Q5 Buffer
+92,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B6,1000,Q5 Buffer
+93,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B7,1000,Q5 Buffer
+94,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B8,1000,Q5 Buffer
+95,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B9,1000,Q5 Buffer
+96,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B10,1000,Q5 Buffer
+97,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B11,1000,Q5 Buffer
+98,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B12,1000,Q5 Buffer
+99,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B13,1000,Q5 Buffer
+100,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B14,1000,Q5 Buffer
+101,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B15,1000,Q5 Buffer
+102,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B16,1000,Q5 Buffer
+103,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B17,1000,Q5 Buffer
+104,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B18,1000,Q5 Buffer
+105,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B19,1000,Q5 Buffer
+106,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B20,1000,Q5 Buffer
+107,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B21,1000,Q5 Buffer
+108,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B22,1000,Q5 Buffer
+109,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B23,1000,Q5 Buffer
+110,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,B24,1000,Q5 Buffer
+111,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C1,1000,Q5 Buffer
+112,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C2,1000,Q5 Buffer
+113,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C3,1000,Q5 Buffer
+114,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C4,1000,Q5 Buffer
+115,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C5,1000,Q5 Buffer
+116,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C6,1000,Q5 Buffer
+117,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C7,1000,Q5 Buffer
+118,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C8,1000,Q5 Buffer
+119,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C9,1000,Q5 Buffer
+120,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C10,1000,Q5 Buffer
+121,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C11,1000,Q5 Buffer
+122,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C12,1000,Q5 Buffer
+123,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C13,1000,Q5 Buffer
+124,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C14,1000,Q5 Buffer
+125,Water and Buffer Plate,6RES_AQ_BP,A2,PCR Plate,384 OptiAmp Plate,C15,1000,Q5 Buffer
