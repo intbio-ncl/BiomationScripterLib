@@ -22,7 +22,7 @@
 
 Source code: [github.com/intbio-ncl/BiomationScripter](https://github.com/intbio-ncl/BiomationScripter)
 
-This documentation is for the currently unreleased BiomationScripter version 0.1.0.dev
+This documentation is for the currently unreleased BiomationScripter version 0.2.0.dev
 
 ---
 
