@@ -64,24 +64,27 @@ Following set up by the Echo, the destination plate(s) should be vortexed and br
 
 #### Usage
 
-See an example protocol using this template [here](Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
+See an example protocol using this template [here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
-The Template object is created using the following code:
+The `Template` object is created using the following code:
 
 ```python
-BiomationScripter.EchoProto.Templates.Loop_Assembly(
-                                        Enzyme: str,
-                                        Buffer: str/List[str],
-                                        Volume: float,
-                                        Assemblies: List[BiomationScripter.Assembly],
-                                        Backbone_to_Part: List[str] = ["1:1"],
-                                        Repeats: int = 1,
-                                        Name: str,
-                                        Source_Plates: List[BiomationScripter.Labware_Layout],
-                                        Destination_Plate_Layout: BiomationScripter.Labware_Layout,
-                                        Picklist_Save_Directory: str = ".",
-                                        Metadata: dict[str, str],
-                                        Merge: bool = False
+from BiomationScripter.OTProto.Templates import Loop_Assembly
+
+Protocol_Template = Loop_Assembly.Template(
+  Enzyme: str,
+  Buffer: str | List[str],
+  Volume: float, # uL
+  Assemblies: List[BiomationScripter.Assembly],
+  Backbone_to_Part: List[str] = ["1:1"],
+  Repeats: int = 1,
+  DNA_Concentration: float = 10, # uM
+  Name: str,
+  Source_Plates: List[BiomationScripter.Labware_Layout],
+  Destination_Plate_Layout: BiomationScripter.Labware_Layout,
+  Picklist_Save_Directory: str = ".",
+  Metadata: dict[str, str],
+  Merge: bool = False
 )
 ```
 
@@ -100,26 +103,134 @@ BiomationScripter.EchoProto.Templates.Loop_Assembly(
 * `ratios` | `list[str]`: A list of backbone:part ratios, e.g. `["1:1", "2:1"]`
 * `repeats` | `int`: The number of repeats for each unique assembly reaction
 * `enzyme` | `str`: The name of the enzyme to be used
-* `buffer` | `str/List[str]`: The name of the buffer (or buffers) to be used
+* `buffer` | `str OR List[str]`: The name of the buffer (or buffers) to be used
 * `assemblies` | `List[BMS.Assembly]`: A list of [`BiomationScripter.Assembly`](BiomationScripter.md#class-assembly) objects which describe the assembly reactions to be prepared
 * `ligase` | `str`: The name of the ligase to use
 * `water` | `str`: The name of the water to be added
 
 **Methods:**
 
-* `__init__(self, Enzyme: str, Buffer: str/List[str], Volume: float, Assemblies: List[BiomationScripter.Assembly], Backbone_to_Part: List[str] = ["1:1"], Repeats: int = 1, Name: str, Source_Plates: List[BiomationScripter.Labware_Layout], Destination_Plate_Layout: BiomationScripter.Labware_Layout, Picklist_Save_Directory: str = ".", Metadata: dict[str, str], Merge: bool = False)` returns [`BMS.EchoProto.Templates.Loop_Assembly`](#template-loop_assembly) object
-    * Creates a [`BMS.EchoProto.Templates.Loop_Assembly`](#template-loop_assembly) object
+* `__init__(self,
+      Enzyme: str,
+      Buffer: Union[str, List[str]],
+      Volume: float,
+      Assemblies: List[_BMS.Assembly],
+      Backbone_to_Part: List[str] = ["1:1"],
+      Repeats: int = 1,
+      DNA_Concentration: float = 10, # fmol
+      **kwargs)` returns [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
+    * Creates a [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
     * Initiates the default reaction volumes (see above)
 * `run(self)` returns `None`
     * Creates the Echo picklists for the protocol
 
+---
 
-### Template: [`PCR`](../BiomationScripter/EchoProto/Templates.py)
+### Template: [`PCR`](../BiomationScripter/EchoProto/Templates)
 
 #### Overview:
 
-This Template is used to generate an Echo protocol for preparing PCR reactions. It is based upon the protocol described [here]().
+This Template is used to generate an Echo protocol for preparing PCR reactions. It is based upon the protocol described [here](https://international.neb.com/protocols/2013/12/13/pcr-using-q5-high-fidelity-dna-polymerase-m0491) for no mastermix, and [here](https://international.neb.com/protocols/2012/12/07/protocol-for-q5-high-fidelity-2x-master-mix-m0492) for with mastermix.
 
+#### Generic Protocol Steps:
+
+The basic protocol is described below. Volumes stated below are for 5 uL final reaction volumes. These amounts will be scaled based on the user-defined final volume. Primer stocks are assumed to be at 10 μM. dNTPs are assumed to be pre-mixed in equimolar amounts to a final stock of 10mM.
+
+**If `Master_Mix` is `None`:**
+
+1. **Add template DNA according as specified by the user (`DNA_Amounts`)**
+    * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
+    * If no volumes are given, then 1 uL of DNA is added
+2. **Add 0.25 uL of forward primer, and 0.25 uL of reverse primer**
+    * Primers are added to the DNA templates as specified by `Reactions`
+3. **Add 0.1 uL of dNTP solution**
+4. **Add the buffer specified by `Polymerase_Buffer`**
+    * The volume of buffer to add is determined by `Polymerase_Buffer_Stock_Conc`
+5. **Add 0.05 uL of the polymerase specified by `Polymerase`**
+6. **Add nuclease free water so that the final volume is 5 uL**
+
+Following set up by the Echo, the destination plate(s) should be vortexed and briefly span down to ensure all liquid is at the bottom of the wells.
+
+**If `Master_Mix` is not `None`:**
+
+1. **Add template DNA according as specified by the user (`DNA_Amounts`)**
+    * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
+    * If no volumes are given, then 1 uL of DNA is added
+2. **Add 0.25 uL of forward primer, and 0.25 uL of reverse primer**
+    * Primers are added to the DNA templates as specified by `Reactions`
+3. **Add the mastermix specified by `Master_Mix`**
+    * The volume of mastermix to add is determined by `Master_Mix_Stock_Conc`
+4. **Add nuclease free water so that the final volume is 5 uL**
+
+Following set up by the Echo, the destination plate(s) should be vortexed and briefly span down to ensure all liquid is at the bottom of the wells.
+
+#### Usage
+
+See an example protocol using this template [here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-PCR.ipynb).
+
+The `Template` object is created using the following code:
+
+```python
+from BiomationScripter.OTProto.Templates import PCR
+
+Protocol_Template = PCR.Template(
+  Volume: float,
+  Reactions: Tuple[str, str, str],
+  Polymerase: str = None,
+  Polymerase_Buffer: str = None,
+  Polymerase_Buffer_Stock_Conc: float = None,
+  Master_Mix: str = None,
+  Master_Mix_Stock_Conc = None,
+  Repeats: int = 1,
+  DNA_Amounts = None,
+  Name: str,
+  Source_Plates: List[BiomationScripter.Labware_Layout],
+  Destination_Plate_Layout: BiomationScripter.Labware_Layout,
+  Picklist_Save_Directory: str = ".",
+  Metadata: dict[str, str],
+  Merge: bool = False
+)
+```
+
+#### Full Documentation
+
+**Attributes:**
+
+* `name` | `str`: A name for the protocol (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `metadata` | `dict[str]`: A dictionary describing the metadata for the protocol (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `save_dir` | `str`: The directory where the picklist files should be saved (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `_protocol` | [`BiomationScripter.EchoProto.Protocol`](EchoProto.md#class-protocol): A [`BiomationScripter.EchoProto.Protocol`](EchoProto.md#class-protocol) object (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `merge` | `bool`: Defines whether source plates of the same type should be merged into one picklist (`True`) or if each source plate should have a different picklist (`False`) (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `source_plate_layouts` | `list[BiomationScripter.Labware_Layout]`: A list of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects describing the source plates available for use (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `destination_plate_layouts` | `list[BiomationScripter.Labware_Layout]`: A list of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects which define the destination plates, including their intended content once the transfer has completed (from [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass)
+* `volume` | `float`: Final volume of each reaction in microlitres
+* `repeats` | `int`: The number of repeats for each unique assembly reaction
+* `polymerase` | `str`: The name of the polymerase to be used
+* `buffer` | `str OR List[str] OR None`: The name of the buffer (or list of buffers) to be used
+* `buffer_stock_conc` | `float OR None`: The stock concentration of the specified buffer - ignored if `buffer` is `None` - must not be `None` if `buffer` is defined
+* `master_mix` | `str OR None`: The name of the mastermix to be used - no mastermix is used if `None`
+* `master_mix_stock_conc` | `float OR None`: The stock concentration of the specified mastermix - ignored if `master_mix` is `None` - must not be `None` if `master_mix` is defined
+* `dna_amounts` | `float OR List[float] OR None`: The amount of DNA template to be added (in uL) to each reaction - if a list is given a new reaction will be created with each different volume - if `None` then 1/5 of the total volume is used
+* `dNTPs` | `str`: The name of the dNTPs to be used
+* `water` | `str`: The name of the water to be used
+
+**Methods:**
+
+* `__init__(self,
+      Volume: float,
+      Reactions: Tuple[str, str, str],
+      Polymerase: str = None,
+      Polymerase_Buffer: str = None,
+      Polymerase_Buffer_Stock_Conc: float = None,
+      Master_Mix: str = None,
+      Master_Mix_Stock_Conc = None,
+      Repeats: int = 1,
+      DNA_Amounts = None,
+      **kwargs)` returns [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
+    * Creates a [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
+    * Initiates the default reaction volumes (see above)
+* `run(self)` returns `None`
+    * Creates the Echo picklists for the protocol
 
 ---
 
