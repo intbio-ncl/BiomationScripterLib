@@ -6,6 +6,7 @@ from opentrons import protocol_api
 import warnings
 from random import shuffle
 import datetime
+from typing import Literal, Union
 
 BiomationScripter_Install_Dir = "/var/lib/jupyter/notebooks/Packages/BiomationScripterLib/BiomationScripter/OTProto/"
 Pre_Loaded_Custom_Labware_Dir = BiomationScripter_Install_Dir + "Opentrons_Custom_Labware_Definitions/"
@@ -14,12 +15,12 @@ Pre_Loaded_Custom_Labware_Dir = BiomationScripter_Install_Dir + "Opentrons_Custo
 
 class OTProto_Template:
     def __init__(self,
-        Protocol,
-        Name,
-        Metadata,
-        Starting_20uL_Tip = "A1",
-        Starting_300uL_Tip = "A1",
-        Starting_1000uL_Tip = "A1"
+        Protocol: protocol_api,
+        Name: str,
+        Metadata: dict[ Literal['protocolName', 'author', 'author-email', 'user', 'user-email', 'source', 'apiLevel', 'robotName'], str ],
+        Starting_20uL_Tip: str = "A1",
+        Starting_300uL_Tip: str = "A1",
+        Starting_1000uL_Tip: str = "A1"
     ):
         #####################
         # Protocol Metadata #
