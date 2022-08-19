@@ -1,4 +1,4 @@
-[![flake8 and pytest](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg?branch=main&event=push)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
+[![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
 
 <center>
 <a href = "docs/index.md">
