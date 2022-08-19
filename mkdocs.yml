@@ -26,5 +26,11 @@ theme:
         accent: deep purple
 
 plugins:
-  - mkdocs-jupyter
+  - mkdocs-jupyter:
+      include: ["*.ipynb"]
   - search
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences

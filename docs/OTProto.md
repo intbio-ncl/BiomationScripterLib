@@ -560,16 +560,17 @@ It is possible to supply a single transfer volume, source location, and destinat
 
 ---
 
-# Using OTProto.Templates
+## Using OTProto.Templates
 
 See the full documentation [here](OTProto_Templates.md)
 
 
 ---
-# Simulating Protocols
+## Simulating Protocols
+
 Protocols can be simulated on any computer which has the [Opentrons API installed](https://docs.opentrons.com/v2/writing.html#installing). There are two methods of simulating protocols written using BiomationScripter.
 
-## Within the python script:
+### Within the python script:
 This method of simulating the protocol requires a slight addition to the python script, and may be useful when writing protocols using Jupyter Notebook or in an interactive environment.
 
 1. Add the following lines to the end of your python script:
@@ -588,7 +589,7 @@ This method of simulating the protocol requires a slight addition to the python 
 
 **IMPORTANT** Make sure that these changes are reverted before uploading to the Opentrons, otherwise you will get errors.
 
-## From the command line:
+### From the command line:
 This method of simulating the protocol does not require the python script to be modified.
 
 1. Follow the instructions from the [Opentrons API documentation](https://docs.opentrons.com/v2/writing.html#simulating-your-scripts).
