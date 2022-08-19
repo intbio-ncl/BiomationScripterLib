@@ -930,7 +930,7 @@ class Spot_Plating(_OTProto.OTProto_Template):
         Repeats: int,
         Media_Source_Type: Union[str, None] = None,
         Media_Aliquot_Volume: Union[float, None] = None,
-        Dilution_Factors: str[int] = [1],
+        Dilution_Factors: List[int] = [1],
         Dilution_Volume: Union[float, None] = None,
         Dilution_Labware_Type: Union[str, None] = None,
         Pause_Before_Plating: bool = True,
