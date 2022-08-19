@@ -1,7 +1,8 @@
 import BiomationScripter as _BMS
 import BiomationScripter.EchoProto as _EchoProto
 import math
-from typing import List, NewType, Dict
+from typing import List, NewType, Dict, Tuple
+from decimal import Decimal
 
 #### PROTOCOL TEMPLATES ####
 
@@ -64,8 +65,8 @@ class NEBridge_Loop_Assembly(_EchoProto.EchoProto_Template):
         n_assemblies = (len(self.assemblies) * len(self.ratios)) * self.repeats
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_assemblies,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
@@ -199,8 +200,8 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
         n_assemblies = (len(self.assemblies) * len(self.ratios)) * self.repeats
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_assemblies,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
@@ -282,7 +283,7 @@ class Loop_Assembly(_EchoProto.EchoProto_Template):
 class PCR(_EchoProto.EchoProto_Template):
     def __init__(self,
         Volume: float,
-        Reactions: List[str],
+        Reactions: Tuple[str, str, str],
         Polymerase: str = None,
         Polymerase_Buffer: str = None,
         Polymerase_Buffer_Stock_Conc: float = None,
@@ -331,8 +332,9 @@ class PCR(_EchoProto.EchoProto_Template):
         # Default DNA and primer amounts #
         ##################################
         # Default DNA amounts in uL for 5 uL reactions, and 1 - 1000 ng/uL stock concentration
+        self._default_dna_amount = 1 # uL
         if not DNA_Amounts:
-            self.dna_amounts = [1 * self.volume/self.__default_volume]
+            self.dna_amounts = [self._default_dna_amount * (self.volume/self.__default_volume)]
         else:
             self.dna_amounts = DNA_Amounts
 
@@ -354,8 +356,8 @@ class PCR(_EchoProto.EchoProto_Template):
         n_reactions = len(self.reactions) * self.repeats * len(self.dna_amounts)
 
         # Create the number of destination plates needed as layout objects
-        extra_destination_layouts = _BMS.Create_Plates_Needed(
-            Plate_Format = self.destination_plate_layouts[0],
+        extra_destination_layouts = _BMS.Create_Labware_Needed(
+            Labware_Format = self.destination_plate_layouts[0],
             N_Wells_Needed = n_reactions,
             N_Wells_Available = len(self.destination_plate_layouts[0].get_available_wells()),
             Return_Original_Layout = False
@@ -395,7 +397,7 @@ class PCR(_EchoProto.EchoProto_Template):
                     dNTPs_amount = self._dNTPs_amount * volume_factor
                     buffer_amount = self._buffer_amount * volume_factor
                     polymerase_amount = self._polymerase_amount * volume_factor
-                    reagent_amount = dNTPs_amount + buffer_amount + polymerase_amount + dna_amount + (2 * primer_amount)
+                    reagent_amount = float(Decimal(str(dNTPs_amount)) + Decimal(str(buffer_amount)) + Decimal(str(polymerase_amount)) + Decimal(str(dna_amount)) + (2 * Decimal(str(primer_amount))))
 
                 water_amount = self.volume - reagent_amount
 

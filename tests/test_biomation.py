@@ -56,7 +56,7 @@ def test_create_labware():
 def test_import_labware():
     dna_stocks_filename = "Example DNA Stocks"
     # NOTE: This will fail if the path doesn't end in a / -- use Pathlib
-    dna_stocks_path = "Resources/For Docs/Labware_Layout_Files/"
+    dna_stocks_path = "Resources/data/"
     dna_stocks_ext = ".xlsx"
 
     dna_stocks_layout = bms.Import_Labware_Layout(
@@ -253,7 +253,7 @@ class TestEchoProtoTemplateSuperclass:
         colour_source_plates = [
             bms.Import_Labware_Layout(
                 "Coloured_Solutions",
-                path="Resources/For Docs/Labware_Layout_Files/",
+                path="Resources/data/",
             )
         ]
         mixuture_plate_layout = bms.Labware_Layout(
@@ -497,8 +497,7 @@ class TestOTProto:
         for pos in range(2, 12):
             assert protocol.deck[pos] is None
 
-
-class Test_Heat_Shock_Transformation:
+class Test_OTProto_Heat_Shock_Transformation:
 
     def test_with_temp_module(self):
         protocol = OT2.get_protocol_api('2.11')
@@ -516,7 +515,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -623,7 +622,7 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 898
+        assert len(protocol.commands()) == 754
 
     def test_with_cooled_cells(self):
         protocol = OT2.get_protocol_api('2.11')
@@ -641,7 +640,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -752,13 +751,12 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 899
+        assert len(protocol.commands()) == 755
 
         assert protocol.commands().count("Setting Temperature Module temperature to 4.0 °C (rounded off to nearest integer)") == 3
 
         assert str(protocol.deck[1]) == "Temperature Module GEN2 on 1"
         assert str(protocol.deck[3]) == "Temperature Module GEN2 on 3"
-
 
     def test_with_thermocycler(self):
 
@@ -777,7 +775,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -885,7 +883,7 @@ class Test_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 903
+        assert len(protocol.commands()) == 759
 
         assert "Opening Thermocycler lid" in protocol.commands()
 
@@ -907,7 +905,7 @@ class Test_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/For Docs/custom_labware"
+        Custom_Labware_Dir = "Resources/data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -1018,3 +1016,863 @@ class Test_Heat_Shock_Transformation:
         assert len(protocol.commands()) == 3800
 
         assert protocol.commands().count("Setting Temperature Module temperature to 4.0 °C (rounded off to nearest integer)") == 4
+
+class Test_EchoProto_Loop_Assembly:
+
+    def test_unmerged(self):
+
+        Protocol_Name = "Unmerged Example Loop Assembly"
+
+        Metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = False
+
+        Picklist_Save_Directory = tempfile.mkdtemp()
+
+        Source_Plate_Directory = "Resources/data/"
+
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        Assembly_Plate_Layout = bms.Labware_Layout("Assembly Plate", "384 OptiAmp Plate")
+        Assembly_Plate_Layout.define_format(16,24)
+        Assembly_Plate_Layout.set_available_wells()
+
+        Final_Volume = 5 # uL
+        Backbone_to_Part_Ratios = ["1:1", "1:3", "2:1"]
+        Repeats = 1
+        Enzyme = "BsaI" # For level 1 assemblies
+        Buffer = "T4 Ligase Buffer"
+
+        Promoters = [
+            "J23100",
+            "J23119",
+            "J23101",
+            "J23102",
+            "J23103",
+            "J23104",
+            "J23105",
+            "J23106",
+            "J23107",
+            "J23108",
+            "J23109",
+            "J23110",
+            "J23111",
+            "J23112",
+            "J23113",
+            "J23114",
+            "J23115",
+            "J23116",
+            "J23117",
+            "J23118"
+        ]
+
+        RBSs = [
+            "B0034",
+            "B0030",
+            "B0031",
+            "B0032"
+        ]
+
+        Assemblies = []
+
+
+        for promoter in Promoters:
+            for RBS in RBSs:
+                Assemblies.append(
+                    bms.Assembly(
+                        Name = "{}-{}-GFP".format(promoter, RBS),
+                        Backbone = "pOdd1",
+                        Parts = [promoter, RBS, "GFP", "B0015"]
+                    )
+                )
+
+        Loop_Protocol = echo_templates.Loop_Assembly(
+            Enzyme=Enzyme,
+            Buffer=Buffer,
+            Volume=Final_Volume,
+            Assemblies=Assemblies,
+            Backbone_to_Part=Backbone_to_Part_Ratios,
+            Repeats=Repeats,
+            Name=Protocol_Name,
+            Source_Plates=Source_Plates,
+            Destination_Plate_Layout=Assembly_Plate_Layout,
+            Picklist_Save_Directory=Picklist_Save_Directory,
+            Metadata=Metadata,
+            Merge=Merge_Picklists
+        )
+
+        Loop_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(Loop_Protocol.save_dir) if Loop_Protocol.name in f]
+
+        assert len(picklist_filenames) == 4
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Unmerged Example Loop Assembly-384PP-(Example DNA Stocks).csv",
+            "Unmerged Example Loop Assembly-384PP-(Example Plasmid Stocks).csv",
+            "Unmerged Example Loop Assembly-6RES-(Water and Buffer Plate).csv",
+            "Unmerged Example Loop Assembly-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_merged(self):
+
+        Protocol_Name = "Merged Example Loop Assembly"
+
+        Metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = True
+
+        Picklist_Save_Directory = tempfile.mkdtemp()
+
+        Source_Plate_Directory = "Resources/data/"
+
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        Assembly_Plate_Layout = bms.Labware_Layout("Assembly Plate", "384 OptiAmp Plate")
+        Assembly_Plate_Layout.define_format(16,24)
+        Assembly_Plate_Layout.set_available_wells()
+
+        Final_Volume = 5 # uL
+        Backbone_to_Part_Ratios = ["1:1", "1:3", "2:1"]
+        Repeats = 1
+        Enzyme = "BsaI" # For level 1 assemblies
+        Buffer = "T4 Ligase Buffer"
+
+        Promoters = [
+            "J23100",
+            "J23119",
+            "J23101",
+            "J23102",
+            "J23103",
+            "J23104",
+            "J23105",
+            "J23106",
+            "J23107",
+            "J23108",
+            "J23109",
+            "J23110",
+            "J23111",
+            "J23112",
+            "J23113",
+            "J23114",
+            "J23115",
+            "J23116",
+            "J23117",
+            "J23118"
+        ]
+
+        RBSs = [
+            "B0034",
+            "B0030",
+            "B0031",
+            "B0032"
+        ]
+
+        Assemblies = []
+
+
+        for promoter in Promoters:
+            for RBS in RBSs:
+                Assemblies.append(
+                    bms.Assembly(
+                        Name = "{}-{}-GFP".format(promoter, RBS),
+                        Backbone = "pOdd1",
+                        Parts = [promoter, RBS, "GFP", "B0015"]
+                    )
+                )
+
+        Loop_Protocol = echo_templates.Loop_Assembly(
+            Enzyme=Enzyme,
+            Buffer=Buffer,
+            Volume=Final_Volume,
+            Assemblies=Assemblies,
+            Backbone_to_Part=Backbone_to_Part_Ratios,
+            Repeats=Repeats,
+            Name=Protocol_Name,
+            Source_Plates=Source_Plates,
+            Destination_Plate_Layout=Assembly_Plate_Layout,
+            Picklist_Save_Directory=Picklist_Save_Directory,
+            Metadata=Metadata,
+            Merge=Merge_Picklists
+        )
+
+        Loop_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(Loop_Protocol.save_dir) if Loop_Protocol.name in f]
+
+        assert len(picklist_filenames) == 3
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Merged Example Loop Assembly-384PP.csv",
+            "Merged Example Loop Assembly-6RES-(Water and Buffer Plate).csv",
+            "Merged Example Loop Assembly-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_volume_overflow_fails(self):
+
+        Protocol_Name = "Merged Example Loop Assembly"
+
+        Metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = True
+
+        Picklist_Save_Directory = tempfile.mkdtemp()
+
+        Source_Plate_Directory = "Resources/data/"
+
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        Assembly_Plate_Layout = bms.Labware_Layout("Assembly Plate", "384 OptiAmp Plate")
+        Assembly_Plate_Layout.define_format(16,24)
+        Assembly_Plate_Layout.set_available_wells()
+
+        Final_Volume = 5 # uL
+        Backbone_to_Part_Ratios = ["100:1"]
+        Repeats = 1
+        Enzyme = "BsaI" # For level 1 assemblies
+        Buffer = "T4 Ligase Buffer"
+
+        Promoters = [
+            "J23100",
+            "J23119",
+            "J23101",
+            "J23102",
+            "J23103",
+            "J23104",
+            "J23105",
+            "J23106",
+            "J23107",
+            "J23108",
+            "J23109",
+            "J23110",
+            "J23111",
+            "J23112",
+            "J23113",
+            "J23114",
+            "J23115",
+            "J23116",
+            "J23117",
+            "J23118"
+        ]
+
+        RBSs = [
+            "B0034",
+            "B0030",
+            "B0031",
+            "B0032"
+        ]
+
+        Assemblies = []
+
+
+        for promoter in Promoters:
+            for RBS in RBSs:
+                Assemblies.append(
+                    bms.Assembly(
+                        Name = "{}-{}-GFP".format(promoter, RBS),
+                        Backbone = "pOdd1",
+                        Parts = [promoter, RBS, "GFP", "B0015"]
+                    )
+                )
+
+        Loop_Protocol = echo_templates.Loop_Assembly(
+            Enzyme=Enzyme,
+            Buffer=Buffer,
+            Volume=Final_Volume,
+            Assemblies=Assemblies,
+            Backbone_to_Part=Backbone_to_Part_Ratios,
+            Repeats=Repeats,
+            Name=Protocol_Name,
+            Source_Plates=Source_Plates,
+            Destination_Plate_Layout=Assembly_Plate_Layout,
+            Picklist_Save_Directory=Picklist_Save_Directory,
+            Metadata=Metadata,
+            Merge=Merge_Picklists
+        )
+        with pytest.raises(bms.NegativeVolumeError) as excinfo:
+            Loop_Protocol.run()
+
+class Test_EchoProto_PCR:
+    def test_unmerged_no_mm(self):
+
+        Protocol_Name = "Unmerged Example PCR No MM"
+
+        metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
+
+        Picklist_Save_Directory = "Resources/data/"
+
+        Source_Plate_Directory = "Resources/data/"
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        PCR_Plate_Layout = bms.Labware_Layout("PCR Plate", "384 OptiAmp Plate")
+        PCR_Plate_Layout.define_format(16,24)
+        PCR_Plate_Layout.set_available_wells()
+
+        Polymerase = "Q5 Polymerase"
+        Polymerase_Buffer = "Q5 Buffer"
+        Buffer_Stock_Conc = 5 # x
+        Master_Mix = False
+        Master_Mix_Stock_Conc = None # x
+        DNA_Amounts = [0.1, 0.5, 1] # uL
+
+        Volume = 5
+        Repeats = 1
+
+        Reactions = [
+            ("J23100", "VF2", "VR"),
+            ("J23119", "VF2", "VR"),
+            ("J23101", "VF2", "VR"),
+            ("J23102", "VF2", "VR"),
+            ("J23103", "VF2", "VR"),
+            ("J23104", "VF2", "VR"),
+            ("J23105", "VF2", "VR"),
+            ("J23106", "VF2", "VR"),
+            ("J23107", "VF2", "VR"),
+            ("J23108", "VF2", "VR"),
+            ("J23109", "VF2", "VR"),
+            ("J23110", "VF2", "VR"),
+            ("J23111", "VF2", "VR"),
+            ("J23112", "VF2", "VR"),
+            ("J23113", "VF2", "VR"),
+            ("J23114", "VF2", "VR"),
+            ("J23115", "VF2", "VR"),
+            ("J23116", "VF2", "VR"),
+            ("J23117", "VF2", "VR"),
+            ("J23118", "VF2", "VR"),
+            ("pOdd1", "VF2", "VR"),
+        ]
+
+        # This code block shouldn't need to be modified
+        PCR_Protocol = echo_templates.PCR(
+            Name = Protocol_Name,
+            Picklist_Save_Directory = Picklist_Save_Directory,
+            Metadata = metadata,
+            Volume= Volume,
+            Reactions = Reactions,
+            Polymerase = Polymerase,
+            Polymerase_Buffer = Polymerase_Buffer,
+            Polymerase_Buffer_Stock_Conc = Buffer_Stock_Conc,
+            Master_Mix = Master_Mix,
+            Master_Mix_Stock_Conc = Master_Mix_Stock_Conc,
+            Repeats = Repeats,
+            DNA_Amounts = DNA_Amounts,
+            Source_Plates = Source_Plates,
+            Destination_Plate_Layout = PCR_Plate_Layout,
+            Merge = Merge_Picklists
+        )
+        PCR_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(PCR_Protocol.save_dir) if PCR_Protocol.name in f]
+
+        assert len(picklist_filenames) == 5
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Unmerged Example PCR No MM-384PP-(Example DNA Stocks).csv",
+            "Unmerged Example PCR No MM-384PP-(Example Primer Stocks).csv",
+            "Unmerged Example PCR No MM-384PP-(Example Plasmid Stocks).csv",
+            "Unmerged Example PCR No MM-6RES-(Water and Buffer Plate).csv",
+            "Unmerged Example PCR No MM-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_merged_no_mm(self):
+
+        Protocol_Name = "Merged Example PCR No MM"
+
+        metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = True # This merges source plates with the same TYPE into one picklist
+
+        Picklist_Save_Directory = "Resources/data/"
+
+        Source_Plate_Directory = "Resources/data/"
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        PCR_Plate_Layout = bms.Labware_Layout("PCR Plate", "384 OptiAmp Plate")
+        PCR_Plate_Layout.define_format(16,24)
+        PCR_Plate_Layout.set_available_wells()
+
+        Polymerase = "Q5 Polymerase"
+        Polymerase_Buffer = "Q5 Buffer"
+        Buffer_Stock_Conc = 5 # x
+        Master_Mix = False
+        Master_Mix_Stock_Conc = None # x
+        DNA_Amounts = [0.1, 0.5, 1] # uL
+
+        Volume = 5
+        Repeats = 1
+
+        Reactions = [
+            ("J23100", "VF2", "VR"),
+            ("J23119", "VF2", "VR"),
+            ("J23101", "VF2", "VR"),
+            ("J23102", "VF2", "VR"),
+            ("J23103", "VF2", "VR"),
+            ("J23104", "VF2", "VR"),
+            ("J23105", "VF2", "VR"),
+            ("J23106", "VF2", "VR"),
+            ("J23107", "VF2", "VR"),
+            ("J23108", "VF2", "VR"),
+            ("J23109", "VF2", "VR"),
+            ("J23110", "VF2", "VR"),
+            ("J23111", "VF2", "VR"),
+            ("J23112", "VF2", "VR"),
+            ("J23113", "VF2", "VR"),
+            ("J23114", "VF2", "VR"),
+            ("J23115", "VF2", "VR"),
+            ("J23116", "VF2", "VR"),
+            ("J23117", "VF2", "VR"),
+            ("J23118", "VF2", "VR"),
+            ("pOdd1", "VF2", "VR"),
+        ]
+
+        # This code block shouldn't need to be modified
+        PCR_Protocol = echo_templates.PCR(
+            Name = Protocol_Name,
+            Picklist_Save_Directory = Picklist_Save_Directory,
+            Metadata = metadata,
+            Volume= Volume,
+            Reactions = Reactions,
+            Polymerase = Polymerase,
+            Polymerase_Buffer = Polymerase_Buffer,
+            Polymerase_Buffer_Stock_Conc = Buffer_Stock_Conc,
+            Master_Mix = Master_Mix,
+            Master_Mix_Stock_Conc = Master_Mix_Stock_Conc,
+            Repeats = Repeats,
+            DNA_Amounts = DNA_Amounts,
+            Source_Plates = Source_Plates,
+            Destination_Plate_Layout = PCR_Plate_Layout,
+            Merge = Merge_Picklists
+        )
+        PCR_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(PCR_Protocol.save_dir) if PCR_Protocol.name in f]
+
+        assert len(picklist_filenames) == 3
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Merged Example PCR No MM-384PP.csv",
+            "Merged Example PCR No MM-6RES-(Water and Buffer Plate).csv",
+            "Merged Example PCR No MM-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_unmerged_with_mm(self):
+
+        Protocol_Name = "Unmerged Example PCR With MM"
+
+        metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
+
+        Picklist_Save_Directory = "Resources/data/"
+
+        Source_Plate_Directory = "Resources/data/"
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        PCR_Plate_Layout = bms.Labware_Layout("PCR Plate", "384 OptiAmp Plate")
+        PCR_Plate_Layout.define_format(16,24)
+        PCR_Plate_Layout.set_available_wells()
+
+        Polymerase = "Q5 Polymerase"
+        Polymerase_Buffer = "Q5 Buffer"
+        Buffer_Stock_Conc = 5 # x
+        Master_Mix = False
+        Master_Mix_Stock_Conc = None # x
+        DNA_Amounts = [0.1, 0.5, 1] # uL
+
+        Volume = 5
+        Repeats = 1
+
+        Reactions = [
+            ("J23100", "VF2", "VR"),
+            ("J23119", "VF2", "VR"),
+            ("J23101", "VF2", "VR"),
+            ("J23102", "VF2", "VR"),
+            ("J23103", "VF2", "VR"),
+            ("J23104", "VF2", "VR"),
+            ("J23105", "VF2", "VR"),
+            ("J23106", "VF2", "VR"),
+            ("J23107", "VF2", "VR"),
+            ("J23108", "VF2", "VR"),
+            ("J23109", "VF2", "VR"),
+            ("J23110", "VF2", "VR"),
+            ("J23111", "VF2", "VR"),
+            ("J23112", "VF2", "VR"),
+            ("J23113", "VF2", "VR"),
+            ("J23114", "VF2", "VR"),
+            ("J23115", "VF2", "VR"),
+            ("J23116", "VF2", "VR"),
+            ("J23117", "VF2", "VR"),
+            ("J23118", "VF2", "VR"),
+            ("pOdd1", "VF2", "VR"),
+        ]
+
+        # This code block shouldn't need to be modified
+        PCR_Protocol = echo_templates.PCR(
+            Name = Protocol_Name,
+            Picklist_Save_Directory = Picklist_Save_Directory,
+            Metadata = metadata,
+            Volume= Volume,
+            Reactions = Reactions,
+            Polymerase = Polymerase,
+            Polymerase_Buffer = Polymerase_Buffer,
+            Polymerase_Buffer_Stock_Conc = Buffer_Stock_Conc,
+            Master_Mix = Master_Mix,
+            Master_Mix_Stock_Conc = Master_Mix_Stock_Conc,
+            Repeats = Repeats,
+            DNA_Amounts = DNA_Amounts,
+            Source_Plates = Source_Plates,
+            Destination_Plate_Layout = PCR_Plate_Layout,
+            Merge = Merge_Picklists
+        )
+        PCR_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(PCR_Protocol.save_dir) if PCR_Protocol.name in f]
+
+        assert len(picklist_filenames) == 5
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Unmerged Example PCR With MM-384PP-(Example DNA Stocks).csv",
+            "Unmerged Example PCR With MM-384PP-(Example Primer Stocks).csv",
+            "Unmerged Example PCR With MM-384PP-(Example Plasmid Stocks).csv",
+            "Unmerged Example PCR With MM-6RES-(Water and Buffer Plate).csv",
+            "Unmerged Example PCR With MM-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_merged_with_mm(self):
+
+        Protocol_Name = "Merged Example PCR With MM"
+
+        metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = True # This merges source plates with the same TYPE into one picklist
+
+        Picklist_Save_Directory = "Resources/data/"
+
+        Source_Plate_Directory = "Resources/data/"
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        PCR_Plate_Layout = bms.Labware_Layout("PCR Plate", "384 OptiAmp Plate")
+        PCR_Plate_Layout.define_format(16,24)
+        PCR_Plate_Layout.set_available_wells()
+
+        Polymerase = "Q5 Polymerase"
+        Polymerase_Buffer = None
+        Buffer_Stock_Conc = None # x
+        Master_Mix = "Q5 Master Mix"
+        Master_Mix_Stock_Conc = 2 # x
+        DNA_Amounts = [0.1, 0.5, 1] # uL
+
+        Volume = 5
+        Repeats = 1
+
+        Reactions = [
+            ("J23100", "VF2", "VR"),
+            ("J23119", "VF2", "VR"),
+            ("J23101", "VF2", "VR"),
+            ("J23102", "VF2", "VR"),
+            ("J23103", "VF2", "VR"),
+            ("J23104", "VF2", "VR"),
+            ("J23105", "VF2", "VR"),
+            ("J23106", "VF2", "VR"),
+            ("J23107", "VF2", "VR"),
+            ("J23108", "VF2", "VR"),
+            ("J23109", "VF2", "VR"),
+            ("J23110", "VF2", "VR"),
+            ("J23111", "VF2", "VR"),
+            ("J23112", "VF2", "VR"),
+            ("J23113", "VF2", "VR"),
+            ("J23114", "VF2", "VR"),
+            ("J23115", "VF2", "VR"),
+            ("J23116", "VF2", "VR"),
+            ("J23117", "VF2", "VR"),
+            ("J23118", "VF2", "VR"),
+            ("pOdd1", "VF2", "VR"),
+        ]
+
+        # This code block shouldn't need to be modified
+        PCR_Protocol = echo_templates.PCR(
+            Name = Protocol_Name,
+            Picklist_Save_Directory = Picklist_Save_Directory,
+            Metadata = metadata,
+            Volume= Volume,
+            Reactions = Reactions,
+            Polymerase = Polymerase,
+            Polymerase_Buffer = Polymerase_Buffer,
+            Polymerase_Buffer_Stock_Conc = Buffer_Stock_Conc,
+            Master_Mix = Master_Mix,
+            Master_Mix_Stock_Conc = Master_Mix_Stock_Conc,
+            Repeats = Repeats,
+            DNA_Amounts = DNA_Amounts,
+            Source_Plates = Source_Plates,
+            Destination_Plate_Layout = PCR_Plate_Layout,
+            Merge = Merge_Picklists
+        )
+        PCR_Protocol.run()
+
+        # Check the picklist outputs
+        picklist_filenames = [f for f in os.listdir(PCR_Protocol.save_dir) if PCR_Protocol.name in f]
+
+        assert len(picklist_filenames) == 3
+
+        # Check that all picklists exist
+        validation_picklists = [
+            "Merged Example PCR With MM-384PP.csv",
+            "Merged Example PCR With MM-6RES-(Water and Buffer Plate).csv",
+            "Merged Example PCR With MM-384LDV-(Reagents).csv",
+        ]
+
+        for picklist in validation_picklists:
+            assert picklist in picklist_filenames
+
+        for picklist in picklist_filenames:
+            test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
+            validation_picklist = open(f"Resources/data/{picklist}", "r")
+
+            assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
+
+            test_picklist.close()
+            validation_picklist.close()
+
+    def test_volume_overflow_fails(self):
+        Protocol_Name = "Unmerged Example PCR No MM"
+
+        metadata = {
+            "Author": "First Last",
+            "Author Email": "author@email.com",
+            "User": "Your Name",
+            "User Email": "user@email.com",
+            "Source": "BiomationScripter v0.2.0.dev",
+            "Robot": "Echo525"
+        }
+
+        Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
+
+        Picklist_Save_Directory = "Resources/data/"
+
+        Source_Plate_Directory = "Resources/data/"
+        Source_Plates = [
+            bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Example Plasmid Stocks", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Water and Buffer Plate", path = Source_Plate_Directory),
+            bms.Import_Labware_Layout("Reagents", path = Source_Plate_Directory),
+        ]
+
+        PCR_Plate_Layout = bms.Labware_Layout("PCR Plate", "384 OptiAmp Plate")
+        PCR_Plate_Layout.define_format(16,24)
+        PCR_Plate_Layout.set_available_wells()
+
+        Polymerase = "Q5 Polymerase"
+        Polymerase_Buffer = "Q5 Buffer"
+        Buffer_Stock_Conc = 5 # x
+        Master_Mix = False
+        Master_Mix_Stock_Conc = None # x
+        DNA_Amounts = [5, 10, 15] # uL
+
+        Volume = 5
+        Repeats = 1
+
+        Reactions = [
+            ("J23100", "VF2", "VR"),
+            ("J23119", "VF2", "VR"),
+            ("J23101", "VF2", "VR"),
+            ("J23102", "VF2", "VR"),
+            ("J23103", "VF2", "VR"),
+            ("J23104", "VF2", "VR"),
+            ("J23105", "VF2", "VR"),
+            ("J23106", "VF2", "VR"),
+            ("J23107", "VF2", "VR"),
+            ("J23108", "VF2", "VR"),
+            ("J23109", "VF2", "VR"),
+            ("J23110", "VF2", "VR"),
+            ("J23111", "VF2", "VR"),
+            ("J23112", "VF2", "VR"),
+            ("J23113", "VF2", "VR"),
+            ("J23114", "VF2", "VR"),
+            ("J23115", "VF2", "VR"),
+            ("J23116", "VF2", "VR"),
+            ("J23117", "VF2", "VR"),
+            ("J23118", "VF2", "VR"),
+            ("pOdd1", "VF2", "VR"),
+        ]
+
+        # This code block shouldn't need to be modified
+        PCR_Protocol = echo_templates.PCR(
+            Name = Protocol_Name,
+            Picklist_Save_Directory = Picklist_Save_Directory,
+            Metadata = metadata,
+            Volume= Volume,
+            Reactions = Reactions,
+            Polymerase = Polymerase,
+            Polymerase_Buffer = Polymerase_Buffer,
+            Polymerase_Buffer_Stock_Conc = Buffer_Stock_Conc,
+            Master_Mix = Master_Mix,
+            Master_Mix_Stock_Conc = Master_Mix_Stock_Conc,
+            Repeats = Repeats,
+            DNA_Amounts = DNA_Amounts,
+            Source_Plates = Source_Plates,
+            Destination_Plate_Layout = PCR_Plate_Layout,
+            Merge = Merge_Picklists
+        )
+        with pytest.raises(bms.NegativeVolumeError) as excinfo:
+            PCR_Protocol.run()
