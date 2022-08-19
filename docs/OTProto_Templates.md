@@ -79,7 +79,7 @@ metadata = {
 
 ```
 
-**Body:**\
+**Body:**
 
 This section of code is where the user-defined aspects of the protocol are specified, and where the OTProto template class is called. See the [`OTProto Template Documentation`]() for the list of user-defined arguments required, and the format they must be supplied in.
 
@@ -116,13 +116,16 @@ def run(protocol):
    Example_Protocol.run()
 ```
 
-**Simulation:**\
+**Simulation:**
+
 For loading to the Opentrons, just the code above is required. There are two methods for simulating the protocol:
 
 **Option one:**
+
 Follow the instructions [here](https://support.opentrons.com/en/articles/2741869-simulating-ot-2-protocols-on-your-computer).
 
 **Option two:**
+
 Append the code below to the end of the protocol file and run the file (either on the command line, in an IDE, or in Jupyter Notebook):
 
 ```python
@@ -419,6 +422,7 @@ BiomationScripter.EchoProto.Templates.Loop_Assembly(
 This class is used as a superclass for all OTProto templates. It contains attributes and methods which are common to any Opentrons protocol, and therefore allows for a certain amount of standardisation across the templates.
 
 **Usage:**
+
 The `OTProto_Template` class should only be used to extend OTProto templates, and shouldn't be called by itself. Below is an example of how a new protocol template can be created using this class. For a complete walkthrough describing how OTProto templates can be created, see [here](#).
 
 ```python
@@ -428,6 +432,7 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
 ```
 
 **Attributes:**
+
 * `_protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `name` | `str`: A readable name for the protocol created by the template
 * `metadata` | `dict{str: str}`: This is metadata about the protocol - it should follow the best practices described [here](#)
@@ -439,6 +444,7 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
 * `__pipettes_loaded` | `bool = False`: Records whether the pipettes have been loaded to the protocol.
 
 **Methods:**
+
 * `__init__(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Name: str, Metadata: dict{str: str}, Starting_20uL_Tip: str = "A1", Starting_300uL_Tip: str = "A1", Starting_1000uL_Tip: str = "A1")` returns `BiomationScripter.OTProto.OTProto_Template`
   * Should only be called within the `__init__` of an OTProto Template class as `super().__init__(**kwargs)`
   * `Protocol` is stored as `self._protocol`
@@ -477,18 +483,3 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
 * `run_as_module(self, Parent)` returns `None`
   * This is experimental and should only be used with caution
   * This method may disappear or be changed in a way which is not backward compatible
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#

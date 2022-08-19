@@ -253,7 +253,7 @@ class My_New_Template(BMS.EchoProto.EchoProto_Template):
     pass
 ```
 
-[See the walkthrough here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
+[See the walkthrough here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
 
 **Attributes:**
 

@@ -573,6 +573,7 @@ Protocols can be simulated on any computer which has the [Opentrons API installe
 This method of simulating the protocol requires a slight addition to the python script, and may be useful when writing protocols using Jupyter Notebook or in an interactive environment.
 
 1. Add the following lines to the end of your python script:
+
     ```python
     from opentrons import simulate as OT2 # Import the simulation module from the API
     protocol = OT2.get_protocol_api('2.10') # Create the protocol object with the correct API version

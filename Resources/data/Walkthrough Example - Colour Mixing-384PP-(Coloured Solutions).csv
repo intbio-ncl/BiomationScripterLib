@@ -1,0 +1,19 @@
+UID,Source Plate Name,Source Plate Type,Source Well,Destination Plate Name,Destination Plate Type,Destination Well,Transfer Volume,Reagent
+0,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A1,1000,Red
+1,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A2,200,Red
+2,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A3,1800,Red
+3,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A4,1000,Red
+4,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A5,200,Red
+5,Coloured Solutions,384PP_AQ_BP,A1,Mixture Plate,384 OptiAmp Plate,A6,1800,Red
+6,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A4,1000,Yellow
+7,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A5,1800,Yellow
+8,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A6,200,Yellow
+9,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A7,1000,Yellow
+10,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A8,1800,Yellow
+11,Coloured Solutions,384PP_AQ_BP,A3,Mixture Plate,384 OptiAmp Plate,A9,200,Yellow
+12,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A1,1000,Blue
+13,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A2,1800,Blue
+14,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A3,200,Blue
+15,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A7,1000,Blue
+16,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A8,200,Blue
+17,Coloured Solutions,384PP_AQ_BP,A2,Mixture Plate,384 OptiAmp Plate,A9,1800,Blue
