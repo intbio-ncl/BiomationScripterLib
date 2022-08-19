@@ -36,17 +36,21 @@ Below you can find documentation for Opentrons Templates included with Biomation
 ## Using OTProto.Templates
 
 ## Import Statement
+
 `import BiomationScripter.OTProto.Templates as Templates`
 
 ## Using OTProto Templates
+
 Described here are the generic best practices for creating Opentrons protocols using OTProto templates.
 
 ### Walkthrough
+
 Begin by creating a python file in any text editor or IDE. Then, set up the content of the python file following the guidelines below.
 
 **Header:**
 
 The header of the python file can be split up into three sections:
+
 1. **Point the Opentrons to the location of the BMS library:** This adds the BMS library to the Opentrons python path. Make sure that the directory specified is the same as the directory BMS was installed in during [installation](#setting-up-the-ot-2-to-work-with-biomationscripter).
 2. **Import the BiomationScripter library and OTProto.Templates module:** This makes the required functions and classes available for use
 3. **Record the protocol metadata:** Record metadata for the protocol - follow the format given in the code below; this is required by the templates and the protocol will not run without it
@@ -151,6 +155,7 @@ for line in protocol.commands():
 **NOTE: this code block MUST be removed or commented out before loading the protocol file to the opentrons, otherwise an error will occur during load**
 
 ### Example
+
 The code below shows an example for using the [`DNA_fmol_Dilution`]() OTProto template to create an Opentrons protocol.
 
 The protocol takes 10 DNA samples and dilutes them to 10 fmol/μL in new tubes.
@@ -295,6 +300,7 @@ It is possible to create custom OTProto templates by appending to the [`Biomatio
 In BiomationScripter, templates are stored as python classes which extend the [`BiomationScripter.OTProto.OTProto_Template`](#superclass-otproto_template) superclass, which defines methods and attributes common to all OTProto templates. Full documentation relating to these attributes and methods can be found [here](#superclass-otproto_template).
 
 The [`BiomationScripter.OTProto.OTProto_Template`](#superclass-otproto_template) superclass has the following `__init__` arguments:
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `Name` | `str`: The name of the protocol (this is the name of the protocol, NOT the protocol template)
 * `Metadata` | `dict{str: str}`: This is metadata about the protocol - it should follow the best practices described [here]()
@@ -369,7 +375,7 @@ class Your_Template(_OTProto.OTProto_Template):
 ### Template: [`DNA_fmol_Dilution`](../BiomationScripter/EchoProto/Templates.py)
 
 #### Overview:
-asdf
+
 
 #### Generic Protocol Steps:
 

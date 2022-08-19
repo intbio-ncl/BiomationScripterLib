@@ -88,7 +88,7 @@ Begin by importing the EchoProto module:
 `import BiomationScripter.EchoProto as EchoProto`
 
 The EchoProto module has the following architecture:
-<img src="wiki-images/EchoProto_Architecture.png" alt = "EchoProto_Architecture: Protocol contains 1 to many Transfer Lists. Transfer List contains 1 to many Actions." width = "900"/>
+<img src="../wiki-images/EchoProto_Architecture.png" alt = "EchoProto_Architecture: Protocol contains 1 to many Transfer Lists. Transfer List contains 1 to many Actions." width = "900"/>
 
 The [BiomationScripter.EchoProto.Protocol](#class-protocol) object is populated with [BiomationScripter.EchoProto.TransferList](#class-transferlist)s and [BiomationScripter.EchoProto.Action](#class-action)s through the use of the [BiomationScripter.EchoProto.Generate_Actions](#function-generate_actions) function. A populated [Protocol](#class-protocol) is used to generate CSV picklists by calling the [BiomationScripter.EchoProto.write_picklists](#function-write_picklists) function.
 

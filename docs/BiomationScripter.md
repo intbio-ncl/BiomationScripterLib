@@ -40,7 +40,7 @@ Begin by importing the BiomatonScripter package:
 
 ---
 
-### Classes
+## Classes
 
 [`Labware_Content`](#class-labware_content) |
 [`LabwareLayout`](#class-labware_layout) |
@@ -269,7 +269,7 @@ This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to stor
 
 ---
 
-### Functions
+## Functions
 
 [`Create_Labware_Needed`](#function-create_labware_needed) |
 [`fmol_calculator`](#function-fmol_calculator) |
@@ -406,7 +406,7 @@ The image below sums up this information:
 
 ---
 
-### Exceptions
+## Exceptions
 
 * **NegativeVolumeError**: Used when a calculation error occurs and volume less than 0 is specified
 * **RobotConfigurationError**: Used when automation equipment is not configured correctly, or when information about the equipment is missing

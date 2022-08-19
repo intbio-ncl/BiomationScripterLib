@@ -3,8 +3,6 @@
 <img src="../wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
-
-
 ---
 [Home](index.md) |
 [Getting Started](Getting-Started.md) |

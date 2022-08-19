@@ -52,6 +52,7 @@ B. `cd` into the directory you just cloned, and run the following command to ins
 ## Where To Start
 
 To make use of this library, you will need to have some prior Python knowledge and experience. You wll need to understand how the following works in Python:
+
 * Variables
 * Data structures such as lists, dictionaries, and sets
 * How to call functions
@@ -71,7 +72,7 @@ See the options below for more information about how BiomationScripter Templates
 
 **For Echo Liquid Handler**
 
-The [EchoProto Templates documentation page](EchoProto_Templates.md) has explanations of the existing EchoProto Templates, along with links to walkthroughs showing how each Template can be used. If you're not sure where to start, try [this walkthough](Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
+The [EchoProto Templates documentation page](EchoProto_Templates.md) has explanations of the existing EchoProto Templates, along with links to walkthroughs showing how each Template can be used. If you're not sure where to start, try [this walkthough](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 **For Opentrons Liquid Handler**
 
@@ -83,7 +84,7 @@ Whilst BiomationScripter contains ready-made Templates for common protocols, the
 
 **For Echo Liquid Handler**
 
-Check out the example walkthrough [here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb), and the full documentation [here](EchoProto_Templates.md#superclass-echoproto_template).
+Check out the example walkthrough [here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb), and the full documentation [here](EchoProto_Templates.md#superclass-echoproto_template).
 
 **For Opentrons Liquid Handler**
 
