@@ -3,7 +3,7 @@ import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
 import warnings
-from typing import List, NewType, Tuple, Union
+from typing import List, NewType, Tuple, Union, Literal
 from collections import namedtuple
 # import smtplib, ssl
 
@@ -204,10 +204,10 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
         Cooled_Cells_Modules: List[str] = [],
         Shuffle: Union[Tuple[str, str] , None] = None,
         Patience: int = 1200,
-        Cells_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (5,"transfer_volume"),
-        Cells_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
-        DNA_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
-        DNA_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10,"transfer_volume"),
+        Cells_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (5,"transfer_volume"),
+        Cells_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
+        DNA_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
+        DNA_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (10,"transfer_volume"),
         **kwargs
     ):
 
@@ -287,7 +287,7 @@ class Heat_Shock_Transformation(_OTProto.OTProto_Template):
                         raise _BMS.LabwareError("Not enough deck positions on the robot.")
                 # Load the module
                 destination_modules.append(self._protocol.load_module(hs_mod, deck_slot))
-        
+
         # Load the source modules
         source_modules = []
         for cc_mod in self.cooled_cells_modules:
@@ -1264,24 +1264,24 @@ class Standard_iGEM_Calibration(_OTProto.OTProto_Template):
         Solvent_Labware_Type: str,
         Destination_Labware_Type: str,
         Trash_Labware_Type: str,
-        Solvent_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
-        Solvent_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = None,
+        Solvent_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
+        Solvent_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
         Solvent_Source_Touch_Tip: bool = True,
         Solvent_Destination_Touch_Tip: bool = True,
-        Solvent_Move_After_Dispense: Union["well_bottom", "well_top", None] = "well_bottom",
-        Solvent_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
-        First_Dilution_Mix_Before: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10, "transfer_volume"),
-        First_Dilution_Mix_After: Union[Tuple[int, Union[float , "transfer_volume"]] , None] = (10, "transfer_volume"),
+        Solvent_Move_After_Dispense: Union[Literal["well_bottom"], Literal["well_top"], None] = "well_bottom",
+        Solvent_Blowout: Union[Literal["destination_well"], Literal["source_well"], Literal["trash"]] = "destination well",
+        First_Dilution_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (10, "transfer_volume"),
+        First_Dilution_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (10, "transfer_volume"),
         First_Dilution_Source_Touch_Tip: bool = True,
         First_Dilution_Destination_Touch_Tip: bool = True,
-        First_Dilution_Move_After_Dispense: Union["well_bottom", "well_top", None] = None,
-        First_Dilution_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
-        Dilution_Mix_Before = (10, "transfer_volume"),
-        Dilution_Mix_After = (10, "transfer_volume"),
+        First_Dilution_Move_After_Dispense: Union[Literal["well_bottom"], Literal["well_top"], None] = None,
+        First_Dilution_Blowout: Union[Literal["destination_well"], Literal["source_well"], Literal["trash"]] = "destination well",
+        Dilution_Mix_Before = (10, Literal["transfer_volume"]),
+        Dilution_Mix_After = (10, Literal["transfer_volume"]),
         Dilution_Source_Touch_Tip: bool = True,
         Dilution_Destination_Touch_Tip: bool = True,
-        Dilution_Move_After_Dispense: Union["well_bottom", "well_top", None] = None,
-        Dilution_Blowout: Union["destination_well", "source_well", "trash"] = "destination well",
+        Dilution_Move_After_Dispense: Union[Literal["well_bottom"], Literal["well_top"], None] = None,
+        Dilution_Blowout: Union[Literal["destination_well"], Literal["source_well"], Literal["trash"]] = "destination well",
         Mix_Speed_Multipler: float = 2,
         Aspirate_Speed_Multipler: float = 1,
         Dispense_Speed_Multipler: float = 1,
