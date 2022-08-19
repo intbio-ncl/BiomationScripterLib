@@ -6,6 +6,7 @@
 </a>
 
 ---
+
 [Home](docs/index.md) |
 [Getting Started](docs/Getting-Started.md) |
 [Generic Tools](docs/BiomationScripter.md) |
@@ -19,6 +20,8 @@
 # BiomationScripter
 
 This is a python package containing a set of tool to help with writing automation protocols for various liquid handling robots. There are also a set of generic tools which may help with writing protocols for multiple automation equipment
+
+[ReadTheDocs](https://biomationscripterlib.readthedocs.io/en/latest/) for the latest version.
 
 ### Installation
 
