@@ -344,6 +344,8 @@ This function can be used to automatedly generate mastermixes based on source ma
 
 `BMS.Mastermix_Maker(Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layout = BMS.Labware_Layout, Maximum_Mastermix_Volume: float, Min_Transfer_Volume: float, Extra_Reactions: float, Excluded_Reagents: List[str] = [], Excluded_Combinations: List[List[str]] = [], Preferential_Reagents: List[str] = [], Seed: int = None)` returns `(Mastermixes: List[BMS.Mastermix], Seed: int, Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layouts: List[BMS.Labware_Layout])`
 
+See the walkthrough [here](https://biomationscripterlib.readthedocs.io/en/latest/example_code/BMS/BMS-Mastermix_Maker-Function/).
+
 **Arguments:**
 
 * `Destination_Layouts` | `List[BMS.Labware_Layout]`: List of [`BMS.Labware_Layout`](#class-labware_layout) objects representing the final state of the destination labware to prepare mastermixes for - must be fully populated with all source material required in each well
