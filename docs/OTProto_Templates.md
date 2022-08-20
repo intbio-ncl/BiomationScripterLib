@@ -14,6 +14,9 @@
 [OTProto](OTProto.md) |
 [OTProto Templates](OTProto_Templates.md)
 ---
+
+:warning: **Information on this page may be outdated**
+
 </center>
 
 # BiomationScripter - OTProto - Templates

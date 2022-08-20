@@ -213,6 +213,9 @@ This class is used to store information, such as number of wells and content, ab
     * Returns in the order specified by `self.available_wells`, and checks `self.empty_wells` to see if the next available well is empty
 
 ### Class: [`Liquids`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
+
+> :warning: **This class may be removed without warning. Use [`Labware_Layout`](#Labware_Layout) instead where possible.**
+
 This class is used to store information about liquids and where they are stored.
 
 **Usage:**

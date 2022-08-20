@@ -269,6 +269,10 @@ This function converts a list of wells (or a range of wells) in a specified labw
 If the specified wells are not present in the labware defined by the `Labware` argument, an error will raised. Also, if `Direction` is not specified when `Wells` is a well range, an error will be raised.
 
 ### Function: [`get_p1000`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+
+> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+
+
 Returns the p1000 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 
 **Usage:**
@@ -284,6 +288,9 @@ Returns the p1000 pipette from the supplied [`opentrons.protocol_api.contexts.Pr
 Searches the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object supplied to the `protocol` argument for a p1000 pipette. If a p1000 single channel pipette has been loaded, it is returned as an [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext) object. If the pipette has not been loaded, `None` is returned.
 
 ### Function: [`get_p20`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+
+> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+
 Returns the p20 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 
 **Usage:**
@@ -299,6 +306,9 @@ Returns the p20 pipette from the supplied [`opentrons.protocol_api.contexts.Prot
 Searches the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object supplied to the `protocol` argument for a p20 pipette. If a p20 single channel pipette has been loaded, it is returned as an [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext) object. If the pipette has not been loaded, `None` is returned.
 
 ### Function: [`get_p300`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+
+> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+
 Returns the p300 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 
 **Usage:**
@@ -332,28 +342,6 @@ This function calls the [`get_p20`](https://github.com/intbio-ncl/BiomationScrip
 The pipette will only be returned if that pipette type has been loaded to the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object supplied to the `Protocol` argument. If the pipette type is not present, `None` will be returned and no error will be raised.
 
 If `Pipette` is not `"p20"`, `"p300"`, or `"p1000"`, then an error will be raised.
-
-### Function: [`load_custom_labware`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
-This function loads a custom labware from a specified `.json` labware file created using the [Opentrons Labware Creator](https://labware.opentrons.com/create/)
-
-**Usage:**
-
-`OTProto.load_custom_labware(parent: opentrons.protocol_api.contexts.ProtocolContext/opentrons.protocol_api.contexts.TemperatureModuleContext/opentrons.protocol_api.contexts.ThermocyclerContext/https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext, file: str, deck_position: int = None, label: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
-
-**Arguments:**
-
-* `parent` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext)/[`opentrons.protocol_api.contexts.TemperatureModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.TemperatureModuleContext)/[`opentrons.protocol_api.contexts.ThermocyclerContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ThermocyclerContext)/[`opentrons.protocol_api.contexts.MagneticModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext): Specifies onto what the labware should be loaded - `ProtocolContext` is used to load onto the Opentrons deck, and a `ModuleContext` is used to load the labware onto a hardware module (e.g. temperature module), rather than the deck
-* `file` | `str`: The location of the `.json` labware file (should be the full path to the file, including the file name and file extension)
-* `deck_position` | `int = None`: The deck position to load the labware to
-* `label` | `str = None`: A human-readable name for the labware
-
-**Behaviour:**
-
-Labware defined by the labware file supplied by the `file` argument is loaded and returned as a [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object. If the labware file cannot be found at the location specified by the `file` argument, an error will occur.
-
-The object type supplied to `parent` determines whether the labware is loaded to the Opentrons deck (when `parent` is an [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object), or to one of the hardware modules (when `parent` is one of [`opentrons.protocol_api.contexts.TemperatureModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.TemperatureModuleContext)/[`opentrons.protocol_api.contexts.ThermocyclerContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ThermocyclerContext)/[`opentrons.protocol_api.contexts.MagneticModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext) object).
-
-If `parent` is an [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object and `deck_position` is `None`, the next empty slot is used (retrieved using [`OTProto.next_empty_slot`](#function-next_empty_slot)). If `parent` is not a `ProtocolContext` object, then `deck_position` is ignored.
 
 ### Function: [`load_labware_from_layout`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 Generates an [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object from a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) object
@@ -561,6 +549,33 @@ For each transfer action, [`select_pipette_by_volume`](https://github.com/intbio
 If the length of `Transfer_Volumes`, `Source_Locations`, and `Destination_Locations` are not all identical, an error will be rasied.
 
 It is possible to supply a single transfer volume, source location, and destination location without making them into a list (e.g. `Transfer_Volumes = 20`, `Source_Locations = source_1`, and `Destination_Locations = dest_1`.
+
+
+
+### Function: [`load_custom_labware`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
+
+> :warning: **This function shouldn't need to be called directly. It is used by [`Load_Labware`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-load_labware)**
+
+This function loads a custom labware from a specified `.json` labware file created using the [Opentrons Labware Creator](https://labware.opentrons.com/create/)
+
+**Usage:**
+
+`OTProto.load_custom_labware(parent: opentrons.protocol_api.contexts.ProtocolContext/opentrons.protocol_api.contexts.TemperatureModuleContext/opentrons.protocol_api.contexts.ThermocyclerContext/https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext, file: str, deck_position: int = None, label: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
+
+**Arguments:**
+
+* `parent` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext)/[`opentrons.protocol_api.contexts.TemperatureModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.TemperatureModuleContext)/[`opentrons.protocol_api.contexts.ThermocyclerContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ThermocyclerContext)/[`opentrons.protocol_api.contexts.MagneticModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext): Specifies onto what the labware should be loaded - `ProtocolContext` is used to load onto the Opentrons deck, and a `ModuleContext` is used to load the labware onto a hardware module (e.g. temperature module), rather than the deck
+* `file` | `str`: The location of the `.json` labware file (should be the full path to the file, including the file name and file extension)
+* `deck_position` | `int = None`: The deck position to load the labware to
+* `label` | `str = None`: A human-readable name for the labware
+
+**Behaviour:**
+
+Labware defined by the labware file supplied by the `file` argument is loaded and returned as a [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware) object. If the labware file cannot be found at the location specified by the `file` argument, an error will occur.
+
+The object type supplied to `parent` determines whether the labware is loaded to the Opentrons deck (when `parent` is an [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object), or to one of the hardware modules (when `parent` is one of [`opentrons.protocol_api.contexts.TemperatureModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.TemperatureModuleContext)/[`opentrons.protocol_api.contexts.ThermocyclerContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ThermocyclerContext)/[`opentrons.protocol_api.contexts.MagneticModuleContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext) object).
+
+If `parent` is an [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object and `deck_position` is `None`, the next empty slot is used (retrieved using [`OTProto.next_empty_slot`](#function-next_empty_slot)). If `parent` is not a `ProtocolContext` object, then `deck_position` is ignored.
 
 
 ---
