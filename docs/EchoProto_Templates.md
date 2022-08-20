@@ -1,6 +1,6 @@
 <center>
 <a href = "/">
-<img src="../wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="../wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 ---
@@ -33,6 +33,15 @@ Below you can find documentation for Echo Templates included with BiomationScrip
 
 ## Echo Templates
 
+Any Template can be imported using the statement below:
+
+```python
+from BiomationScripter.EchoProto.Templates import <TEMPLATE_NAME>
+```
+
+Replace `<TEMPLATE_NAME>` in the code above with one of the template names below:
+
+
 [`Loop_Assembly`](#template-loop_assembly) | [`PCR`](#template-pcr)
 
 ### Template: [`Loop_Assembly`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/EchoProto/Templates.py)
@@ -62,12 +71,14 @@ Following set up by the Echo, the destination plate(s) should be vortexed and br
 
 #### Usage
 
-See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
+!!! example
+
+    See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 The `Template` object is created using the following code:
 
 ```python
-from BiomationScripter.OTProto.Templates import Loop_Assembly
+from BiomationScripter.EchoProto.Templates import Loop_Assembly
 
 Protocol_Template = Loop_Assembly.Template(
   Enzyme: str,
@@ -164,12 +175,14 @@ Following set up by the Echo, the destination plate(s) should be vortexed and br
 
 #### Usage
 
-See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-PCR.ipynb).
+!!! example
+
+    See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-PCR.ipynb).
 
 The `Template` object is created using the following code:
 
 ```python
-from BiomationScripter.OTProto.Templates import PCR
+from BiomationScripter.EchoProto.Templates import PCR
 
 Protocol_Template = PCR.Template(
   Volume: float,

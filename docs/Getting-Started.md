@@ -1,6 +1,6 @@
 <center>
 <a href = "/">
-<img src="../wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="../wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 

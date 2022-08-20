@@ -1,6 +1,6 @@
 <center>
 <a href = "/">
-<img src="../wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="../wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 
@@ -270,8 +270,9 @@ If the specified wells are not present in the labware defined by the `Labware` a
 
 ### Function: [`get_p1000`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 
-> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+!!! note
 
+    **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
 
 Returns the p1000 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 
@@ -289,7 +290,9 @@ Searches the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.op
 
 ### Function: [`get_p20`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 
-> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+!!! note
+
+    **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
 
 Returns the p20 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 
@@ -307,7 +310,9 @@ Searches the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.op
 
 ### Function: [`get_p300`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/__init__.py)
 
-> :warning: **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
+!!! note
+
+    **It is recommended that [`get_pipette`](#https://biomationscripterlib.readthedocs.io/en/latest/OTProto/#function-get_pipette) is used instead**
 
 Returns the p300 pipette from the supplied [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object if that pipette has been loaded
 

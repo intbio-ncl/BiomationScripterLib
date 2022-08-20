@@ -1,6 +1,6 @@
 <center>
 <a href = "/">
-<img src="../wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="../wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 
@@ -100,7 +100,10 @@ This class is used to store information, such as number of wells and content, ab
 
 `BMS.Labware_Layout(name: str, type: str)` returns `BiomationScripter.Labware_Layout` object
 
-[See examples of this class in use here.](example_code/BMS/BMS-Labware_Layout-Class.ipynb)
+!!! example
+
+    [See examples of this class in use here.](example_code/BMS/BMS-Labware_Layout-Class.ipynb)
+
 
 **Attributes:**
 
@@ -214,7 +217,9 @@ This class is used to store information, such as number of wells and content, ab
 
 ### Class: [`Liquids`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 
-> :warning: **This class may be removed without warning. Use [`Labware_Layout`](#Labware_Layout) instead where possible.**
+!!! warning
+
+    **This class may be removed without warning. Use [`Labware_Layout`](#Labware_Layout) instead where possible.**
 
 This class is used to store information about liquids and where they are stored.
 

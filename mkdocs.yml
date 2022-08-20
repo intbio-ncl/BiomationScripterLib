@@ -6,9 +6,13 @@ repo_name: Source Code on GitHub
 docs_dir: "docs"
 
 theme:
+    logo: wiki-images/Logo - Pic Only.png
 
     icon:
       repo: fontawesome/brands/github
+      admonition:
+        example: material/notebook
+
     name: "material"
     palette:
 
@@ -16,15 +20,15 @@ theme:
         toggle:
           icon: material/lightbulb
           name: Switch to dark mode
-        primary: indigo
-        accent: deep purple
+        primary: deep purple
+        accent: light blue
 
       - scheme: slate
         toggle:
           icon: material/lightbulb-outline
           name: Switch to light mode
-        primary: indigo
-        accent: deep purple
+        primary: deep purple
+        accent: light blue
 
 plugins:
   - mkdocs-jupyter:
@@ -32,6 +36,9 @@ plugins:
   - search
 
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences

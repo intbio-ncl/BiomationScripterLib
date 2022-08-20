@@ -1,6 +1,6 @@
 <center>
 <a href = "/">
-<img src="wiki-images/Logo - Full Name.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
 
@@ -17,10 +17,12 @@
 </center>
 
 # **BiomationScripter - Library**
+
 ### A Python library to assist with writing bio-automation protocols.
 
-
 Source code: [github.com/intbio-ncl/BiomationScripter](https://github.com/intbio-ncl/BiomationScripter)
+
+[![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)  [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
 
 This documentation is for the currently unreleased BiomationScripter version 0.2.0.dev
 
