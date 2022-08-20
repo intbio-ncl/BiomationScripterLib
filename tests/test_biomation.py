@@ -24,9 +24,216 @@ def test_fmol_calculator():
 
     assert bms.fmol_calculator(mass2, length2) == 25238.809616592196
 
-# def test_mastermix_maker():
+def test_mastermix_maker_basic():
+    Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
+    Destination_Layout.define_format(8, 12)
 
+    well_set_1 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A12")
+    well_set_2 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A6")
+    well_set_3 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A12")
+    well_set_4 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A3")
+    well_set_5 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A4:A6")
+    well_set_6 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A9")
+    well_set_7 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A10:A12")
 
+    for well in well_set_1:
+        Destination_Layout.add_content(well, "LB", 80)
+
+    for well in well_set_2:
+        Destination_Layout.add_content(well, "Cells 1", 19)
+
+    for well in well_set_3:
+        Destination_Layout.add_content(well, "Cells 2", 19)
+
+    for well in well_set_4 + well_set_6:
+        Destination_Layout.add_content(well, "Water", 1)
+
+    for well in well_set_5 + well_set_7:
+        Destination_Layout.add_content(well, "Inducer", 1)
+
+    Mastermix_Layout = bms.Labware_Layout("Mastermix", "3dprinted_24_tuberack_1500ul")
+    Mastermix_Layout.define_format(4, 6)
+    Mastermix_Layout.set_available_wells()
+
+    Maximum_Mastermix_Volume = 1000
+    Min_Transfer_Volume = 5
+    Extra_Reactions = 1
+    Excluded_Reagents = []
+    Excluded_Combinations = []
+    Preferential_Reagents = []
+    Seed = 1
+
+    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+        Destination_Layouts = [Destination_Layout],
+        Mastermix_Layout = Mastermix_Layout,
+        Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,
+        Min_Transfer_Volume = Min_Transfer_Volume,
+        Extra_Reactions=Extra_Reactions,
+        Excluded_Reagents=Excluded_Reagents,
+        Excluded_Combinations=Excluded_Combinations,
+        Preferential_Reagents=Preferential_Reagents,
+        Seed = Seed
+    )
+
+    assert Seed == 1
+    assert Destination_Layouts[0] is Destination_Layout
+    assert Mastermix_Layouts[0] is Mastermix_Layout
+
+    assert len(Mastermix_Layouts[0].content) == 2
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Inducer") == ["A1"]
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Water") == ["A2"]
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("LB") == ["A1", "A2"]
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Cells 1") == []
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Cells 2") == []
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Inducer", "A1") == 7.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Water", "A2") == 7.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("LB", "A1") == 560.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("LB", "A2") == 560.0
+
+    assert len(Mastermixes) == 2
+
+    assert Mastermixes[0].reagents == ['Inducer_vol_1.0', 'LB_vol_80.0']
+    assert Mastermixes[0].wells == {'0_A6', '0_A4', '0_A5', '0_A10', '0_A12', '0_A11'}
+
+    assert Mastermixes[1].reagents == ['Water_vol_1.0', 'LB_vol_80.0']
+    assert Mastermixes[1].wells == {'0_A1', '0_A7', '0_A8', '0_A3', '0_A2', '0_A9'}
+
+def test_mastermix_maker_preferential_cells():
+    Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
+    Destination_Layout.define_format(8, 12)
+
+    well_set_1 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A12")
+    well_set_2 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A6")
+    well_set_3 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A12")
+    well_set_4 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A3")
+    well_set_5 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A4:A6")
+    well_set_6 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A9")
+    well_set_7 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A10:A12")
+
+    for well in well_set_1:
+        Destination_Layout.add_content(well, "LB", 80)
+
+    for well in well_set_2:
+        Destination_Layout.add_content(well, "Cells 1", 19)
+
+    for well in well_set_3:
+        Destination_Layout.add_content(well, "Cells 2", 19)
+
+    for well in well_set_4 + well_set_6:
+        Destination_Layout.add_content(well, "Water", 1)
+
+    for well in well_set_5 + well_set_7:
+        Destination_Layout.add_content(well, "Inducer", 1)
+
+    Mastermix_Layout = bms.Labware_Layout("Mastermix", "3dprinted_24_tuberack_1500ul")
+    Mastermix_Layout.define_format(4, 6)
+    Mastermix_Layout.set_available_wells()
+
+    Maximum_Mastermix_Volume = 1000
+    Min_Transfer_Volume = 5
+    Extra_Reactions = 1
+    Excluded_Reagents = []
+    Excluded_Combinations = []
+    Preferential_Reagents = ["Cells 1", "Cells 2"]
+    Seed = 1
+
+    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+        Destination_Layouts = [Destination_Layout],
+        Mastermix_Layout = Mastermix_Layout,
+        Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,
+        Min_Transfer_Volume = Min_Transfer_Volume,
+        Extra_Reactions=Extra_Reactions,
+        Excluded_Reagents=Excluded_Reagents,
+        Excluded_Combinations=Excluded_Combinations,
+        Preferential_Reagents=Preferential_Reagents,
+        Seed = Seed
+    )
+
+    assert Seed == 1
+    assert Destination_Layouts[0] is Destination_Layout
+    assert Mastermix_Layouts[0] is Mastermix_Layout
+
+    assert len(Mastermix_Layouts[0].content) == 4
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Cells 1") == ['A1', 'A3']
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Cells 2") == ['A2', 'A4']
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Inducer") == ['A1', 'A2']
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("Water") == ['A3', 'A4']
+    assert Mastermix_Layouts[0].get_wells_containing_liquid("LB") == []
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Inducer", "A1") == 5.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Inducer", "A2") == 5.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Water", "A3") == 5.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Water", "A4") == 5.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Cells 1", "A1") == 95.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Cells 1", "A3") == 95.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Cells 2", "A2") == 95.0
+    assert Mastermix_Layouts[0].get_volume_of_liquid_in_well("Cells 2", "A4") == 95.0
+
+    assert len(Mastermixes) == 4
+
+    assert Mastermixes[0].reagents == ['Inducer_vol_1.0', 'Cells 1_vol_19.0']
+    assert Mastermixes[0].wells == {'0_A6', '0_A4', '0_A5'}
+
+    assert Mastermixes[1].reagents == ['Inducer_vol_1.0', 'Cells 2_vol_19.0']
+    assert Mastermixes[1].wells == {'0_A10', '0_A12', '0_A11'}
+
+    assert Mastermixes[2].reagents == ['Water_vol_1.0', 'Cells 1_vol_19.0']
+    assert Mastermixes[2].wells == {'0_A2', '0_A3', '0_A1'}
+
+    assert Mastermixes[3].reagents == ['Water_vol_1.0', 'Cells 2_vol_19.0']
+    assert Mastermixes[3].wells == {'0_A7', '0_A8', '0_A9'}
+
+def test_mastermix_maker_error():
+    Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
+    Destination_Layout.define_format(8, 12)
+
+    well_set_1 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A12")
+    well_set_2 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A6")
+    well_set_3 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A12")
+    well_set_4 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A1:A3")
+    well_set_5 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A4:A6")
+    well_set_6 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A7:A9")
+    well_set_7 = bms.well_range(Labware_Format = Destination_Layout, Wells = "A10:A12")
+
+    for well in well_set_1:
+        Destination_Layout.add_content(well, "LB", 80)
+
+    for well in well_set_2:
+        Destination_Layout.add_content(well, "Cells 1", 19)
+
+    for well in well_set_3:
+        Destination_Layout.add_content(well, "Cells 2", 19)
+
+    for well in well_set_4 + well_set_6:
+        Destination_Layout.add_content(well, "Water", 1)
+
+    for well in well_set_5 + well_set_7:
+        Destination_Layout.add_content(well, "Inducer", 1)
+
+    Mastermix_Layout = bms.Labware_Layout("Mastermix", "3dprinted_24_tuberack_1500ul")
+    Mastermix_Layout.define_format(4, 6)
+    Mastermix_Layout.set_available_wells()
+
+    Maximum_Mastermix_Volume = 1000 # uL
+    Min_Transfer_Volume = 5 # uL
+    Extra_Reactions = 1
+    Seed = None
+
+    Excluded_Combinations = [
+        ["LB", "Inducer"],
+        ["Cells 1", "Inducer"],
+        ["Cells 2", "Inducer"]
+    ]
+
+    with pytest.raises(bms.MastermixError) as excinfo:
+        Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+            Destination_Layouts = [Destination_Layout],
+            Mastermix_Layout = Mastermix_Layout,
+            Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,
+            Min_Transfer_Volume = Min_Transfer_Volume,
+            Extra_Reactions=Extra_Reactions,
+            Excluded_Combinations = Excluded_Combinations,
+            Seed = Seed
+        )
 
 def test_create_labware():
     num_pcr_reactions = 234
@@ -78,7 +285,6 @@ def test_import_labware():
 
     dna_stocks_layout.print()
 
-
 def test_labware_content_class():
     name = "Liquid1"
     volume = 10
@@ -92,7 +298,6 @@ def test_labware_content_class():
 
     content2 = bms.Labware_Content(Name=name, Volume=volume)
     assert content2.get_info() == [name, volume, None]
-
 
 def test_labware_layout_class():
     source_labware_name = "Source Plate"
@@ -138,7 +343,6 @@ def test_labware_layout_class():
     assert source_labware_layout.check_well("D4")
     assert source_labware_layout.check_well("A1")
     assert not source_labware_layout.check_well("J22")
-
 
 def test_labware_layout_class_content():
     source_labware_name = "Source Plate"
@@ -1301,7 +1505,6 @@ class Test_EchoProto_PCR:
         with pytest.raises(bms.NegativeVolumeError) as excinfo:
             PCR_Protocol.run()
 
-
 class TestOTProto:
     def test_get_location(self):
         protocol = OT2.get_protocol_api("2.11")
@@ -1431,7 +1634,6 @@ class TestOTProtoTemplateSuperclass:
         Testing_Protocol.load_pipettes()
 
         assert Testing_Protocol.pipettes_loaded() is True
-
 
 class Test_OTProto_Heat_Shock_Transformation:
 
