@@ -25,7 +25,7 @@
 
 BiomationScripter Templates can be used to help quickly and easily generate automation protocols for common experiments or procedures. Protocols generated using the same Template will all follow the same basic instructions, but will differ depending on user inputs. For example, the PCR Template accepts user inputs for aspects such as the type of polyemrase and buffer, the final volume of the reactions, and the DNA templates and primers to use in each reaction.
 
-If you can't find a Template for a specific protocol, you can try [raising an issue](https://github.com/intbio-ncl/BiomationScripterLib/issues) on the GitHub to see if anyone can help, or create your own Template [following the walkthrough found here](Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
+If you can't find a Template for a specific protocol, you can try [raising an issue](https://github.com/intbio-ncl/BiomationScripterLib/issues) on the GitHub to see if anyone can help, or create your own Template [following the walkthrough found here](example_code/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
 
 Below you can find documentation for Echo Templates included with BiomationScripter.
 
@@ -35,34 +35,34 @@ Below you can find documentation for Echo Templates included with BiomationScrip
 
 [`Loop_Assembly`](#template-loop_assembly) | [`PCR`](#template-pcr)
 
-### Template: [`Loop_Assembly`](../BiomationScripter/EchoProto/Templates.py)
+### Template: [`Loop_Assembly`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/EchoProto/Templates.py)
 
-#### Overview:
+#### Overview
 
 This Template is used to generate an Echo protocol for preparing Loop assembly reactions. The protocol is based on the methods described by [Pollak *et al.* 2018](https://doi.org/10.1111/nph.15625).
 
-#### Generic Protocol Steps:
+#### Generic Protocol Steps
 
 The basic protocol is described below. Volumes stated below are for 5 uL final reaction volumes. These amounts will be scaled based on the user-defined final volume. DNA parts are assumed to be at 10 fmol/uL.
 
 1. **Add 0.5 uL of buffer**
-    * The buffer type is determined by the user
-    * A list of buffers can be supplied - in this case each buffer is added in equal amounts such that the total buffer volume is 0.5 uL
+      * The buffer type is determined by the user
+      * A list of buffers can be supplied - in this case each buffer is added in equal amounts such that the total buffer volume is 0.5 uL
 2. **Add 0.125 uL of enzyme**
-    * The enzyme type is determined by the user, although the protocol is intended for use with SapI (even level assemblies) or BsaI (odd level assemblies)
+      * The enzyme type is determined by the user, although the protocol is intended for use with SapI (even level assemblies) or BsaI (odd level assemblies)
 3. **Add 0.125 uL of T4 ligase**
-    * The ligase type can be modified by the user, but T4 Ligase is the intended reagent
+      * The ligase type can be modified by the user, but T4 Ligase is the intended reagent
 4. **Add DNA backbone as supplied by the user**
-    * The volume is 0.25 uL adjusted by the backbone to part ratio supplied by the user
+      * The volume is 0.25 uL adjusted by the backbone to part ratio supplied by the user
 5. **Add the DNA part(s) supplied by the user**
-    * The volume is 0.25 uL per part, adjusted by the backbone to part ratio supplied by the user
+      * The volume is 0.25 uL per part, adjusted by the backbone to part ratio supplied by the user
 6. **Add nuclease free water so that the final volume is 5 uL**
 
 Following set up by the Echo, the destination plate(s) should be vortexed and briefly span down to ensure all liquid is at the bottom of the wells.
 
 #### Usage
 
-See an example protocol using this template [here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
+See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 The `Template` object is created using the following code:
 
@@ -116,34 +116,34 @@ Protocol_Template = Loop_Assembly.Template(
       Backbone_to_Part: List[str] = ["1:1"],
       Repeats: int = 1,
       DNA_Concentration: float = 10, # fmol
-      **kwargs)` returns [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
-    * Creates a [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
-    * Initiates the default reaction volumes (see above)
+        **kwargs)` returns [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
+      * Creates a [`BMS.EchoProto.Templates.Loop_Assembly.Template`](#template-loop_assembly) object
+      * Initiates the default reaction volumes (see above)
 * `run(self)` returns `None`
-    * Creates the Echo picklists for the protocol
+      * Creates the Echo picklists for the protocol
 
 ---
 
-### Template: [`PCR`](../BiomationScripter/EchoProto/Templates)
+### Template: [`PCR`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/EchoProto/Templates)
 
-#### Overview:
+#### Overview
 
 This Template is used to generate an Echo protocol for preparing PCR reactions. It is based upon the protocol described [here](https://international.neb.com/protocols/2013/12/13/pcr-using-q5-high-fidelity-dna-polymerase-m0491) for no mastermix, and [here](https://international.neb.com/protocols/2012/12/07/protocol-for-q5-high-fidelity-2x-master-mix-m0492) for with mastermix.
 
-#### Generic Protocol Steps:
+#### Generic Protocol Steps
 
 The basic protocol is described below. Volumes stated below are for 5 uL final reaction volumes. These amounts will be scaled based on the user-defined final volume. Primer stocks are assumed to be at 10 μM. dNTPs are assumed to be pre-mixed in equimolar amounts to a final stock of 10mM.
 
 **If `Master_Mix` is `None`:**
 
 1. **Add template DNA according as specified by the user (`DNA_Amounts`)**
-    * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
-    * If no volumes are given, then 1 uL of DNA is added
+      * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
+      * If no volumes are given, then 1 uL of DNA is added
 2. **Add 0.25 uL of forward primer, and 0.25 uL of reverse primer**
-    * Primers are added to the DNA templates as specified by `Reactions`
+      * Primers are added to the DNA templates as specified by `Reactions`
 3. **Add 0.1 uL of dNTP solution**
 4. **Add the buffer specified by `Polymerase_Buffer`**
-    * The volume of buffer to add is determined by `Polymerase_Buffer_Stock_Conc`
+      * The volume of buffer to add is determined by `Polymerase_Buffer_Stock_Conc`
 5. **Add 0.05 uL of the polymerase specified by `Polymerase`**
 6. **Add nuclease free water so that the final volume is 5 uL**
 
@@ -152,19 +152,19 @@ Following set up by the Echo, the destination plate(s) should be vortexed and br
 **If `Master_Mix` is not `None`:**
 
 1. **Add template DNA according as specified by the user (`DNA_Amounts`)**
-    * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
-    * If no volumes are given, then 1 uL of DNA is added
+      * If a list of volumes (in uL) is specified, multiple reactions will be prepared, one for each volume
+      * If no volumes are given, then 1 uL of DNA is added
 2. **Add 0.25 uL of forward primer, and 0.25 uL of reverse primer**
-    * Primers are added to the DNA templates as specified by `Reactions`
+      * Primers are added to the DNA templates as specified by `Reactions`
 3. **Add the mastermix specified by `Master_Mix`**
-    * The volume of mastermix to add is determined by `Master_Mix_Stock_Conc`
+      * The volume of mastermix to add is determined by `Master_Mix_Stock_Conc`
 4. **Add nuclease free water so that the final volume is 5 uL**
 
 Following set up by the Echo, the destination plate(s) should be vortexed and briefly span down to ensure all liquid is at the bottom of the wells.
 
 #### Usage
 
-See an example protocol using this template [here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-PCR.ipynb).
+See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-PCR.ipynb).
 
 The `Template` object is created using the following code:
 
@@ -224,15 +224,15 @@ Protocol_Template = PCR.Template(
       Master_Mix_Stock_Conc = None,
       Repeats: int = 1,
       DNA_Amounts = None,
-      **kwargs)` returns [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
-    * Creates a [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
-    * Initiates the default reaction volumes (see above)
+        **kwargs)` returns [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
+      * Creates a [`BMS.EchoProto.Templates.PCR.Template`](#template-pcr) object
+      * Initiates the default reaction volumes (see above)
 * `run(self)` returns `None`
-    * Creates the Echo picklists for the protocol
+      * Creates the Echo picklists for the protocol
 
 ---
 
-## Superclass: [`EchoProto_Template`](../BiomationScripter/EchoProto/__init__.py)
+## Superclass: [`EchoProto_Template`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/EchoProto/__init__.py)
 
 **Usage:**
 
@@ -251,7 +251,7 @@ class My_New_Template(BMS.EchoProto.EchoProto_Template):
     pass
 ```
 
-[See the walkthrough here](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Example_Code_Snippets/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
+[See the walkthrough here](example_code/EchoProto/EchoProto-EchoProto_Template-Superclass.ipynb).
 
 **Attributes:**
 
@@ -267,18 +267,18 @@ class My_New_Template(BMS.EchoProto.EchoProto_Template):
 **Methods:**
 
 * `__init__(self, Name: str, Source_Plates: List[BiomationScripter.Labware_Layout], Destination_Plate_Layout: BiomationScripter.Labware_Layout, Picklist_Save_Directory: str = ".", Metadata: dict[str, str], Merge: bool = False)` returns [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass
-    * This method is inherently called when an Echo Template class extends the [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass
-    * The [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects used for `Source_Plates` must contain content representing the source material available
-    * The [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) object used for `Destination_Plate_Layout` should have no content specified; this is generated by the Template class
-    * The `Destination_Plate_Layout` will be assumed to have all wells available if its `available_wells` attribute has not been specified
+      * This method is inherently called when an Echo Template class extends the [`BMS.EchoProto.EchoProto_Template`](#superclass-echoproto_template) superclass
+      * The [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) objects used for `Source_Plates` must contain content representing the source material available
+      * The [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-Labware_Layout) object used for `Destination_Plate_Layout` should have no content specified; this is generated by the Template class
+      * The `Destination_Plate_Layout` will be assumed to have all wells available if its `available_wells` attribute has not been specified
 * `add_source_layout(self, Layout: BiomationScripter.Labware_Layout)` returns `None`
-    * This method is used to add a source plate layout
-    * This is called within the `__init__` function when a Template object is generated, and so users should not need to call it manually
-    * If source plate layouts are added after object creation, they should only be added using this method; if they are added by simply appending to `self.source_plate_layouts` unexpected behaviour will occur
+      * This method is used to add a source plate layout
+      * This is called within the `__init__` function when a Template object is generated, and so users should not need to call it manually
+      * If source plate layouts are added after object creation, they should only be added using this method; if they are added by simply appending to `self.source_plate_layouts` unexpected behaviour will occur
 * `add_destination_layout(self, Layout: BiomationScripter.Labware_Layout)` returns `None`
-    * This method is used to add a destination plate layout
-    * The first destination layout is added when `__init__` is called
-    * Users may need to call this during the `run` method of their template if additional destination plates are required
-    * If destination plate layouts are added after object creation, they should only be added using this method; if they are added by simply appending to `self.destination_plate_layouts` unexpected behaviour will occur
+      * This method is used to add a destination plate layout
+      * The first destination layout is added when `__init__` is called
+      * Users may need to call this during the `run` method of their template if additional destination plates are required
+      * If destination plate layouts are added after object creation, they should only be added using this method; if they are added by simply appending to `self.destination_plate_layouts` unexpected behaviour will occur
 * `create_picklists(self)` returns `None`
-    * This method should be called at the end of a Template `run` method to generate the Echo picklists
+      * This method should be called at the end of a Template `run` method to generate the Echo picklists

@@ -1,11 +1,12 @@
 site_name: BiomationScripterLib
 
 repo_url: https://github.com/intbio-ncl/BiomationScripterLib
-repo_name: BiomationScripter
+repo_name: Source Code on GitHub
 
 docs_dir: "docs"
 
 theme:
+
     icon:
       repo: fontawesome/brands/github
     name: "material"

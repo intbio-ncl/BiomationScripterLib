@@ -321,7 +321,7 @@ class Your_Template(_OTProto.OTProto_Template):
       ...
       Argument_n,
       # `**kwargs` is used to pass keyword arguments to the `_OTProto.OTProto_Template` superclass
-      **kwargs
+        **kwargs
    ):
 
       # The code below stores information specific to the protocol template as attributes
@@ -372,33 +372,33 @@ class Your_Template(_OTProto.OTProto_Template):
 [`Standard_iGEM_Calibration`](#template-standard_igem_calibration)
 
 
-### Template: [`DNA_fmol_Dilution`](../BiomationScripter/EchoProto/Templates.py)
+### Template: [`DNA_fmol_Dilution`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/EchoProto/Templates.py)
 
-#### Overview:
+#### Overview
 
 
-#### Generic Protocol Steps:
+#### Generic Protocol Steps
 
 The basic protocol is described below. Volumes stated below are for 5 uL final reaction volumes. These amounts will be scaled based on the user-defined final volume. DNA parts are assumed to be at 10 fmol/uL.
 
 1. **Add 0.5 uL of buffer**
-    * The buffer type is determined by the user
-    * A list of buffers can be supplied - in this case each buffer is added in equal amounts such that the total buffer volume is 0.5 uL
+      * The buffer type is determined by the user
+      * A list of buffers can be supplied - in this case each buffer is added in equal amounts such that the total buffer volume is 0.5 uL
 2. **Add 0.125 uL of enzyme**
-    * The enzyme type is determined by the user, although the protocol is intended for use with SapI (even level assemblies) or BsaI (odd level assemblies)
+      * The enzyme type is determined by the user, although the protocol is intended for use with SapI (even level assemblies) or BsaI (odd level assemblies)
 3. **Add 0.125 uL of T4 ligase**
-    * The ligase type can be modified by the user, but T4 Ligase is the intended reagent
+      * The ligase type can be modified by the user, but T4 Ligase is the intended reagent
 4. **Add DNA backbone as supplied by the user**
-    * The volume is 0.25 uL adjusted by the backbone to part ratio supplied by the user
+      * The volume is 0.25 uL adjusted by the backbone to part ratio supplied by the user
 5. **Add the DNA part(s) supplied by the user**
-    * The volume is 0.25 uL per part, adjusted by the backbone to part ratio supplied by the user
+      * The volume is 0.25 uL per part, adjusted by the backbone to part ratio supplied by the user
 6. **Add nuclease free water so that the final volume is 5 uL**
 
 Following set up by the Echo, the destination plate(s) should be vortexed and briefly span down to ensure all liquid is at the bottom of the wells.
 
 #### Usage
 
-See an example protocol using this template [here](Protocol%20Examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
+See an example protocol using this template [here](protocol_examples/EchoProto/Templates/EchoProto-Templates-Loop_Assembly.ipynb).
 
 The Template object is created using the following code:
 
@@ -423,7 +423,7 @@ BiomationScripter.EchoProto.Templates.Loop_Assembly(
 
 
 
-## Superclass: [`OTProto_Template`](../BiomationScripter/OTProto/Templates.py)
+## Superclass: [`OTProto_Template`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/Templates.py)
 
 This class is used as a superclass for all OTProto templates. It contains attributes and methods which are common to any Opentrons protocol, and therefore allows for a certain amount of standardisation across the templates.
 
@@ -452,40 +452,40 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
 **Methods:**
 
 * `__init__(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Name: str, Metadata: dict{str: str}, Starting_20uL_Tip: str = "A1", Starting_300uL_Tip: str = "A1", Starting_1000uL_Tip: str = "A1")` returns `BiomationScripter.OTProto.OTProto_Template`
-  * Should only be called within the `__init__` of an OTProto Template class as `super().__init__(**kwargs)`
-  * `Protocol` is stored as `self._protocol`
-  * `Name` is stored as `self.name`
-  * `Metadata` is stored as `self.metadata`
-  * `Starting_20uL_Tip`, `Starting_300uL_Tip`, and `Starting_1000uL_Tip` are stored as the values in the `self.starting_tips` attribute. The keys for these values are `"P20", "p300", "P1000"` respectively, which refer to the three gen2 single channel pipette types available.
+    * Should only be called within the `__init__` of an OTProto Template class as `super().__init__(**kwargs)`
+    * `Protocol` is stored as `self._protocol`
+    * `Name` is stored as `self.name`
+    * `Metadata` is stored as `self.metadata`
+    * `Starting_20uL_Tip`, `Starting_300uL_Tip`, and `Starting_1000uL_Tip` are stored as the values in the `self.starting_tips` attribute. The keys for these values are `"P20", "p300", "P1000"` respectively, which refer to the three gen2 single channel pipette types available.
 * `custom_labware_directory(self, Directory: str)` returns `None`
-  * Changes `self.custom_labware_dir` to `Directory`
+    * Changes `self.custom_labware_dir` to `Directory`
 * `pipette_config(self, Pipette_Type: str, Position: str)` returns `None`:
-  * Changes the pipette type to be loaded in position `Position` to `Pipette_Type`
-  * Looks for `Position` as a key in the `self._pipettes` dictionary and changes its value to `Pipette_Type`
-  * If `Position` is not either "left" or "right" (not case sensitive), an error is raised
-  * If the pipettes have already been loaded, an error is raised
-  * An error will *not* be raised at this stage if `Pipette_Type` is not a valid pipette type
+    * Changes the pipette type to be loaded in position `Position` to `Pipette_Type`
+    * Looks for `Position` as a key in the `self._pipettes` dictionary and changes its value to `Pipette_Type`
+    * If `Position` is not either "left" or "right" (not case sensitive), an error is raised
+    * If the pipettes have already been loaded, an error is raised
+    * An error will *not* be raised at this stage if `Pipette_Type` is not a valid pipette type
 * `load_pipettes(self)` returns `None`
-  * Loads the pipettes using information stored in `self._pipettes` to the `opentrons.protocol_api.contexts.ProtocolContext` object stored in `self._protocol`
-  * If the pipette type stored in `self._pipettes` is not a valid pipette type, an error will be raised
-  * If the pipettes have already been loaded, a warning is raised and the pipettes are not re-loaded
-  * The `self.__pipettes_loaded` flag is changed to `True` if the pipettes are successfully loaded
+    * Loads the pipettes using information stored in `self._pipettes` to the `opentrons.protocol_api.contexts.ProtocolContext` object stored in `self._protocol`
+    * If the pipette type stored in `self._pipettes` is not a valid pipette type, an error will be raised
+    * If the pipettes have already been loaded, a warning is raised and the pipettes are not re-loaded
+    * The `self.__pipettes_loaded` flag is changed to `True` if the pipettes are successfully loaded
 * `tip_type(self, Pipette: str, Tip_Type: str)` returns `None`
-  * Changes the tip type labware associated with the pipette type `Pipette` in the `self.tip_types` dictionary
-  * An error is raised if `Pipette` is not a key in `self.tip_types`
-  * An error is not raised at this stage if `Tip_Type` is not a valid tip type labware
+    * Changes the tip type labware associated with the pipette type `Pipette` in the `self.tip_types` dictionary
+    * An error is raised if `Pipette` is not a key in `self.tip_types`
+    * An error is not raised at this stage if `Tip_Type` is not a valid tip type labware
 * `starting_tip_position(self, Pipette: str, Tip_Position: str)` returns `None`
-  * Changes the position in the first tip box labware loaded from which the pipette with a type of `Pipette` should take its first tip
-  * An error is raised if `Pipette` is not a key in `self.starting_tips`
-  * `Tip_Position` should be a well position which exists in tip box labware (e.g. B1, C5, D12), but an error will not be raised at this stage
+    * Changes the position in the first tip box labware loaded from which the pipette with a type of `Pipette` should take its first tip
+    * An error is raised if `Pipette` is not a key in `self.starting_tips`
+    * `Tip_Position` should be a well position which exists in tip box labware (e.g. B1, C5, D12), but an error will not be raised at this stage
 * `add_tip_boxes_to_pipettes(self)` returns `None`
-  * Determines how of each type of tip box is required, loads these boxes to the deck, and associates them to the correct pipette
-  * `self.tips_needed` is used to determine how many tip boxes are required
-  * `self.tip_types` is used to get the labware type for the tip boxes, and to determine which pipette should be assigned which tip box
-  * If a pipette type is required but has not been loaded, an error will be raised
+    * Determines how of each type of tip box is required, loads these boxes to the deck, and associates them to the correct pipette
+    * `self.tips_needed` is used to determine how many tip boxes are required
+    * `self.tip_types` is used to get the labware type for the tip boxes, and to determine which pipette should be assigned which tip box
+    * If a pipette type is required but has not been loaded, an error will be raised
 * `run(self)` returns `None`
-  * This should be extended by an OTProto template
-  * Calls `self.load_pipettes()`
+    * This should be extended by an OTProto template
+    * Calls `self.load_pipettes()`
 * `run_as_module(self, Parent)` returns `None`
-  * This is experimental and should only be used with caution
-  * This method may disappear or be changed in a way which is not backward compatible
+    * This is experimental and should only be used with caution
+    * This method may disappear or be changed in a way which is not backward compatible

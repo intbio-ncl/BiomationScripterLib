@@ -18,7 +18,7 @@
 
 # BiomationScripter - OTProto
 ---
-[Overview](#feature-overview) | [Setting up the OT-2](#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](#using-otproto) | [Functions](#functions) | [Simulating Protocols](#simulating-protocols) | [OTProto Templates](#using-otprototemplates)
+[Overview](#feature-overview) | [Setting up the OT-2](#setting-up-the-ot-2-to-work-with-biomationscripter) | [Using OTProto](#using-otproto) | [Functions](#functions) | [Simulating Protocols](#simulating-protocols) | [OTProto Templates](#otproto-templates)
 
 ---
 ## Feature Overview
@@ -31,7 +31,7 @@ OTProto contains two submodules:
 
 If you are planning on using the Opentrons to automate common protocols, such as transformation, there may be a pre-written OTProto template available. A list of currently available templates can be found [here](OTProto_Templates.md).
 
-If you are planning on automating a protocol which you will use many times, but with slightly different variations/inputs, it may be helpful to create your own OTProto template. A walkthrough explaining how this can be done can be found [here](Example_Code_Snippets/OTProto/OTProto-OTProto_Template-Superclass.ipynb).
+If you are planning on automating a protocol which you will use many times, but with slightly different variations/inputs, it may be helpful to create your own OTProto template. A walkthrough explaining how this can be done can be found [here](example_code/OTProto/OTProto-OTProto_Template-Superclass.ipynb).
 
 If you are planning to automate a protocol for which there are no existing templates, and that protocol will only be repeated identically (or not at all), it may be best to not write a template. In this case, the [general BiomationScripter tools](BiomationScripter.md) and [OTProto tools](#using-otproto) can be used to help write the protocol.
 
@@ -41,7 +41,7 @@ If you are planning to automate a protocol for which there are no existing templ
 Due to large amounts of the OT-2's onboard computer being read only, the BiomationScripter package can not be installed as usual. Instead, follow the instructions below to get set up.
 
 1. Create a new directory called `Packages` in the writable section of the OT-2's onboard computer
-     * `/var/lib/jupyter/notebooks/` is an example of a writable directory
+       * `/var/lib/jupyter/notebooks/` is an example of a writable directory
 2. Clone the [BiomationScripter repo](https://github.com/intbio-ncl/BiomationScripter) into this new directory
 3. The following code will need to be added to start of every protocol you wish to use BiomationScripter in:
      ```python
@@ -50,7 +50,7 @@ Due to large amounts of the OT-2's onboard computer being read only, the Biomati
      ```
      Replace `<Directory>` with the path you cloned BiomationScripter into (e.g. `/var/lib/jupyter/notebooks/Packages/BiomationScripterLib`)
 
-NOTE: Version 6.0.0 of the Opentrons app added in a new analysis function. In order to make use of this function, BiomationScripter must also be installed in a specific location on the controlling PC. Instructions for doing this can be found [here](https://support.opentrons.com/s/article/Using-Python-packages-in-Python-API-protocols#modulenotfounderror). If these instructions are not followed, you will see a 'Protocol anlysis failure' popup box, with a message similar to 'No module named BiomationScripter'. Note that you can also choose to ignore this error and proceed to running the protocol.
+NOTE: Version 6.0.0 of the Opentrons app added in a new analysis function. In order to make use of this function, BiomationScripter must also be installed in a specific location on the controlling PC. Instructions for doing this can be found [here](https://support.opentrons.com/s/article/Using-Python-packages-in-Python-API-protocols#modulenotfounderror). If these instructions are not followed, you will see a 'Protocol analysis failure' popup box, with a message similar to 'No module named BiomationScripter'. Note that you can also choose to ignore this error and proceed to running the protocol.
 
 ---
 
@@ -60,7 +60,7 @@ Begin by importing the OTProto module:
 import BiomationScripter.OTProto as OTProto
 ```
 
-### Functions
+## Functions
 
 [`add_tip_boxes_to_pipettes`](#function-add_tip_boxes_to_pipettes) |
 [`calculate_and_load_labware`](#function-calculate_and_load_labware) |
@@ -241,6 +241,7 @@ This function can be used to get a labware's maximum well capacity from an opent
 `OTProto.get_labware_well_capacity(labware_api_name: str, custom_labware_dir = None)` returns `float`
 
 **Arguments:**
+
 * `labware_api_name` | `str`: Opentrons API name for the labware
 * `custom_labware_dir` | `str`: Location of any custom labware - only required if simulating away from the OT2
 
@@ -290,6 +291,7 @@ Returns the p20 pipette from the supplied [`opentrons.protocol_api.contexts.Prot
 `OTProto.get_p20(protocol: opentrons.protocol_api.contexts.ProtocolContext)` returns [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 
 **Behaviour:**
@@ -382,7 +384,7 @@ Loads labware (either custom or default) based on an API name
 
 `OTProto.load_labware(parent: opentrons.protocol_api.contexts.ProtocolContext/opentrons.protocol_api.contexts.TemperatureModuleContext/opentrons.protocol_api.contexts.ThermocyclerContext/https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.MagneticModuleContext, labware_api_name: str, deck_position: int = None, custom_labware_dir label: str = None)` returns [`opentrons.protocol_api.labware.Labware`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.labware.Labware)
 
-See the [code snippet examples](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/docs/Example_Code_Snippets/OTProto/OTProto-load_labware-Function.ipynb) for example usage.
+See the [code snippet examples](example_code/OTProto/OTProto-load_labware-Function.ipynb) for example usage.
 
 **Behaviour:**
 
@@ -427,6 +429,7 @@ This function gets the next empty slot on the Opentrons deck for the current pro
 `OTProto.next_empty_slot(protocol: opentrons.protocol_api.contexts.ProtocolContext)` returns `int`
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 
 **Behaviour:**
@@ -441,6 +444,7 @@ Selects the most appropriate loaded pipette for a specified transfer volume.
 `OTProto.select_pipette_by_volume(protocol: opentrons.protocol_api.contexts.ProtocolContext, Volume: float)` returns [`opentrons.protocol_api.contexts.InstrumentContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.InstrumentContext)
 
 **Arguments:**
+
 * `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `Volume` | `float`: The transfer volume (in microlitres)
 
@@ -545,6 +549,7 @@ returns `None`
 **Behaviour:**
 
 The `transfer_liquids` function is intended to generate liquid transfer actions for the [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext) object supplied by `Protocol`. A liquid transfer action is generated for each element in the list of volumes specified by the `Transfer_Volumes` argument. The source for the transfer is determined by using the element in `Source_Locations` with the same index as the volume specified in `Transfer_Volumes`, and the destination is determined in the same way, but using `Destination_Locations`. So for example, if `Transfer_Volumes = [20, 100, 400]`, `Source_Locations = [Source_1, Source_1, Source_2]`, and `Destination_Locations = [Dest_1, Dest_2, Dest_3]`, then the following three transfer actions will be generated:
+
 * Transfer 20 uL from `Source_1` to `Dest_1`
 * Transfer 100 uL from `Source_1` to `Dest_2`
 * Transfer 400 uL from `Source_2` to `Dest_3`
@@ -560,7 +565,9 @@ It is possible to supply a single transfer volume, source location, and destinat
 
 ---
 
-## Using OTProto.Templates
+## OTProto Templates
+
+BiomationScripter Templates can be used to help quickly and easily generate automation protocols for common experiments or procedures. Protocols generated using the same Template will all follow the same basic instructions, but will differ depending on user inputs. For example, the heat shock transformation Template accepts user inputs for aspects such as the length of the heat shock, the final volume of the transformations, and the DNA to use in each transformation.
 
 See the full documentation [here](OTProto_Templates.md)
 

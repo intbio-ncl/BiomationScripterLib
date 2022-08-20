@@ -27,9 +27,9 @@ This documentation is for the currently unreleased BiomationScripter version 0.2
 ---
 
 * [**Getting Started**](Getting-Started.md)
-   * [**Installation**](Getting-Started.md#installation)
+     * [**Installation**](Getting-Started.md#installation)
 * [**BiomationScripter Generic Tools**](BiomationScripter.md)
 * [**OTProto**](OTProto.md)
-  * Writing protocols for [Opentrons-2](https://www.opentrons.com/ot-2/)
+    * Writing protocols for [Opentrons-2](https://www.opentrons.com/ot-2/)
 * [**EchoProto**](EchoProto.md)
-  * Writing protocols for [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525)
+    * Writing protocols for [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525)
