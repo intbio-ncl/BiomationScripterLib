@@ -13,6 +13,21 @@ from BiomationScripter import OTProto as otp
 from BiomationScripter.EchoProto.Templates import Loop_Assembly, PCR
 from BiomationScripter.OTProto.Templates import Heat_Shock_Transformation
 
+def test_fmol_calculator():
+    mass1 = 120 # ng
+    length1 = 1222 # bp
+
+    assert bms.fmol_calculator(mass1, length1) == 158.90184839397108
+
+    mass2 = 500 # ng
+    length2 = 32 # bp
+
+    assert bms.fmol_calculator(mass2, length2) == 25238.809616592196
+
+def test_mastermix_maker():
+    
+
+
 def test_create_labware():
     num_pcr_reactions = 234
 
@@ -49,11 +64,10 @@ def test_create_labware():
     )
     assert pcr_plate_layouts == [pcr_plate]
 
-
 def test_import_labware():
     dna_stocks_filename = "Example DNA Stocks"
     # NOTE: This will fail if the path doesn't end in a / -- use Pathlib
-    dna_stocks_path = "Resources/data/"
+    dna_stocks_path = "data/"
     dna_stocks_ext = ".xlsx"
 
     dna_stocks_layout = bms.Import_Labware_Layout(
@@ -249,7 +263,7 @@ class TestEchoProtoTemplateSuperclass:
         colour_source_plates = [
             bms.Import_Labware_Layout(
                 "Coloured_Solutions",
-                path="Resources/data/",
+                path="data/",
             )
         ]
         mixuture_plate_layout = bms.Labware_Layout(
@@ -261,13 +275,13 @@ class TestEchoProtoTemplateSuperclass:
             Name="Walkthrough Example - Colour Mixing",
             Source_Plates=colour_source_plates,
             Destination_Plate_Layout=mixuture_plate_layout,
-            Picklist_Save_Directory="./Resources/",
+            Picklist_Save_Directory="./",
         )
 
         assert protocol.name == "Walkthrough Example - Colour Mixing"
         assert protocol.source_plate_layouts == colour_source_plates
         assert protocol.destination_plate_layouts == [mixuture_plate_layout]
-        assert protocol.save_dir == "./Resources/"
+        assert protocol.save_dir == "./"
 
 class TestEchoProtocol:
     @pytest.fixture
@@ -446,7 +460,7 @@ class Test_EchoProto_Loop_Assembly:
 
         Picklist_Save_Directory = tempfile.mkdtemp()
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
 
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
@@ -543,7 +557,7 @@ class Test_EchoProto_Loop_Assembly:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -567,7 +581,7 @@ class Test_EchoProto_Loop_Assembly:
 
         Picklist_Save_Directory = tempfile.mkdtemp()
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
 
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
@@ -663,7 +677,7 @@ class Test_EchoProto_Loop_Assembly:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{Loop_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -687,7 +701,7 @@ class Test_EchoProto_Loop_Assembly:
 
         Picklist_Save_Directory = tempfile.mkdtemp()
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
 
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
@@ -782,9 +796,9 @@ class Test_EchoProto_PCR:
 
         Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
 
-        Picklist_Save_Directory = "Resources/data/"
+        Picklist_Save_Directory = "data/"
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
             bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
@@ -870,7 +884,7 @@ class Test_EchoProto_PCR:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -892,9 +906,9 @@ class Test_EchoProto_PCR:
 
         Merge_Picklists = True # This merges source plates with the same TYPE into one picklist
 
-        Picklist_Save_Directory = "Resources/data/"
+        Picklist_Save_Directory = "data/"
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
             bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
@@ -978,7 +992,7 @@ class Test_EchoProto_PCR:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -1000,9 +1014,9 @@ class Test_EchoProto_PCR:
 
         Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
 
-        Picklist_Save_Directory = "Resources/data/"
+        Picklist_Save_Directory = "data/"
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
             bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
@@ -1088,7 +1102,7 @@ class Test_EchoProto_PCR:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -1110,9 +1124,9 @@ class Test_EchoProto_PCR:
 
         Merge_Picklists = True # This merges source plates with the same TYPE into one picklist
 
-        Picklist_Save_Directory = "Resources/data/"
+        Picklist_Save_Directory = "data/"
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
             bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
@@ -1196,7 +1210,7 @@ class Test_EchoProto_PCR:
 
         for picklist in picklist_filenames:
             test_picklist = open(f"{PCR_Protocol.save_dir}/{picklist}", "r")
-            validation_picklist = open(f"Resources/data/{picklist}", "r")
+            validation_picklist = open(f"data/{picklist}", "r")
 
             assert len(test_picklist.read().split("\n")) == len(validation_picklist.read().split("\n"))
 
@@ -1217,9 +1231,9 @@ class Test_EchoProto_PCR:
 
         Merge_Picklists = False # This merges source plates with the same TYPE into one picklist
 
-        Picklist_Save_Directory = "Resources/data/"
+        Picklist_Save_Directory = "data/"
 
-        Source_Plate_Directory = "Resources/data/"
+        Source_Plate_Directory = "data/"
         Source_Plates = [
             bms.Import_Labware_Layout("Example DNA Stocks", path = Source_Plate_Directory),
             bms.Import_Labware_Layout("Example Primer Stocks", path = Source_Plate_Directory),
@@ -1396,9 +1410,9 @@ class TestOTProtoTemplateSuperclass:
         assert Testing_Protocol.starting_tips["p300"] == "B6"
         assert Testing_Protocol.starting_tips["p1000"] == "H2"
 
-        Testing_Protocol.custom_labware_directory("Resources/data/custom_labware/")
+        Testing_Protocol.custom_labware_directory("data/custom_labware/")
 
-        assert Testing_Protocol.custom_labware_dir == "Resources/data/custom_labware/"
+        assert Testing_Protocol.custom_labware_dir == "data/custom_labware/"
 
         assert Testing_Protocol.pipettes_loaded() is False
 
@@ -1437,7 +1451,7 @@ class Test_OTProto_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/data/custom_labware"
+        Custom_Labware_Dir = "data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -1562,7 +1576,7 @@ class Test_OTProto_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/data/custom_labware"
+        Custom_Labware_Dir = "data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -1697,7 +1711,7 @@ class Test_OTProto_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/data/custom_labware"
+        Custom_Labware_Dir = "data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
@@ -1827,7 +1841,7 @@ class Test_OTProto_Heat_Shock_Transformation:
             'robotName': 'RobOT2' # This is the name of the OT2 you plan to run the protocol on
         }
 
-        Custom_Labware_Dir = "Resources/data/custom_labware"
+        Custom_Labware_Dir = "data/custom_labware"
 
         DNA_Plate_Wells = [
             "B2",
