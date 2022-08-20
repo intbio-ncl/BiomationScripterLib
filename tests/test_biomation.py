@@ -24,8 +24,8 @@ def test_fmol_calculator():
 
     assert bms.fmol_calculator(mass2, length2) == 25238.809616592196
 
-def test_mastermix_maker():
-    
+# def test_mastermix_maker():
+
 
 
 def test_create_labware():
