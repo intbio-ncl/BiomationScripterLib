@@ -18,6 +18,7 @@ class OTProto_Template:
         Protocol: protocol_api,
         Name: str,
         Metadata: dict[ Literal['protocolName', 'author', 'author-email', 'user', 'user-email', 'source', 'apiLevel', 'robotName'], str ],
+        Custom_Labware_Dir: str = "../Custom_Labware/",
         Starting_20uL_Tip: str = "A1",
         Starting_300uL_Tip: str = "A1",
         Starting_1000uL_Tip: str = "A1"
@@ -28,7 +29,7 @@ class OTProto_Template:
         self._protocol = Protocol
         self.name = Name
         self.metadata = Metadata
-        self.custom_labware_dir = "../Custom_Labware/"
+        self.custom_labware_dir = Custom_Labware_Dir
 
         ####################
         # Source materials #
