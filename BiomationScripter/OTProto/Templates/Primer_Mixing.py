@@ -103,11 +103,7 @@ class Template(_OTProto.OTProto_Template):
         if self.water_aliquot_volume == 0:
             number_water_aliquots = 0
         else:
-            number_water_aliquots = _BMS.aliquot_calculator(
-                                                Volume_Required = sum(Water_Transfers),
-                                                Volume_Per_Aliquot = self.water_aliquot_volume,
-                                                Dead_Volume = self.water_aliquot_volume * 0.01
-            )
+            number_water_aliquots = math.ceil(sum(Water_Transfers) / (self.water_aliquot_volume - self.water_aliquot_volume * 0.01))
 
             # Load the required number of water labware
             Water_Labware, Water_Locations = _OTProto.calculate_and_load_labware(
