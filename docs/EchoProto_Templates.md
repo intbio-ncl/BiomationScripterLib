@@ -14,11 +14,7 @@
 ---
 </center>
 
-# BiomationScripter - EchoProto - Templates
----
-
-[Overview](#overview) | [All Templates](#echo-templates) | [EchoProto Template Superclass](#superclass-echoproto_template)
-
+# BiomationScripter - EchoProto Templates
 ---
 
 ## Overview

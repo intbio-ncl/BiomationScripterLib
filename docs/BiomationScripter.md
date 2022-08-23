@@ -21,13 +21,6 @@
 For version 0.2.0.dev
 
 ---
-[Overview](#feature-overview) |
-[Using BiomationScripter Tools](#using-biomationscripter) |
-[Classes](#classes) |
-[Functions](#functions) |
-[Exceptions](#exceptions)
-
----
 
 ## Feature Overview
 The BiomationScripter package contains a set of generic tools which can be used to help write protocols for any supported automation platform. These tools take the form of classes and functions and aid in the creation of automation protocols by providing common formats and abstracting-out commonly required functions. These include classes which can store information about the format and content of plates or other labware, and functions which return valid well ranges.
@@ -352,7 +345,7 @@ This function can be used to automatedly generate mastermixes based on source ma
 
 `BMS.Mastermix_Maker(Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layout = BMS.Labware_Layout, Maximum_Mastermix_Volume: float, Min_Transfer_Volume: float, Extra_Reactions: float, Excluded_Reagents: List[str] = [], Excluded_Combinations: List[List[str]] = [], Preferential_Reagents: List[str] = [], Seed: int = None)` returns `(Mastermixes: List[BMS.Mastermix], Seed: int, Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layouts: List[BMS.Labware_Layout])`
 
-See the walkthrough [here](https://biomationscripterlib.readthedocs.io/en/latest/example_code/BMS/BMS-Mastermix_Maker-Function/).
+See the walkthrough [here](/example_code/BMS/BMS-Mastermix_Maker-Function/).
 
 **Arguments:**
 

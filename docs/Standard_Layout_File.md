@@ -15,22 +15,16 @@
 [OTProto Templates](OTProto_Templates.md)
 ---
 
-:warning: **This page is under construction**
-
 </center>
 
 
 
 # BiomationScripter - Standard Layout File
 
-For version 0.2.0.dev
+!!! warning
 
----
-[Overview](#overview) |
-[Specification](#specification) |
-[Examples](#example-usage) |
-[Resources](#resources) |
-
+    **This page is under construction**
+    
 ---
 
 ## Overview

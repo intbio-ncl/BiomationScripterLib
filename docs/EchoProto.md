@@ -3,8 +3,6 @@
 <img src="../wiki-images/Logo - Pic Only.png" alt = "BiomationScripter Logo" width = "300"/>
 </a>
 
-
-
 ---
 [Home](index.md) |
 [Getting Started](Getting-Started.md) |
@@ -17,10 +15,6 @@
 </center>
 
 # BiomationScripter - EchoProto
----
-
-[Overview](#feature-overview) | [Importing Picklists](#importing-picklists-via-plate-reformat) | [Using EchoProto](#using-echoproto) | [EchoProto Templates](#echoproto-templates)
-
 ---
 
 ## Feature Overview

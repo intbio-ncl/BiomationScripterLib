@@ -21,13 +21,8 @@
 
     **Information on this page may be outdated**
 
-# BiomationScripter - OTProto - Templates
+# BiomationScripter - OTProto Templates
 ---
-
-[Overview](#overview) | [Using OTProto Templates](#using-otproto-templates) | [Creating Templates](#creating-custom-otprototemplates) | [All Templates](#ot2-templates) | [OTProto Template Superclass](#superclass-otproto_template)
-
----
-
 ## Overview
 
 BiomationScripter Templates can be used to help quickly and easily generate automation protocols for common experiments or procedures. Protocols generated using the same Template will all follow the same basic instructions, but will differ depending on user inputs. For example, the heat shock transformation Template accepts user inputs for aspects such as the length of the heat shock, the final volume of the transformations, and the DNA to use in each transformation.
@@ -125,9 +120,9 @@ Protocol_Template = Heat_Shock_Transformation.Template(
 **`__init__` Arguments:**
 
 * `DNA_Source_Layouts` | `List[_BMS.Labware_Layout]`: [`Labware_Layout`]() objects which define the locations for the DNA to be transformed
-* `Competent_Cells_Source_Type` | `str`: The type of labware in which the competent cells will be stored - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
-* `Transformation_Destination_Type` | `str`: The type of labware to prepare the transformations in - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
-* `Media_Source_Type` | `str`: The type of labware in which the media will be stored - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
+* `Competent_Cells_Source_Type` | `str`: The type of labware in which the competent cells will be stored - must be an [opentrons API name](../OTProto/#opentrons-api-names)
+* `Transformation_Destination_Type` | `str`: The type of labware to prepare the transformations in - must be an [opentrons API name](../OTProto/#opentrons-api-names)
+* `Media_Source_Type` | `str`: The type of labware in which the media will be stored - must be an [opentrons API name](../OTProto/#opentrons-api-names)
 * `DNA_Volume_Per_Transformation` | `float`: The volume of DNA (in uL) to add per transformation
 * `Competent_Cell_Volume_Per_Transformation` | `float`: The volume of competent cells (in uL) to add per transformation
 * `Transformation_Final_Volume` | `float`: The final volume (in uL) of each transformation
@@ -145,7 +140,7 @@ Protocol_Template = Heat_Shock_Transformation.Template(
 * `Cells_Mix_After` | `Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None`: Mixing parameters after competent cells are dispensed - `(Mixing_Repeats, Mixing_Volume)`
 * `DNA_Mix_Before` | `Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None`: Mixing parameters for DNA before aspiration - `(Mixing_Repeats, Mixing_Volume)`
 * `DNA_Mix_After` | `Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (10,"transfer_volume")`: Mixing parameters after DNA has been dispensed - `(Mixing_Repeats, Mixing_Volume)`
-* [`**kwargs` from `OTProto_Template`](#superclass-otproto_template)
+* [`**kwargs` from `OTProto_Template`](#__init__-arguments)
 
 **Attributes:**
 
@@ -191,12 +186,12 @@ The basic protocol is described below.
 
 **If keeping DNA in source labware:**
 
-1. **Add the required amount of water to DNA samples and mix**
+1. Add the required amount of water to DNA samples and mix
 
 **If moving DNA to new labware:**
 
-1. **Add the required amount of water to the destination wells**
-2. **Add the required amount of DNA to the destination wells and mix**
+1. Add the required amount of water to the destination wells
+2. Add the required amount of DNA to the destination wells and mix
 
 #### Usage
 
@@ -240,16 +235,16 @@ Protocol_Template = DNA_fmol_Dilution.Template(
 * `DNA` | `List[str]`: The names of the DNA to dilute
 * `DNA_Concentration` | `List[float]`: The current stock concentrations (in ng/uL)
 * `DNA_Length` | `List[int]`: The lengths (in bp) for each DNA sample
-* `DNA_Source_Type` | `str`: The type of labware in which the DNA samples are stored - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
+* `DNA_Source_Type` | `str`: The type of labware in which the DNA samples are stored - must be an [opentrons API name](../OTProto/#opentrons-api-names)
 * `Keep_In_Current_Wells` | `bool`: Whether to dilute the samples in their current labware, or to move them to a new labware
-* `Water_Source_Labware_Type` | `str`: The labware in which the water aliquots are kept - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
+* `Water_Source_Labware_Type` | `str`: The labware in which the water aliquots are kept - must be an [opentrons API name](../OTProto/#opentrons-api-names)
 * `Water_Aliquot_Volume` | `float`: The volume (in uL) for the water aliquots
 * `DNA_Source_Wells` | `list[str] = None`: The source wells for each DNA sample - if `None`, the source wells are automatically assigned
 * `Final_Volume` | `float = None`: The final volume (in uL) for the diluted samples - ignored if `Keep_In_Current_Wells` is `True`
 * `Current_Volume` | `List[float] = None`: The current volumes of each DNA sample - ignored if `Keep_In_Current_Wells` is `False`
-* `Destination_Labware_Type` | `str = None`: The type of labware to transfer DNA samples to - ignored if `Keep_In_Current_Wells` is `True` - must be an [opentrons API name](https://support.opentrons.com/s/article/Using-the-Labware-Library)
+* `Destination_Labware_Type` | `str = None`: The type of labware to transfer DNA samples to - ignored if `Keep_In_Current_Wells` is `True` - must be an [opentrons API name](../OTProto/#opentrons-api-names)
 * `Destination_Labware_Wells` | `List[str] = None`: The destination wells into which the DNA samples should be diluted - if `None` then wells are automatically assigned - ignored if `Keep_In_Current_Wells` is `True`
-* [`**kwargs` from `OTProto_Template`](#superclass-otproto_template)
+* [`**kwargs` from `OTProto_Template`](#__init__-arguments)
 
 **Attributes:**
 
@@ -273,38 +268,44 @@ Protocol_Template = DNA_fmol_Dilution.Template(
     * Generates Opentrons liquid handling commands
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Superclass: [`OTProto_Template`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/Templates.py)
 
-This class is used as a superclass for all OTProto templates. It contains attributes and methods which are common to any Opentrons protocol, and therefore allows for a certain amount of standardisation across the templates.
+This class is used as a superclass for all OTProto templates. It contains attributes and methods which are common to a wide range of Opentrons protocols, and therefore allows for a certain amount of standardisation across the templates.
 
-**Usage:**
+### Usage
 
-The `OTProto_Template` class should only be used to extend OTProto templates, and shouldn't be called by itself. Below is an example of how a new protocol template can be created using this class. For a complete walkthrough describing how OTProto templates can be created, see [here](#).
+The `OTProto_Template` class shouldn't be used alone. Instead, it should be used to extend OTProto templates, e.g.:
 
 ```python
-class New_Template(BiomationScripter.OTProto.OTProto_Template):
-   def __init__(self, **kwargs):
-      super().__init__(**kwargs)
+from BiomationScripter import OTProto
+
+class My_New_Template(OTProto.OTProto_Template):
+    def __init__(self, My_Arg1, My_Arg2, **kwargs):
+
+        self.my_arg1 = My_Arg1
+        self.my_arg2 = May_Arg2
+
+        super().__init__(**kwargs)
+
+    def run(self):
+      pass
 ```
 
-**Attributes:**
+In the above code, the `run` method should contain code to execute the protocol. A full walkthrough for creating an OTProto template can be found [here]().
+
+### `__init__` Arguments
+
+The `OTProto_Template` superclass' `__init__` function accepts the following arguments:
+
+* `Protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
+* `Name` | `str`: A readable name for the protocol to be created by the template
+* `Metadata` | `dict{str: str}`: This is metadata about the protocol - it should follow the best practices described [here](#)
+* `Custom_Labware_Dir` | `str`: Directory location pointing to where any custom labware definitions are stored
+* `Starting_20uL_Tip` | `str = "A1"`: The position of the starting tip in the first p20 tip box
+* `Starting_300uL_Tip` | `str = "A1"`: The position of the starting tip in the first p300 tip box
+* `Starting_1000uL_Tip` | `str = "A1"`: The position of the starting tip in the first p1000 tip box
+
+### Attributes
 
 * `_protocol` | [`opentrons.protocol_api.contexts.ProtocolContext`](https://docs.opentrons.com/v2/new_protocol_api.html#opentrons.protocol_api.contexts.ProtocolContext): The protocol object which is used by the Opentrons API to encapsulate all information relating to the current protocol
 * `name` | `str`: A readable name for the protocol created by the template
@@ -316,14 +317,10 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
 * `_pipettes` | `dict{str: str}`: A dictionary which records the type of pipette mounted in each position of the Opentrons' pipette mount. The keys are `"left", "right"`. The default values for each of these keys are `"p20_single_gen2", "p300_single_gen2"` respectively.
 * `__pipettes_loaded` | `bool = False`: Records whether the pipettes have been loaded to the protocol.
 
-**Methods:**
+### Methods
 
-* `__init__(Protocol: opentrons.protocol_api.contexts.ProtocolContext, Name: str, Metadata: dict{str: str}, Starting_20uL_Tip: str = "A1", Starting_300uL_Tip: str = "A1", Starting_1000uL_Tip: str = "A1")` returns `BiomationScripter.OTProto.OTProto_Template`
-    * Should only be called within the `__init__` of an OTProto Template class as `super().__init__(**kwargs)`
-    * `Protocol` is stored as `self._protocol`
-    * `Name` is stored as `self.name`
-    * `Metadata` is stored as `self.metadata`
-    * `Starting_20uL_Tip`, `Starting_300uL_Tip`, and `Starting_1000uL_Tip` are stored as the values in the `self.starting_tips` attribute. The keys for these values are `"P20", "p300", "P1000"` respectively, which refer to the three gen2 single channel pipette types available.
+* `pipettes_loaded(self)` returns `bool`
+    * Returns the load state of the pipettes (i.e. `True` if the pipettes have been loaded, `False` if they have not)
 * `custom_labware_directory(self, Directory: str)` returns `None`
     * Changes `self.custom_labware_dir` to `Directory`
 * `pipette_config(self, Pipette_Type: str, Position: str)` returns `None`:
@@ -350,12 +347,25 @@ class New_Template(BiomationScripter.OTProto.OTProto_Template):
     * `self.tips_needed` is used to determine how many tip boxes are required
     * `self.tip_types` is used to get the labware type for the tip boxes, and to determine which pipette should be assigned which tip box
     * If a pipette type is required but has not been loaded, an error will be raised
+* `calculate_and_add_tips(self, Transfer_Volumes: List[float], New_Tip: bool)` returns `None`
+    * Determines how many tips of each tip type is required based on the currently loaded pipette types and a list of transfer volumes
+    * For each transfer volume, the most appropriate pipettea and tip type is selected
+    * If `New_Tip` is `True`, then a new tip will be used for every transfer (including situations where a transfer needs to be split into multiple steps)
+    * If `New_Tip` is `False`, then the same tip is used for all transfers which share that tip type
+    * The number of tips needed are stored in `self.tips_needed`
+    * This method can be called multiple times during a protocol, but these must occur after `load_pipettes` and before `add_tip_boxes_to_pipettes`
+* `tip_racks_prompt(self)` returns `None`
+    * Pauses the protocol at run time and informs the user of how many tip boxes of each type is required
+    * Should be called after `add_tip_boxes_to_pipettes`
 * `run(self)` returns `None`
     * This should be extended by an OTProto template
     * Calls `self.load_pipettes()`
 * `run_as_module(self, Parent)` returns `None`
-    * This is experimental and should only be used with caution
-    * This method may disappear or be changed in a way which is not backward compatible
+
+    !!! warning "Warning"
+
+        * `run_as_module` is experimental and should be used with caution
+        * This method may disappear or be changed in a way which is not backward compatible without notice
 
 <!--
 
