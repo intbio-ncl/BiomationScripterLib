@@ -5,6 +5,7 @@ repo_name: Source Code on GitHub
 
 docs_dir: "docs"
 
+
 theme:
     logo: wiki-images/Logo - Pic Only.png
 
@@ -14,6 +15,8 @@ theme:
         example: material/notebook
 
     name: "material"
+    custom_dir: docs/overrides
+
     palette:
 
       - scheme: default

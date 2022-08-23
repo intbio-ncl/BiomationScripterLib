@@ -274,31 +274,52 @@ This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to stor
 
 ## Functions
 
+[`Aliquot_Calculator`](#function-aliquot_calculator) |
 [`Create_Labware_Needed`](#function-create_labware_needed) |
 [`fmol_calculator`](#function-fmol_calculator) |
+[`Get_Transfers_Required`](#function-get_transfers_required) |
 [`Import_Labware_Layout`](#function-import_labware_layout) |
 [`Mastermix_Maker`](#function-mastermix_maker) |
 [`Reagent_Finder`](#function-reagent_finder) |
 [`well_range`](#function-well_range)
 
+### Function: [`Aliquot_Calculator`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 
-### Function: [`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
-This function calculates how many plates of a certain type are required for a protocol and returns a list of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects.
+This function can be used to determine how many aliquots of a specific source material are required to fill a set of destination labware.
 
 **Usage:**
 
-`BMS.Create_Labware_Needed(Plate_Format: BiomationScripter.Labware_Layout, N_Wells_Needed: int, N_Wells_Available: int/str = "All", Return_Original_Layout: bool = True)` returns `list[BiomationScripter.Labware_Layout]`
+`BMS.Aliquot_Calculator(Liquid: str, Destination_Layouts: List[BiomationScripter.Labware_Layout], Aliquot_Volume: float, Dead_Volume: float)` returns `int`
 
 **Arguments:**
 
-* `Labware_Format` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout): `Labware_Layout` object to be used as the template
+* `Liquid` | `str`: The name of the source material
+* `Destination_Layouts` | `List[BiomationScripter.Labware_Layout]`: A list of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects - these labware must be the destination labware into which the source material will be transferred, where the labware is already populated with the source material as content
+* `Aliquot_Volume` | `float`: The volume of each aliquot
+* `Dead_Volume` | `float`: The dead volume for each aliquot - this can be set to `0` if there is no dead volume **Not Recommended**
+
+**Behaviour:**
+
+The function searches the provided destination [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects for the specified liquid and calculates the total volume of liquid required. This total volume is divided by the aliquot volume (minus any dead volume) and rounded up to the next integer.
+
+
+### Function: [`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
+This function calculates how many plates of a certain type are required for a protocol and returns a list of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects.
+
+**Usage:**
+
+`BMS.Create_Labware_Needed(Labware_Format: BiomationScripter.Labware_Layout, N_Wells_Needed: int, N_Wells_Available: int/str = "All", Return_Original_Layout: bool = True)` returns `list[BiomationScripter.Labware_Layout]`
+
+**Arguments:**
+
+* `Labware_Format` | [`BiomationScripter.Labware_Layout`](#class-labware_layout): `Labware_Layout` object to be used as the template
 * `N_Wells_Needed` | `int`: Total number of wells or slots required by the protocol
 * `N_Wells_Available` | `int/str = "All"`: Either the number of wells/slots available per plate/labware (`int`), or `"All"`, which specifies that all wells/slots in the labware are available (`str`)
 * `Return_Original_Layout` | `bool = True`: Specifies whether the layout given in `Labware_Format` should be returned or not
 
 **Behaviour:**
 
-[`Create_Labware_Needed`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects will then be created using the [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list. NOTE: if the [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) objects which are returned. The original [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object is returned as the first element in the returned list.
+[`Create_Labware_Needed`](#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects will then be created using the [`BiomationScripter.Labware_Layout`](#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list. NOTE: if the [`BiomationScripter.Labware_Layout`](#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects which are returned. The original [`BiomationScripter.Labware_Layout`](#class-labware_layout) object is returned as the first element in the returned list.
 
 
 ### Function: [`fmol_calculator`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
@@ -319,13 +340,44 @@ Calculates fmols of dsDNA molecules in a sample. Uses the following equation:
 
 ![((mass_ng * 1e^-9)/((length_bp * 617.96) + 36.04)) * 1e^15](https://latex.codecogs.com/svg.latex?fmol=\frac{mass\\_ng\times1e^-^9}{(length\\_bp\times617.96)+36.04}\times1e^1^5)
 
+### Function: [`Get_Transfers_Required`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 
-### Function: [`Import_Labware_Layout`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
-This function imports an Excel file with a standard layout and converts it to a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object.
+This function determines the transfer events required to populate a set of destination [`BiomationScripter.Labware_Layout` objects](#class-labware_layout) with a specific liquid.
 
 **Usage:**
 
-`BMS.Import_Labware_Layout(Filename: str, path: str = "~", ext: str = ".xlsx")` returns [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout)
+`BMS.Get_Transfers_Required(Liquid: str, Destination_Layouts: List[BiomationScripter.Labware_Layout])` returns `transfer_volumes: List[float], destination_wells: List[str], destination_layouts: List[BiomationScripter.Labware_Layout]`
+
+**Arguments:**
+
+* `Liquid` | `str`: The liquid for which transfer events should be determined
+* `Destination_Layouts` | `List[BiomationScripter.Labware_Layout]`:  A list of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects - these labware must be the destination labware into which the source material will be transferred, where the labware is already populated with the source material as content
+
+**Behaviour:**
+
+!!! note
+
+    This function does **NOT** determine the source positions for the transfer events, it simply determines *required* transfer events. Automation equipment specific functions, such as the [`OTProto.dispense_from_aliquots` function](../OTProto#function-dispense_from_aliquots), can use the information from `Get_Transfers` to determine suitable source locations and perform the actual liquid handling.
+
+The destination [`BiomationScripter.Labware_Layout` objects](#class-labware_layout) supplied are searched for the specified liquid. For each well found which contains the liquid, the required volume, well ID, and [`Labware_Layout` object](#class-labware_layout) are stored in separate lists. These lists are then returned.
+
+Each position in the three lists describe a required transfer event. For example, if the below is true, then `event_1` would required `event_1_volume` uL of liquid transferred to well `event_1_destination_well` in the destination labware described by `event_1_destination_layout`.
+
+```python
+event_1_volume = transfer_volumes[0]
+event_1_destination_well = destination_wells[0]
+event_1_destination_layout = destination_layouts[0]
+```
+
+
+
+
+### Function: [`Import_Labware_Layout`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
+This function imports an Excel file with a standard layout and converts it to a [`BiomationScripter.Labware_Layout`](#class-labware_layout) object.
+
+**Usage:**
+
+`BMS.Import_Labware_Layout(Filename: str, path: str = "~", ext: str = ".xlsx")` returns [`BiomationScripter.Labware_Layout`](#class-labware_layout)
 
 **Arguments:**
 
@@ -335,7 +387,7 @@ This function imports an Excel file with a standard layout and converts it to a 
 
 **Behaviour:**
 
-This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
+This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
 
 
 ### Function: [`Mastermix_Maker`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
@@ -394,19 +446,19 @@ This function returns a list of wells based on a specified well range and direct
 **Arguments:**
 
 * `Wells` | `str`: A string specifying the range of wells to return - must always have the following format: `"{}{}:{}{}".format(Starting Well Row, Starting Well Column, End Well Row, End Well Column)`, e.g. `"A1:B4"`
-* `Labware_Format` | [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) OR (int, int) = `None`: Plate/labware type to give context to the well range being returned, or a tuple specifying the number of rows and columns in the labware (e.g. (8, 12))
+* `Labware_Format` | [`BiomationScripter.Labware_Layout`](#class-labware_layout) OR (int, int) = `None`: Plate/labware type to give context to the well range being returned, or a tuple specifying the number of rows and columns in the labware (e.g. (8, 12))
 * `Direction` | `"Horizontal" OR "Vertical" = "Horizontal"`: Direction to use when calculating wells in the specified well range - must be either `"Horizontal"` or `"Vertical"`
 * `Box` | `bool = True`: Determines the well range 'shape' - can only be `False` if `Labware_Format` is specified
 
 **Behaviour:**
 
-[`BiomationScripter.well_range`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#function-well_range) returns a list of wells based on the well range specified by `Wells`. The exact wells which are returned, and the order they are placed in the list, is determined by the `Direction`, `Labware_Format`, and `Box` arguments.
+[`BiomationScripter.well_range`](#function-well_range) returns a list of wells based on the well range specified by `Wells`. The exact wells which are returned, and the order they are placed in the list, is determined by the `Direction`, `Labware_Format`, and `Box` arguments.
 
 The `Direction` argument determines the order in which wells are counted. If `Direction = "Horizontal"`, wells are added to the list starting with those on the same row, before moving to the next row. For example, the well range A2:B4 would begin by adding wells in row 'A' (A2, A3, A4,...), and then move on to row 'B'. If `Direction = "Vertical"`, wells will instead be added to the list starting with those in the same column (A1, B1, C1,...), and then move on to subsequent columns (A2, B2, C2,...).
 
 The `Box` argument determines whether the well range has a box-like shape. For example, if `Box = True`, the well range A2:C4 would returns the wells A2, A3, A4, B2, B3, B4, C2, C3, C4. If `Box = False`, then the well range A2:C4 would instead include all wells between A2 and C4 up to the boundary of the plate. So for a standard 96 well plate, this would return wells A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, C1, C2, C3, C4. The order of these wells in both examples would be dependent on the `Direction` argument.
 
-If `Box = False`, then `Labware_Format` must be specified using a [`BiomationScripter.Labware_Layout`](https://github.com/intbio-ncl/BiomationScripter/wiki/BiomationScripter#class-labware_layout) object, which defines the number of rows and columns in the plate, or a list specifying the number of rows and columns the labware has. If `Box = False` and `Labware_Format = None`, an error will occur.
+If `Box = False`, then `Labware_Format` must be specified using a [`BiomationScripter.Labware_Layout`](#class-labware_layout) object, which defines the number of rows and columns in the plate, or a list specifying the number of rows and columns the labware has. If `Box = False` and `Labware_Format = None`, an error will occur.
 
 The image below sums up this information:
 
