@@ -606,6 +606,31 @@ class Mastermix:
 # Functions
 
 
+def Aliquot_Calculator(Liquid, Destination_Layouts, Aliquot_Volume, Dead_Volume):
+    # Calculate total volume of liquid in all destinations provided
+    total_volume = 0
+    for destination_layout in Destination_Layouts:
+        total_volume += destination_layout.get_total_volume_of_liquid(Liquid)
+
+    num_aliquots = _math.ceil(total_volume / (Aliquot_Volume - Dead_Volume))
+
+    return(num_aliquots)
+
+def Get_Transfers_Required(Liquid, Destination_Layouts):
+    transfer_volumes = []
+    destination_wells = []
+    destination_layouts = []
+
+    for destination_layout in Destination_Layouts:
+        wells_with_liquid = destination_layout.get_wells_containing_liquid(Liquid)
+
+        for well in wells_with_liquid:
+            transfer_volumes.append(destination_layout.get_volume_of_liquid_in_well(Liquid, well))
+            destination_wells.append(well)
+            destination_layouts.append(destination_layout)
+
+    return(transfer_volumes, destination_wells, destination_layouts)
+
 def DoE_Get_Value_From_Combined_Factor(Factor_Name, Combined_Factor):
     Value = Combined_Factor.split(Factor_Name)[1].split("(")[1].split(")")[0]
 
@@ -1612,11 +1637,3 @@ def _get_vol_per_well(Reagent_ID):
 
 class MastermixError(Exception):
     pass
-
-
-## To be deprecated ##
-
-
-def aliquot_calculator(Volume_Required, Volume_Per_Aliquot, Dead_Volume=0):
-    print("This will soon be deprecated")
-    return _math.ceil(Volume_Required / (Volume_Per_Aliquot + Dead_Volume))
