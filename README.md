@@ -1,4 +1,4 @@
-[![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest)
+[![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/BiomationScripter.svg)](https://badge.fury.io/py/BiomationScripter)
 
 <center>
 <a href = "docs/index.md">
@@ -25,7 +25,9 @@ This is a python package containing a set of tool to help with writing automatio
 
 ### Installation
 
-Clone [the repository](https://github.com/intbio-ncl/BiomationScripter) on to your working area, and then choose one of the options below:
+To install the latest release, install with pip: `pip install biomationscripter`
+
+To get the development code, clone [the repository](https://github.com/intbio-ncl/BiomationScripter) in to your working area, and then choose one of the options below:
 
 A. Run the following command to install the python package on your machine:
 

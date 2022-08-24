@@ -33,7 +33,11 @@ If you are unsure where to start, see the guidance [here](#where-to-start).
 
 ## Installation
 
-Clone [the repository](https://github.com/intbio-ncl/BiomationScripter) on to your working area, and then choose one of the options below:
+[![PyPI version](https://badge.fury.io/py/BiomationScripter.svg)](https://badge.fury.io/py/BiomationScripter)
+
+To install the latest release, install with pip: `pip install biomationscripter`
+
+To get the development code, clone [the repository](https://github.com/intbio-ncl/BiomationScripter) in to your working area, and then choose one of the options below:
 
 A. Run the following command to install the python package on your machine:
 
