@@ -1614,6 +1614,32 @@ No solution could be found with these constraints. Try one of the following opti
 def fmol_calculator(mass_ng, length_bp):
     return ((mass_ng * 1e-9) / ((length_bp * 617.96) + 36.04)) * 1e15
 
+def serial_dilution_volumes(dilution_factors, total_volume):
+    # Note that total volume is the amount the dilution will be made up to
+    ## The total volume of all dilutions other than the final will be lower than this
+    sample_volumes = []
+    solution_volumes = []
+
+    # This the the dilution factor of the source material for the first serial dilution
+    ## This is always 1, as the initial sample is assumed to be undiluted
+    source_dilution_factor = 1
+
+    for df in dilution_factors:
+        # Get the dilution factor of the current serial dilution being performed
+        destination_dilution_factor = df
+
+        # Calculate the volume, in uL, of sample and solution required for each dilution factor
+        sample_volume = total_volume * (source_dilution_factor/destination_dilution_factor)
+        solution_volume = total_volume - sample_volume
+
+        # Store the volumes required for later use
+        sample_volumes.append(sample_volume)
+        solution_volumes.append(solution_volume)
+
+        # Set the current dilution as the source for the next serial dilution
+        source_dilution_factor = df
+
+    return(sample_volumes, solution_volumes)
 
 ## Private ##
 def _get_well_layout_index(well):
