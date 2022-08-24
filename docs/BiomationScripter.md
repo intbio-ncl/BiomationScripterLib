@@ -167,6 +167,11 @@ This class is used to store information, such as number of wells and content, ab
     * `Reagent` is a required value with no default.
     * `Volume` is a required value which should be specified in microlitres, and has no default.
     * `Liquid_Class` is an optional value, with a default of `False`.
+* `bulk_add_content(self, Wells: List[str], Reagents: List[str], Volumes: List[float] OR float, Liquid_Classes: List[str] = None)` returns `None`
+    * Bulk adds a list of reagents to the `Labware_Layout` content
+    * For each position in the `Reagents` list, the reagent specified will be added to the well specified by `Wells` with a volume specified by `Volumes` and a liquid class specified by `Liquid_Classes`
+    * For example, if `Liquids = ["Reag 1", "Reag 2", "Reag 3"]`, `Wells = ["A1", "B5", "D12"]`, `Volumes = [10, 12, 15]`, and `Liquid_Classes = None`, then `Reag 1` would be added to well `A1` with a volume of `10` uL, `Reag 2` would be added to well `B5` with a volume of `12` uL, and `Reag 3` would be added to well `D12` with a volume of `15` uL
+    * If `Volumes` was a single float instead of a list, then all reagents would be added at that volume instead
 * `get_content(self)` returns `self.content: dict{str: [BiomationScripter.Labware_Content]}`
     * Returns all stored content in the `BiomationScripter.Labware_Layout` object as a dictionary
 * `get_occupied_wells(self)` returns `list[str]`
