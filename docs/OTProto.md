@@ -58,7 +58,9 @@ Due to large amounts of the OT-2's onboard computer being read only, the Biomati
      ```
      Replace `<Directory>` with the path you cloned BiomationScripter into (e.g. `/var/lib/jupyter/notebooks/Packages/BiomationScripterLib`)
 
-NOTE: Version 6.0.0 of the Opentrons app added in a new analysis function. In order to make use of this function, BiomationScripter must also be installed in a specific location on the controlling PC. Instructions for doing this can be found [here](https://support.opentrons.com/s/article/Using-Python-packages-in-Python-API-protocols#modulenotfounderror). If these instructions are not followed, you will see a 'Protocol analysis failure' popup box, with a message similar to 'No module named BiomationScripter'. Note that you can also choose to ignore this error and proceed to running the protocol.
+!!! warning
+
+    Version 6.0.0 of the Opentrons app added in a new analysis function. In order to make use of this function, BiomationScripter must also be installed in a specific location on the controlling PC. Instructions for doing this can be found [here](https://support.opentrons.com/s/article/Using-Python-packages-in-Python-API-protocols#modulenotfounderror). If these instructions are not followed, you will see a 'Protocol analysis failure' popup box, with a message similar to 'No module named BiomationScripter'. Note that you can also choose to ignore this error and proceed to running the protocol.
 
 ---
 

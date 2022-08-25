@@ -3,7 +3,7 @@ import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
 import warnings
-from typing import List, NewType, Tuple, Union, Literal
+from typing import List, NewType, Tuple, Union
 from collections import namedtuple
 
 

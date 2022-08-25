@@ -1,9 +1,8 @@
-# from BiomationScripter import EchoProto
-# from BiomationScripter import OTProto
+import os
 import math as _math
 import random
 import warnings
-from typing import Dict, List, Literal
+from typing import Dict, List, Union, Tuple
 
 try:
     import pandas as pd
@@ -44,7 +43,7 @@ class TransferError(BiomationError):
 
 
 # Function to pass template modules
-def get_template_module(module_name: Literal["OTProto", "EchoProto"]):
+def get_template_module(module_name):
     if module_name == "OTProto":
         import BiomationScripter.OTProto.Templates as OTProto_Templates
 
@@ -236,7 +235,9 @@ class DoE_Run_Data:
 
 
 class Labware_Content:
-    def __init__(self, Name, Volume, Liquid_Class=None):
+    """This class is used by `Labware_Layout` to store content information."""
+
+    def __init__(self, Name: str, Volume: Union[float, int], Liquid_Class: Union[str, None] = None):
         self.name = Name
         self.volume = Volume
         self.liquid_class = Liquid_Class
@@ -246,6 +247,8 @@ class Labware_Content:
 
 
 class Assembly:
+    """This class is used to store basic information about a DNA assembly."""
+
     def __init__(self, Name: str, Backbone: str, Parts: List[str]):
         self.name = Name
         self.backbone = Backbone
@@ -253,7 +256,13 @@ class Assembly:
 
 
 class Labware_Layout:
-    def __init__(self, Name, Type):
+    """This class is used to store information, such as number of wells and content, about labware which can later be retrieved.
+
+    The BMS.Labware_Layout class is intended to be universal within BiomationScripter, and not specific to any particular automation equipment.
+    Labware_Layout objects are separate from, but sometimes related to, any object which is meant to represent a physical instance of a piece of labware.
+    """
+
+    def __init__(self, Name: str, Type: str):
         self.name: str = Name
         self.type: str = Type
         self.rows: int = None
@@ -544,13 +553,17 @@ class Labware_Layout:
 
 
 class Liquids:
+    """This class is used to store information about liquids and where they are stored."""
+
     def __init__(self):
         self.liquids = {}
 
-    def add_liquid(self, liquid, labware, source_well):
+    def add_liquid(self, liquid: str, labware: Union[str, Labware_Layout], source_well: str):
+        """Adds a liquid to self.liquids"""
         self.liquids[liquid] = [labware, source_well]
 
-    def get_liquids_in_labware(self, labware):
+    def get_liquids_in_labware(self, labware: Union[str, Labware_Layout]):
+        """Returns all liquids within a specified labware."""
         liquids_to_return = []
         for liquid in self.liquids:
             if labware == self.get_liquid_labware(liquid):
@@ -596,11 +609,12 @@ class Liquids:
 
 
 class Mastermix:
-    def __init__(self, Name, Reagents, Wells):
+    """This class is used by BMS.Mastermix_Maker to store information about a mastermix. It is not intended for use outside of this function."""
+
+    def __init__(self, Name: str, Reagents: str, Wells: List[str]):
         self.name = Name
         self.reagents = Reagents
         self.wells = Wells
-
 
 ##########################################
 # Functions
@@ -641,7 +655,6 @@ def DoE_Get_Value_From_Combined_Factor(Factor_Name, Combined_Factor):
         pass
 
     return Value
-
 
 def DoE_Create_Source_Material(
     DoE_Experiment, Source_Material_Name, Factor_Names, Add_To_Runs=True
@@ -758,8 +771,13 @@ def DoE_Create_Intermediate(
     return Intermediate_Types
 
 
-def Reagent_Finder(Reagents, Directories):
-    import os
+def Reagent_Finder(Reagents: List[str], Directories: List[str]):
+    """Searches a list of directories containing labware layout files for a specified reagent.
+
+    This function will search in the directories listed for files which appear to be BMS labware layout files.
+    Any labware layout files found will then be searched for the specified reagents.
+    The name of all reagents are then printed to OUT, along with the name of the labware layout they appear in and the well(s) they occupy.
+    """
 
     # Get all labware layouts in the specified directories
     Files = []
@@ -788,15 +806,25 @@ def Reagent_Finder(Reagents, Directories):
                 print("> {}: {}".format(layout.name, layout.get_wells_containing_liquid(reagent)))
 
 
-def Import_Labware_Layout(Filename, path="~", ext=".xlsx"):
+def Import_Labware_Layout(Filename: str, path: str = "~", ext: str = ".xlsx"):
+    """Imports an Excel file with a standard layout and converts it to a BiomationScripter.Labware_Layout object."""
+
+
     labware_layout = Labware_Layout("name", "type")
     labware_layout.import_labware(Filename, path=path, ext=ext)
     return labware_layout
 
 
 def Create_Labware_Needed(
-    Labware_Format, N_Wells_Needed, N_Wells_Available="All", Return_Original_Layout=True
+    Labware_Format: Labware_Layout, N_Wells_Needed: int, N_Wells_Available = "All", Return_Original_Layout: bool = True
 ):
+    """calculates how many labware of a certain type are required for a protocol and returns a list of Labware_Layout objects.
+
+    Determines number of labware by the total number of wells required (N_Wells_Needed) and the number of wells available per labware (N_Wells_Available).
+    The labware created is based on the Labware_Layout provided to Labware_Format.
+    Any content already in the template Labware_Layout is not copied to new labware created.
+    """
+
     if not type(N_Wells_Available) is int:
         if N_Wells_Available == "All":
             N_Wells_Available = Labware_Format.rows * Labware_Format.columns
@@ -814,7 +842,15 @@ def Create_Labware_Needed(
     return Plates
 
 
-def well_range(Wells, Labware_Format=None, Direction="Horizontal", Box=False):
+def well_range(Wells: str, Labware_Format: Union[Labware_Layout, Tuple[int, int]] = None, Direction = "Horizontal", Box: bool = False):
+    """Returns a list of wells based on a specified well range and direction.
+
+    Wells are always in the format of row followed by column, where row is a letter and column is an integer (e.g. A1, D6, C12, B7, etc.).
+    The Direction argument determines the order in which wells are counted.
+    The Box argument determines whether the well range has a box-like shape.
+    If Box = False, then a Labware_Format must be specified
+    """
+
     if not Direction == "Horizontal" and not Direction == "Vertical":
         raise ValueError("`Direction` must be either 'Horizontal' or 'Vertical'")
 
@@ -919,16 +955,24 @@ def Group_Locations(Locations, Group_Populations):
 
 
 def Mastermix_Maker(
-    Destination_Layouts,
-    Mastermix_Layout,
-    Maximum_Mastermix_Volume,
-    Min_Transfer_Volume,
-    Extra_Reactions,
-    Excluded_Reagents=[],
-    Excluded_Combinations=[],
-    Preferential_Reagents=[],
-    Seed=None,
+    Destination_Layouts: List[Labware_Layout],
+    Mastermix_Layout: Labware_Layout,
+    Maximum_Mastermix_Volume: float,
+    Min_Transfer_Volume: float,
+    Extra_Reactions: float,
+    Excluded_Reagents: List[str] = [],
+    Excluded_Combinations: List[List[str]] = [],
+    Preferential_Reagents: List[str] = [],
+    Seed: Union[int, None] = None,
 ):
+
+    """Generates mastermixes based on source materials in a list of destination Labware_Layout objects, and other user-defined parameters.
+
+    Mastermixes are generated by finding common source reagents across destination wells and grouping them together in the minimal amount of mastermixes.
+    Parameters supplied as arguments can be used to influence compositions of the mastermixes.
+    To help ensure many combinations are attempted, there is some randomness within the function.
+    This randomness can be removed by supplying a specific seed, which ensures that the same mastermixes are generated each time.
+    """
 
     Solved = False  # Check whether a solution has been found
 

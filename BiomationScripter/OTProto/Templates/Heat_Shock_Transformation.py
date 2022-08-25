@@ -3,7 +3,7 @@ import BiomationScripter.OTProto as _OTProto
 from opentrons import simulate as OT2
 import math
 import warnings
-from typing import List, NewType, Tuple, Union, Literal
+from typing import List, NewType, Tuple, Union
 from collections import namedtuple
 
 
@@ -26,10 +26,10 @@ class Template(_OTProto.OTProto_Template):
         Cooled_Cells_Modules: List[str] = [],
         Shuffle: Union[Tuple[str, str] , None] = None,
         Patience: int = 1200,
-        Cells_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (5,"transfer_volume"),
-        Cells_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
-        DNA_Mix_Before: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = None,
-        DNA_Mix_After: Union[Tuple[int, Union[float , Literal["transfer_volume"]]] , None] = (10,"transfer_volume"),
+        Cells_Mix_Before = (5,"transfer_volume"),
+        Cells_Mix_After = None,
+        DNA_Mix_Before = None,
+        DNA_Mix_After = (10,"transfer_volume"),
         **kwargs
     ):
 
