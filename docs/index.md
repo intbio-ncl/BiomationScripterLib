@@ -24,7 +24,7 @@ Source code: [github.com/intbio-ncl/BiomationScripter](https://github.com/intbio
 
 [![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml)  [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://readthedocs.org/projects/biomationscripterlib/) [![PyPI version](https://badge.fury.io/py/BiomationScripter.svg)](https://badge.fury.io/py/BiomationScripter)
 
-This documentation is for BiomationScripter version 0.2.1 (Pre-Release)
+This documentation is for BiomationScripter version 0.2.2 (Pre-Release)
 
 ---
 
