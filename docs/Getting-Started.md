@@ -21,13 +21,13 @@
 
 ## Feature Overview
 
-The BiomationScripter python library contains a set of packages to help programmatically script protocols for bioautomation platforms. Currently supported automation equipment are listed below, along with their associated BiomationScripter module name. More information for how to use these packages can be found by following the relevant link. BiomationScripter also contains some generic functions and classes which can be used to help write protocols for any automation platform, and can be used in conjunction with the specialised packages listed below.
+The BiomationScripter python library contains a set of packages to help programmatically script protocols for bioautomation platforms. Currently supported automation equipment are listed below, along with their associated BiomationScripter module name. More information for how to use these packages can be found by following the relevant link. BiomationScripter also contains some generic functions and classes which can be used to help write protocols for any automation platform, and can be used in conjunction with the specialised packages listed below. Templates of commonly used protocols such as PCR are also available for beginner BMS users.
 
 If you are unsure where to start, see the guidance [here](#where-to-start).
 
-* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](BiomationScripter.md)
-* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](OTProto.md)
-* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](EchoProto.md)
+* [Generic tools](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py) - [BiomationScripter](BiomationScripter.md).
+* [OpenTrons-2](https://www.opentrons.com/ot-2/) - [OTProto](OTProto.md).
+* [Echo 525](https://www.mybeckman.uk/liquid-handlers/echo-525) - [EchoProto](EchoProto.md).
 
 ---
 
@@ -88,7 +88,7 @@ Check out the example walkthrough [here](example_code/EchoProto/EchoProto-EchoPr
 
 **For Opentrons Liquid Handler**
 
-See the documentation [here](OTProto_Templates.md#creating-custom-otprototemplates)
+See the documentation [here](OTProto_Templates.md#creating-custom-otprototemplates).
 
 ### Writing protocols without Templates
 
