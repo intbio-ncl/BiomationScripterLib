@@ -1778,6 +1778,23 @@ def serial_dilution_volumes(dilution_factors, total_volume):
 
     return(sample_volumes, solution_volumes)
 
+
+def group_locations_by_content(Layouts):
+    locations = {} # {Reagent: vol, }: [(layout, well)]
+
+    for layout in Layouts:
+        for well in layout.get_occupied_wells():
+            content = {}
+            for liquid in layout.get_liquids_in_well(well):
+                content[liquid] = layout.get_volume_of_liquid_in_well(liquid, well)
+
+            if str(content) in locations:
+                locations[str(content)].append((layout, well))
+            else:
+                locations[str(content)] = [(layout, well)]
+
+    return(locations)
+
 ## Private ##
 def _get_well_layout_index(well):
     return int(well.split("_")[0])
