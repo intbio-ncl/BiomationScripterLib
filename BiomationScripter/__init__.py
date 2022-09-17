@@ -272,6 +272,7 @@ class Labware_Layout:
         self.empty_wells: List[str] = None
         self.well_labels: Dict[str, str] = {}
 
+
     def get_total_volume_of_liquid(self, Liquid):
         wells = self.get_wells_containing_liquid(Liquid)
         total_volume = 0
@@ -609,7 +610,7 @@ class Liquids:
 
 
 class Mastermix:
-    """This class is used by BMS.Mastermix_Maker to store information about a mastermix. It is not intended for use outside of this function."""
+    """This class is used by BMS.mastermixes_by_min_volume to store information about a mastermix. It is not intended for use outside of this function."""
 
     def __init__(self, Name: str, Reagents: str, Wells: List[str]):
         self.name = Name
@@ -953,8 +954,96 @@ def Group_Locations(Locations, Group_Populations):
         start_index += group_pop
     return Grouped_Locations
 
+def mastermixes_by_replicates(
+    Destination_Layouts,
+    Mastermix_Layout,
+    Maximum_Mastermix_Volume,
+    Min_Transfer_Volume,
+    Extra_Reactions
+):
 
-def Mastermix_Maker(
+    Mastermixes = []
+    Destination_Positions = []
+
+    Mastermix_Layouts = [Mastermix_Layout]
+
+    # Get locations by replicate
+    grouped_locations = group_locations_by_content(Destination_Layouts)
+
+    for group in grouped_locations:
+        contents = grouped_locations[group][0][0].get_content()[grouped_locations[group][0][1]]
+        mastermix_name = ":".join([f"{c.name}_vol_{c.volume}" for c in contents])
+        reaction_mm_volume = sum([c.volume for c in contents])
+
+        # Check total volume of mastermix required
+        mm_vol_required = reaction_mm_volume * (len(grouped_locations[group]) + Extra_Reactions)
+        mm_aliquots = _math.ceil(mm_vol_required / Maximum_Mastermix_Volume)
+
+
+
+        if mm_aliquots == 1:
+            reactions_per_mm = len(grouped_locations[group]) + Extra_Reactions
+        else:
+            mm_vol_required = sum([c.volume for c in contents]) * (len(grouped_locations[group]) + (Extra_Reactions * mm_aliquots))
+            if (mm_vol_required/mm_aliquots) > Maximum_Mastermix_Volume:
+                mm_aliquots += 1
+                mm_vol_required = sum([c.volume for c in contents]) * (len(grouped_locations[group]) + (Extra_Reactions * mm_aliquots))
+
+            reactions_per_mm = _math.ceil((len(grouped_locations[group]) + Extra_Reactions) / mm_aliquots)
+
+        smallest_transfer_volume = min([c.volume for c in contents]) * reactions_per_mm
+
+        if smallest_transfer_volume != 0:
+            more_reactions = 1
+            while smallest_transfer_volume < Min_Transfer_Volume:
+                mm_vol_required = sum([c.volume for c in contents]) * (len(grouped_locations[group]) + Extra_Reactions + more_reactions)
+                mm_aliquots = _math.ceil(mm_vol_required / Maximum_Mastermix_Volume)
+
+                if mm_aliquots == 1:
+                    reactions_per_mm = len(grouped_locations[group]) + Extra_Reactions + more_reactions
+                else:
+                    mm_vol_required = sum([c.volume for c in contents]) * (len(grouped_locations[group]) + ((Extra_Reactions + more_reactions) * mm_aliquots))
+                    if (mm_vol_required/mm_aliquots) > Maximum_Mastermix_Volume:
+                        mm_aliquots += 1
+                        mm_vol_required = sum([c.volume for c in contents]) * (len(grouped_locations[group]) + ((Extra_Reactions + more_reactions) * mm_aliquots))
+
+                    reactions_per_mm = _math.ceil((len(grouped_locations[group]) + Extra_Reactions + more_reactions) / mm_aliquots)
+
+                smallest_transfer_volume = min([c.volume for c in contents]) * reactions_per_mm
+                more_reactions += 1
+
+
+        for mm in range(0, mm_aliquots):
+            if Mastermix_Layouts[-1].empty_wells == []:
+                new_mm_layout = Mastermix_Layouts[-1].clone_format(f"{Mastermix_Layouts[-1].name}_{len(Mastermix_Layouts)}")
+                new_mm_layout.set_available_wells()
+                Mastermix_Layouts.append(new_mm_layout)
+
+            mm_layout = Mastermix_Layouts[-1]
+            well = mm_layout.get_next_empty_well()
+
+            for content in contents:
+                mm_layout.add_content(
+                    Well = well,
+                    Reagent = content.name,
+                    Volume = content.volume * reactions_per_mm
+                )
+
+            mm_layout.add_well_label(well, mastermix_name)
+
+        # Modify destination layout
+        for dest_layout, well in grouped_locations[group]:
+            dest_layout.clear_content_from_well(well)
+
+            dest_layout.add_content(
+                Well = well,
+                Reagent = mastermix_name,
+                Volume = reaction_mm_volume
+            )
+
+    return(Mastermix_Layouts)
+
+def mastermixes_by_min_volume(
     Destination_Layouts: List[Labware_Layout],
     Mastermix_Layout: Labware_Layout,
     Maximum_Mastermix_Volume: float,
@@ -1157,7 +1246,7 @@ def Mastermix_Maker(
             for reagent_id in Ordered_Reagent_IDs:
 
                 # Check if the reagent's volume/well is below the trasfer threshold
-                if _get_vol_per_well(reagent_id) < Min_Transfer_Volume:
+                if _get_vol_per_well(reagent_id) < Min_Transfer_Volume or reagent_id.split("_vol_")[0] in Preferential_Reagents:
                     # print("\n")
                     mastermix_reagents = [reagent_id]  # list to hold the mastermix components
                     mastermix_per_well = _get_vol_per_well(
@@ -1555,13 +1644,17 @@ No solution could be found with these constraints. Try one of the following opti
 """
                         )
 
-    # Remove any empty mastermixes
+    # Remove any empty (or component of 1) mastermixes
     ## These are MMs which were generated at some point, but then were split out into other mastermixes and no longer service any wells
 
-    for mm in Mastermixes:
+    for mm in Mastermixes.copy():
+        print(mm.reagents)
         if sum([_get_vol_per_well(reagent) for reagent in mm.reagents]) < Min_Transfer_Volume:
             raise ValueError(mm.name)
         if len(mm.wells) == 0:
+            Mastermixes.remove(mm)
+        if len(mm.reagents) == 1:
+            print("rem")
             Mastermixes.remove(mm)
 
     # Set up the mastermix layout with the generated content
