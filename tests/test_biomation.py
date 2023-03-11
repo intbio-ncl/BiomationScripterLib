@@ -2021,7 +2021,7 @@ class Test_OTProto_Heat_Shock_Transformation:
         Transformation.custom_labware_dir = Custom_Labware_Dir
         Transformation.run()
 
-        assert len(protocol.commands()) == 759
+        assert len(protocol.commands()) == 756
 
         assert "Opening Thermocycler lid" in protocol.commands()
 
