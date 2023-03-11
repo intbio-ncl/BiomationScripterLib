@@ -3,6 +3,7 @@ import math as _math
 import random
 import warnings
 from typing import Dict, List, Union, Tuple
+from decimal import Decimal
 
 try:
     import pandas as pd
@@ -275,11 +276,11 @@ class Labware_Layout:
 
     def get_total_volume_of_liquid(self, Liquid):
         wells = self.get_wells_containing_liquid(Liquid)
-        total_volume = 0
+        total_volume = Decimal(0)
         for well in wells:
-            total_volume += self.get_volume_of_liquid_in_well(Liquid, well)
+            total_volume += Decimal(self.get_volume_of_liquid_in_well(Liquid, well))
 
-        return total_volume
+        return float(total_volume)
 
     def define_format(self, Rows: int, Columns: int):
         self.rows = Rows
@@ -364,6 +365,7 @@ class Labware_Layout:
                 self.add_content(well, reagent, volume, liquid_class)
 
     def add_content(self, Well, Reagent, Volume, Liquid_Class=None):
+        Volume = Volume
         if Volume < 0:
             raise NegativeVolumeError
 
