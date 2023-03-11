@@ -133,10 +133,10 @@ class Template(_EchoProto.EchoProto_Template):
 
                     # Add the reagents, water, and DNA to the destinaton plate
                     try:
-                        current_destination_plate.add_content(current_destination_well, self.water, water_amount)
                         current_destination_plate.add_content(current_destination_well, reaction[0], dna_amount)
                         current_destination_plate.add_content(current_destination_well, reaction[1], primer_amount)
                         current_destination_plate.add_content(current_destination_well, reaction[2], primer_amount)
+                        current_destination_plate.add_content(current_destination_well, self.water, water_amount)
 
                         if self.master_mix:
                             current_destination_plate.add_content(current_destination_well, self.master_mix, master_mix_amount)

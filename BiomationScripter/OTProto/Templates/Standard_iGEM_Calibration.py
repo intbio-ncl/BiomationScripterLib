@@ -352,7 +352,7 @@ class Template(_OTProto.OTProto_Template):
                 labware_list.append(
                     _OTProto.load_labware_from_layout(
                         Protocol = self._protocol,
-                        Plate_Layout = layout,
+                        Labware_Layout = layout,
                         custom_labware_dir = self.custom_labware_dir
                     )
                 )

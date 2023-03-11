@@ -24,7 +24,7 @@ def test_fmol_calculator():
 
     assert bms.fmol_calculator(mass2, length2) == 25238.809616592196
 
-def test_mastermix_maker_basic():
+def test_mastermixes_by_min_volume_basic():
     Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
     Destination_Layout.define_format(8, 12)
 
@@ -63,7 +63,7 @@ def test_mastermix_maker_basic():
     Preferential_Reagents = []
     Seed = 1
 
-    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.mastermixes_by_min_volume(
         Destination_Layouts = [Destination_Layout],
         Mastermix_Layout = Mastermix_Layout,
         Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,
@@ -98,7 +98,7 @@ def test_mastermix_maker_basic():
     assert Mastermixes[1].reagents == ['Water_vol_1.0', 'LB_vol_80.0']
     assert Mastermixes[1].wells == {'0_A1', '0_A7', '0_A8', '0_A3', '0_A2', '0_A9'}
 
-def test_mastermix_maker_preferential_cells():
+def test_mastermixes_by_min_volume_preferential_cells():
     Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
     Destination_Layout.define_format(8, 12)
 
@@ -137,7 +137,7 @@ def test_mastermix_maker_preferential_cells():
     Preferential_Reagents = ["Cells 1", "Cells 2"]
     Seed = 1
 
-    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+    Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.mastermixes_by_min_volume(
         Destination_Layouts = [Destination_Layout],
         Mastermix_Layout = Mastermix_Layout,
         Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,
@@ -182,7 +182,7 @@ def test_mastermix_maker_preferential_cells():
     assert Mastermixes[3].reagents == ['Water_vol_1.0', 'Cells 2_vol_19.0']
     assert Mastermixes[3].wells == {'0_A7', '0_A8', '0_A9'}
 
-def test_mastermix_maker_error():
+def test_mastermixes_by_min_volume_error():
     Destination_Layout = bms.Labware_Layout("Destination", "greiner655087_96_wellplate_340ul")
     Destination_Layout.define_format(8, 12)
 
@@ -225,7 +225,7 @@ def test_mastermix_maker_error():
     ]
 
     with pytest.raises(bms.MastermixError) as excinfo:
-        Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.Mastermix_Maker(
+        Mastermixes, Seed, Destination_Layouts, Mastermix_Layouts = bms.mastermixes_by_min_volume(
             Destination_Layouts = [Destination_Layout],
             Mastermix_Layout = Mastermix_Layout,
             Maximum_Mastermix_Volume = Maximum_Mastermix_Volume,

@@ -258,7 +258,7 @@ This class is used to store information about liquids and where they are stored.
 
 ### Class [`Mastermix`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 
-This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to store information about a mastermix. It is not intended for use outside of this function. Even though the [`BMS.Mastermix_Maker`](#function-mastermix_maker) returns this class, it shouldn't ever need to be used or understood.
+This class is used by [`BMS.mastermixes_by_min_volume`](#function-mastermixes_by_min_volume) to store information about a mastermix. It is not intended for use outside of this function. Even though the [`BMS.mastermixes_by_min_volume`](#function-mastermixes_by_min_volume) returns this class, it shouldn't ever need to be used or understood.
 
 **Usage:**
 
@@ -284,7 +284,7 @@ This class is used by [`BMS.Mastermix_Maker`](#function-mastermix_maker) to stor
 [`fmol_calculator`](#function-fmol_calculator) |
 [`Get_Transfers_Required`](#function-get_transfers_required) |
 [`Import_Labware_Layout`](#function-import_labware_layout) |
-[`Mastermix_Maker`](#function-mastermix_maker) |
+[`mastermixes_by_min_volume`](#function-mastermixes_by_min_volume) |
 [`Reagent_Finder`](#function-reagent_finder) |
 [`well_range`](#function-well_range)
 
@@ -324,7 +324,15 @@ This function calculates how many plates of a certain type are required for a pr
 
 **Behaviour:**
 
-[`Create_Labware_Needed`](#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects will then be created using the [`BiomationScripter.Labware_Layout`](#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list. NOTE: if the [`BiomationScripter.Labware_Layout`](#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects which are returned. The original [`BiomationScripter.Labware_Layout`](#class-labware_layout) object is returned as the first element in the returned list.
+!!! warning
+
+    * If the [`BiomationScripter.Labware_Layout`](#class-labware_layout) object specified by `Labware_Fomrat` has content specified, this content will not be added to the [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects which are returned.
+
+    * The original [`BiomationScripter.Labware_Layout`](#class-labware_layout) object is returned as the first element in the returned list.
+
+[`Create_Labware_Needed`](#function-Create_Labware_Needed) calculates how many plates or other type of labware are needed for a protocol based on the number of wells/slots required (`N_Wells_Needed`) and the number of wells/slots available per plate/labware (`N_Wells_Available`). That number of [`BiomationScripter.Labware_Layout`](#class-labware_layout) objects will then be created using the [`BiomationScripter.Labware_Layout`](#class-labware_layout) specified by the `Labware_Format` argument as a template. These objects are then returned as a list.
+
+
 
 
 ### Function: [`fmol_calculator`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
@@ -395,14 +403,14 @@ This function imports an Excel file with a standard layout and converts it to a 
 This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
 
 
-### Function: [`Mastermix_Maker`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
+### Function: [`mastermixes_by_min_volume`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 This function can be used to automatedly generate mastermixes based on source materials in a list of destination labware layout objects, and user-defined parameters.
 
 **Usage:**
 
-`BMS.Mastermix_Maker(Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layout = BMS.Labware_Layout, Maximum_Mastermix_Volume: float, Min_Transfer_Volume: float, Extra_Reactions: float, Excluded_Reagents: List[str] = [], Excluded_Combinations: List[List[str]] = [], Preferential_Reagents: List[str] = [], Seed: int = None)` returns `(Mastermixes: List[BMS.Mastermix], Seed: int, Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layouts: List[BMS.Labware_Layout])`
+`BMS.mastermixes_by_min_volume(Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layout = BMS.Labware_Layout, Maximum_Mastermix_Volume: float, Min_Transfer_Volume: float, Extra_Reactions: float, Excluded_Reagents: List[str] = [], Excluded_Combinations: List[List[str]] = [], Preferential_Reagents: List[str] = [], Seed: int = None)` returns `(Mastermixes: List[BMS.Mastermix], Seed: int, Destination_Layouts: List[BMS.Labware_Layout], Mastermix_Layouts: List[BMS.Labware_Layout])`
 
-See the walkthrough [here](/example_code/BMS/BMS-Mastermix_Maker-Function/).
+See the walkthrough [here](/example_code/BMS/BMS-mastermixes_by_min_volume-Function/).
 
 **Arguments:**
 

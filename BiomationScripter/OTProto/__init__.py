@@ -467,7 +467,7 @@ def transfer_liquids(Protocol, Transfer_Volumes, Source_Locations, Destination_L
                     b_location = "" # this is to use the OT API error handling
                 pipette.blow_out(b_location)
 
-            # If blowout was at the destination location, then do blowout now
+            # If blowout was at the destination location, then do touch tip now
 
             if blowout_location == "destination well":
                 # knock the tip against the sides of the current well (if required)
