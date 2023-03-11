@@ -268,6 +268,102 @@ Protocol_Template = DNA_fmol_Dilution.Template(
     * Generates Opentrons liquid handling commands
 
 
+### Template: [`Standard_iGEM_Calibration`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/Templates.py)
+
+#### Overview
+
+This template can be used to generate an automation protocol to prepare a 96 well plate for calibrating plate reader fluorescence and absorbance measurements.
+
+For more information about the iGEM calibration protocol, read the following resources:
+
+* https://doi.org/10.1093/synbio/ysac010
+* https://technology.igem.org/engineering/test
+
+Briefly, this templates allows for automated transfer of specificed calibrated from stock labware (tubes or plates) into a 96-well measurement plate. A 12-step serial dilution is performed for each calibrant within the measurement plate. The measurement plate can then be used to calibrate a plate reader as described in the resources above.
+
+#### Generic Protocol Steps
+
+The basic protocol is described below for a single calibrant with no repeats
+
+1. Transfer solvent into the appropriate wells A1-A12 of a 96 well measurement plate as required
+  * Note that if the calibrant is supplied at the concentration required for the most concentrated point of the serial dilution, no solvent is added to A1
+
+2. Add calibrant to well A1 of the measurement plate
+
+3. Perform a 2-fold serial dilution of the calibrant from well A1 to well A11 (Such that well A12 contains only solvent)
+
+4. Remove excess volume from well A11 so that all wells in the measurement plate have the same volume
+
+#### Usage
+
+!!! example
+
+    See an example protocol using this template [here](protocol_examples/OTProto/Templates/iGEM-Calibration-Plate_Setup.ipynb).
+
+The `Template` object is created using the following code:
+
+```python
+from BiomationScripter.OTProto.Templates import Standard_iGEM_Calibration
+
+Protocol_Template = Standard_iGEM_Calibration.Template(
+  Calibrants: List[Calibrant],
+  Calibrants_Stock_Concs: List[float],
+  Calibrants_Initial_Concs: List[float],
+  Calibrants_Solvents: List[str],
+  Calibrant_Aliquot_Volumes: List[float],
+  Solvent_Aliquot_Volumes: List[float],
+  Volume_Per_Well: float,
+  Repeats: int,
+  Calibrant_Labware_Type: str,
+  Solvent_Labware_Type: str,
+  Destination_Labware_Type: str,
+  Trash_Labware_Type: str,
+  Solvent_Mix_Before = None,
+  Solvent_Mix_After = None,
+  Solvent_Source_Touch_Tip: bool = True,
+  Solvent_Destination_Touch_Tip: bool = True,
+  Solvent_Move_After_Dispense = "well_bottom",
+  Solvent_Blowout = "destination well",
+  First_Dilution_Mix_Before = (10, "transfer_volume"),
+  First_Dilution_Mix_After = (10, "transfer_volume"),
+  First_Dilution_Source_Touch_Tip: bool = True,
+  First_Dilution_Destination_Touch_Tip: bool = True,
+  First_Dilution_Move_After_Dispense = None,
+  First_Dilution_Blowout = "destination well",
+  Dilution_Mix_Before = (10, "transfer_volume"),
+  Dilution_Mix_After = (10, "transfer_volume"),
+  Dilution_Source_Touch_Tip: bool = True,
+  Dilution_Destination_Touch_Tip: bool = True,
+  Dilution_Move_After_Dispense = None,
+  Dilution_Blowout = "destination well",
+  Mix_Speed_Multipler: float = 2,
+  Aspirate_Speed_Multipler: float = 1,
+  Dispense_Speed_Multipler: float = 1,
+  Blowout_Speed_Multiplier: float = 1,
+  Dead_Volume_Proportion: float = 0.95,
+  Protocol: opentrons.protocol_api,
+  Name: str,
+  Metadata,
+  Starting_20uL_Tip: str = "A1",
+  Starting_300uL_Tip: str = "A1",
+  Starting_1000uL_Tip: str = "A1"
+)
+```
+
+#### Full Documentation
+
+
+
+**Attributes:**
+
+
+
+**Methods:**
+
+* `run(self)` returns `None`
+    * Generates Opentrons liquid handling commands
+
+
 ## Superclass: [`OTProto_Template`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/OTProto/Templates.py)
 
 This class is used as a superclass for all OTProto templates. It contains attributes and methods which are common to a wide range of Opentrons protocols, and therefore allows for a certain amount of standardisation across the templates.
