@@ -2,7 +2,7 @@
 
 <center>
 <a href = "docs/index.md">
-<img src="docs/wiki-images/Logo - Full Name - White BG.png" alt = "BiomationScripter Logo" width = "300"/>
+<img src="docs/wiki-images/Graphical_Abstract.png" alt = "BiomationScripter Logo" width = "600"/>
 </a>
 
 ---
