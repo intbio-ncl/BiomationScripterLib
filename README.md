@@ -1,7 +1,7 @@
 [![build](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml/badge.svg)](https://github.com/intbio-ncl/BiomationScripterLib/actions/workflows/pytest.yml) [![Documentation Status](https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest)](https://biomationscripterlib.readthedocs.io/en/latest/?badge=latest) [![PyPI version](https://badge.fury.io/py/BiomationScripter.svg)](https://badge.fury.io/py/BiomationScripter)
 
 <center>
-<a href = "docs/index.md">
+<a href = "https://readthedocs.org/projects/biomationscripterlib/badge/?version=latest">
 <img src="docs/wiki-images/Graphical_Abstract.png" alt = "BiomationScripter Logo" width = "600"/>
 </a>
 
