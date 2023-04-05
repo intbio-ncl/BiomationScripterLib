@@ -402,6 +402,17 @@ This function imports an Excel file with a standard layout and converts it to a 
 
 This function will import a layout specified by an excel file as a [`BiomationScripter.Labware_Layout`](#class-labware_layout) object. The excel file should follow the standard described [here](Standard_Layout_File.md)
 
+!!! warning
+* This function requires the pandas library to operate. If pandas has not successfully imported, this function will not work.
+
+The `Plate Name` and `Plate Type` fields are required fields for the `Plate Summary` sheet (_Sheet1_).
+The `Well` and `Name` fields must be populated on the `Well lookup` sheet (_Sheet2_) if content in these wells needs to be added. If `Name` is empty, the function will assume that this well is empty and will skip over it. If `Volume (uL) - Current` is empty, `Volume (uL) - Initial` will be used instead. If both volume fields are empty, volume will be zero. If `Calibration Type` is empty, `AQ_BP` will be used as a default value.
+
+An empty `PlateLayout` object should be created prior to calling this function and the function will populate the object with the required attributes.
+```
+Plate = BMS.Labware_Layout(name: str, type: str)
+Plate.Import_Labware_Layout(Filename: str, path: str = "~", ext: str = ".xlsx")
+```
 
 ### Function: [`mastermixes_by_min_volume`](https://github.com/intbio-ncl/BiomationScripterLib/blob/main/BiomationScripter/__init__.py)
 This function can be used to automatedly generate mastermixes based on source materials in a list of destination labware layout objects, and user-defined parameters.
