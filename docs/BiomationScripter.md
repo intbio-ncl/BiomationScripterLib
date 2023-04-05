@@ -406,7 +406,7 @@ This function will import a layout specified by an excel file as a [`BiomationSc
 * This function requires the pandas library to operate. If pandas has not successfully imported, this function will not work.
 
 The `Plate Name` and `Plate Type` fields are required fields for the `Plate Summary` sheet (_Sheet1_).
-The `Well` and `Name` fields must be populated on the `Well lookup` sheet (_Sheet2_) if content in these wells needs to be added. If `Name` is empty, the function will assume that this well is empty and will skip over it. If `Volume (uL) - Current` is empty, `Volume (uL) - Initial` will be used instead. If both volume fields are empty, volume will be zero. If `Calibration Type` is empty, `AQ_BP` will be used as a default value.
+The `Well` and `Name` fields must be populated on the `Well lookup` sheet (_Sheet2_) if content in these wells needs to be added. If `Name` is empty, the function will assume that this well is empty and will skip over it. If `Volume (uL) - Current` is empty, `Volume (uL) - Initial` will be used instead. If both volume fields are empty, volume will be zero. If `Calibration Type` is empty, `"AQ_BP"` will be used as a default value.
 
 An empty `PlateLayout` object should be created prior to calling this function and the function will populate the object with the required attributes.
 ```
