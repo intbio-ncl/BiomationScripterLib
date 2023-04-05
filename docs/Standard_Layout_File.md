@@ -21,9 +21,6 @@
 
 # BiomationScripter - Standard Layout File
 
-!!! warning
-
-    **This page is under construction**
     
 ---
 
@@ -67,12 +64,20 @@ Well lookup utilises 10 columns in the current version. The number of rows is de
 
 ## Example Usage
 
+Included for these docs is an example of this layout file for a plate used to store primers
 
-
+<a href = "/">
+<img src="../wiki-images/PlateSummary.png" alt = "Plate Summary sheet for \"Primers\" plate" width = "300"/>
+   </a>
+<a href = "/">
+<img src="../wiki-images/WellLookup.png" alt = "Well lookup sheet for \"Primers\" plate" width = "800"/>
+   </a>
+   
 ---
 
 ## Resources
 
-
+The example sheets can be found here: <a href = "../protocol_examples/standard_layout_file">Standard Layout File</a>
+Each sheet has been separated into a `.csv` file for compliance with github
 
 ---
