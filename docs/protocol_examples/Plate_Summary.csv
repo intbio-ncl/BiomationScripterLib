@@ -1,0 +1,8 @@
+﻿Plate Name,Primers
+Plate Type,384PP
+Total Wells,384
+Rows,16
+Columns,24
+Minimum working volume,12
+Maximum working volume,50
+Description,A plate containing primer stocks at 10uM
