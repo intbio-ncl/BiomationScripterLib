@@ -5,7 +5,7 @@ long_description = """
 
 This is a python package containing a set of tool to help with writing automation protocols for various liquid handling robots. There are also a set of generic tools which may help with writing protocols for multiple automation equipment
 
-[ReadTheDocs](https://biomationscripterlib.readthedocs.io) for version 0.1.
+[ReadTheDocs](https://biomationscripterlib.readthedocs.io) for the current version.
 
 ## Getting Started
 
@@ -28,7 +28,7 @@ This is a python package containing a set of tool to help with writing automatio
 
 setup(
     name='BiomationScripter',
-    version='0.1',
+    version='1.0.0',
     description='Tools for scripting bio-automation protocols',
     long_description = long_description,
     long_description_content_type = "text/markdown",
